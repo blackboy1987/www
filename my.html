@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html style="background-color: #F7F7F7;">
+
+	<head>
+		<meta charset="utf-8">
+		<title>我的</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="css/hashbox.css">
+		<style>
+			.mui-content>.mui-table-view:first-child{margin-top: 0}
+			.mui-table-view-cell{margin:0 0.9375rem; background-color: white}
+			/*.mui-table-view-cell:after {position: absolute;bottom: 0;left: 0;height: 1px;width: 200%;content:'';display: block;-webkit-transform: scale(0.5);transform: scale(0.5);transform-origin: left top;background-color: #e5e5e5;}*/
+			/* {right: 15px;} */
+			.copy{margin-left: 5px;}
+			.myAssets{position: absolute; right: -10px; top: 0; background: url("images/hashbox/myAssets.png");
+				background-size: 95px 35px; height: 35px; width: 95px; color: #fff; font-size: 13px; text-align: right;
+			padding-right: 5px; line-height: 35px;}
+			.m-title{border-radius:5px;}
+			.my-head .m-title #userName{font-size:18px;margin-left:4rem; margin-top: 0.625rem; line-height: normal;color: #000;}
+			.my-head .m-title .phone{margin-left:4rem; font-size: 12px; color:gray;}
+			/* border-right: solid 1px #ccc; */
+			.my-head .m-title .inventCode{ color:gray;font-size: 12px;}
+			/* 中间竖线 */
+			/* .my-head .m-title .line {position: absolute;top: 0;left: 0;height: 200%;width: 1px;content:'';display: block;-webkit-transform: scale(0.5);transform: scale(0.5);transform-origin:top left;background-color: #e5e5e5;} */
+			.my-head .m-title .line {border-left: solid 1px #ccc; width: 10px; padding: 0rem 0.3125rem; margin-left: 0.6rem; margin-top: 0.2rem;margin-bottom: 0.2rem;}
+			
+			.m-header-title{position: absolute;top:18%;border-radius: 50%;width: 3.5rem;height: 3.5rem;}
+			#m-author-content{position: absolute;top: 40px; right: 0rem;border-top-left-radius: 0.8125rem; border-bottom-left-radius: 0.8125rem; background-color: #5676EC; display: flex; align-items: center; height: 1.625rem; width: 5.25rem; color: white; font-size: 12px;}
+			/* .m-header-title img{position: absolute;left: 18%;top: 18%;} */
+			#m-main{text-align: center;display: flex; margin: 1rem; border-radius: 0.25rem;}
+			#m-main div{flex: 1;flex-wrap: nowrap;}
+			.my .mui-table-view-cell a .m-status{position: unset;font-size: 15px;color: #4d4d4d;vertical-align: sub;}
+			.mui-navigate-right:after, .mui-push-left:after, .mui-push-right:after{font-size:30px;}
+			#outlog{color:#FFA067;}
+			#outlog:after{display: none;}
+			.mt1 {font-size: 20px;}
+			#app-version {right: 46px;line-height: 30px;font-size: 15px;}
+			li{height: 61px}
+			.my-info.mui-clearfix.m-title.p1{top: 15px; padding-left: calc(100vw -105%) !important;}
+		</style>
+	</head>
+	<body style="background: #f5f5f5" id="pullrefresh">
+		<!-- <header class="mui-bar mui-bar-nav other">
+			<h1 class="mui-title">我的</h1>
+		</header> -->
+		<!--<header class="my-header mui-bar mui-bar-nav">
+			<h2></h2>
+			<div class="my-info">
+				<img id="userIcon">
+				<div id="userName"></div>
+			</div>
+		</header>-->
+
+		<div class="mui-content my" style="background: #f5f5f5" id="pullrefresh">
+			<div class="my-head m0 py-sm-1 m-whit"style="padding-left: 1.25rem;" id="toAssets">
+				<div id="m-author-content"><img id="author_img" width="18px" height="17px" style="margin-right: 0.375rem;margin-left: 0.375rem;"/>  <p id="author_title" style="font-size: 12px; color: white; height: 1.625rem; line-height: 1.625rem; padding: 0;margin: 0;"></p>  </div>
+				<div class="my-info mui-clearfix m-title p1">
+					<div id="userName">##</div>
+					<div style="display: inline-flex;position: relative;">
+						<div class="phone">会员账号：<span id="phone" style="padding-left: 0">########</span></div>
+						<div class="line"></div>
+						<div class="inventCode" >邀请码：<span id="inventCode">########</span></div>
+					</div>
+					
+					<div class="m-header-title"><img src="images/logo_head.png" width="56px" height="56px" /></div>
+					
+					<!-- <div class="myAssets" id="toAssets">
+						我的资产
+					</div> -->
+				</div>
+			</div>
+			<div class="mui-row m-white" id="m-main">
+				<div id="toProfit" href="#" style="padding: 0.375rem 0rem;">
+					<img src="images/mine/slf-money.png" width="45px;" height="auto"/>
+					<div style=" color: rgba(46,46,49,1); font-size:  14px;" PingFang-SC-Regular";">挖矿收益</div>
+				</div>
+				<!-- 算力订单菜单 -->
+				<div id="toOrder" href="#" style="padding: 0.375rem 0rem;margin-left: 0.8rem;">
+					<img src="images/mine/slf-order.png" width="45px;" height="auto"/>
+					<div style=" color: rgba(46,46,49,1); font-size:  14px;" PingFang-SC-Regular";">算力订单</div>
+				</div>
+				<div id="myTeam" href="#" style="padding: 0.375rem 0rem;margin-left: 0.8rem;">
+					<img src="images/mine/slf-team.png" width="45px;" height="auto"/>
+					<div style=" color: rgba(46,46,49,1); font-size: 14px;" PingFang-SC-Regular";">我的团队</div>
+				</div>
+				<div id="extension" href="#" style="padding:  0.375rem 0rem;margin-left: 0.8rem;">
+					<img src="images/mine/slf-favorable.png" width="45px;" height="auto"/>
+					<div style=" color: rgba(46,46,49,1); font-size:  14px;" PingFang-SC-Regular";">优惠券</div>
+				</div>
+			</div>
+			<div class="mt1">
+				<ul class="mui-table-view mui-table-view-chevron" style="background-color: #f5f5f5;" >
+					<li class="mui-table-view-cell box-border-bottom">
+						<a id="mUpdatePhone" class="mui-navigate-right p-sm-2"><img src="images/mine/slf_tb-power.svg"><span class="m-status">电费包</span><span class="status"></span></a>
+					</li>
+					<li class="mui-table-view-cell box-border-bottom">
+						<a id="mRealName" class="mui-navigate-right p-sm-2"><img src="images/mine/slf-tb-id.svg"><span class="m-status">实名认证</span><span class="status"></span></a>
+					</li>
+					<li class="mui-table-view-cell box-border-bottom">
+						<a id="mAssetsPwd" class="mui-navigate-right p-sm-2"><img src="images/mine/slf_tb-acount.svg"><span class="m-status">设置收款账户</span><span class="status"></span></a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a id="account" class="mui-navigate-right p-sm-2"><img src="images/mine/slf_tb-set.svg"><span class="m-status">安全设置</span><span class="status"></span></a>
+					</li>
+				</ul>
+
+			</div>
+			<div class="mt1">
+					<ul class="mui-table-view mui-table-view-chevron" style="background-color: #f5f5f5;">
+						<li class="mui-table-view-cell box-border-bottom">
+							<a id="problem" class="mui-navigate-right p-sm-2"><img src="images/mine/slf_tb-help.svg"><span class="m-status">帮助中心</span><span class="status"></span></a>
+						</li>
+						<li class="mui-table-view-cell box-border-bottom">
+							<a id="aboutus" class="mui-navigate-right p-sm-2"><img src="images/mine/slf_tb-about.svg"><span class="m-status">关于我们</span><span class="status"></span></a>
+						</li>
+						<li class="mui-table-view-cell box-border-bottom">
+							<a id="version" class="mui-navigate-right p-sm-2"><img src="images/mine/slf-tb-version.svg"><span class="m-status">版本号</span><span id="app-version" class="status"></span></a>
+						</li>
+					</ul>
+	
+				</div>
+			<div class="mt1">
+				<ul class="mui-table-view mui-table-view-chevron" style="background-color: #F7F7F7; margin-bottom: 1.25rem;margin-top: 1rem;" >
+					<li class="mui-table-view-cell" style="height: 50px">
+						<a id="outlog" class="mui-navigate-right p-sm-2 textx">退出登录</a>
+					</li>
+				</ul>
+			</div>
+
+		</div>
+	</body>
+	<script src="js/mui.min.js"></script>
+	<script src="js/jquery.min.js"></script>
+	<script type='text/javascript' src='js/common/common.js'></script>
+	<link rel="stylesheet" href="js/common/mui.loading.css"/>
+	<script type="text/javascript" src="js/common/mui.loading.js"></script>
+	<script>
+		var phone = ''
+		///标记当前是否实名
+		var isAuthed = false
+		// 已认证或未认证存储的样式
+		var authorMap = [
+			{img: 'images/mine/slf_authed.svg', title: '已认证', bgcolor: '#5676EC'},
+			{img: 'images/mine/slf_failed.svg', title: '未认证', bgcolor: '#C4C4C4'},
+		]
+		{
+			Common.muipost("/user/electric/page", {
+				excision: 0,
+				page: 1,
+				coinType: 1
+			}, function (data) {
+				if (data.type == 200 && data.date.list.length > 0) {
+					btc = true
+				} else {
+					btc = false
+				}
+			}, function (e) {
+				btc = false
+			});
+			Common.muipost("/user/electric/page", {
+				excision: 0,
+				page: 1,
+				coinType: 5
+			}, function (data) {
+				if (data.type == 200 && data.date.list.length > 0) {
+					eth = true
+				} else {
+					eth = false
+				}
+			}, function (e) {
+				eth = false
+			})
+			getAppVersion()
+			//收益 -- 跳转
+			$("#toProfit").click(function () {
+				mui.openWindow({
+					url: 'index/profit.html',
+					id: '/index/profit.html'
+				});
+			});
+			// 跳转电费包
+			$("#mUpdatePhone").click(function () {
+				mui.showLoading();
+				Common.muipost("/user/electric/page", {
+					excision: 0,
+					page: 1
+				}, function (data) {
+					if (data.date.list && data.date.list.length > 0) {
+						mui.openWindow({
+							url: 'electricity/record.html',
+							id: 'electricity/record.html'
+						});
+					} else {
+						mui.toast("需购买单笔10T以上的任意一种算力合约");
+					}
+				}, function () {
+					mui.toast("需购买单笔10T以上的任意一种算力合约");
+				});
+			});
+
+			// 算力订单 -- 跳转滴逻辑
+			$("#toOrder").click(function () {
+				mui.openWindow({
+					url: 'index/myHashbox.html',
+					id: 'index/myHashbox.html'
+				});
+			});
+
+			//安全设置 -- 跳转
+			$("#mAssetsPwd").click(function () {
+				Common.muipost("/app/user/v2/auth/info", {}, function (data) {
+					if (data.date) {
+						mui.openWindow({
+							url: '/info/info/account.html',
+							id: '/info/info/account.html',
+							extras: {
+								name: data.date.name
+							}
+						});
+					} else {
+						mui.toast("请先实名认证");
+					}
+				}, function () {
+				})
+
+			});
+			//帐号
+			$("#account").click(function () {
+				// Common.muipost("/app/user/v2/auth/info", {}, function(data) {
+				// 	if (data.date) {
+				// 		mui.openWindow({
+				// 			url: '/info/info/account.html',
+				// 			id: '/info/info/account.html',
+				// 			extras: {
+				// 				name: data.date.name
+				// 			}
+				// 		});
+				// 	} else {
+				// 		mui.toast("请先实名认证");
+				// 	}
+				// }, function(){})
+
+				mui.openWindow({
+					url: '/info/info.html',
+					id: '/info/info.html',
+					extras: {
+						phone: phone
+					}
+				});
+
+
+			})
+			//实名认证 -- 跳转
+			$("#mRealName").click(function () {
+
+				Common.muipost("/app/user/v2/auth/info", {}, function (data) {
+					// if (data.date.state == 2 || data.date.state == 0) {
+					// 	mui.openWindow({
+					// 		url: '/info/info/realName.html',
+					// 		id: '/info/info/realName.html'
+					// 	});
+					// }
+					// else {
+					mui.openWindow({
+						url: '/info/info/idCard.html',
+						id: '/info/info/idCard.html'
+					});
+					// }
+				}, function () {
+				})
+
+			});
+
+			//我的团队 -- 跳转
+			$("#myTeam").click(function () {
+				mui.openWindow({
+					url: '/info/team.html',
+					id: '/info/team.html'
+				});
+			});
+
+			//优惠劵
+			$("#extension").click(function () {
+				mui.openWindow({
+					url: '/info/favorable.html',
+					id: '/info/favorable.html'
+				});
+			});
+
+			//关于我们
+			$("#aboutus").click(function () {
+				mui.openWindow({
+					url: '/info/aboutus.html',
+					id: '/info/aboutus.html'
+				});
+			});
+
+			//常见问题
+			$("#problem").click(function () {
+				mui.openWindow({
+					url: '/info/problem.html',
+					id: '/info/problem.html'
+				});
+			});
+
+			// 资产
+			// $("#toAssets").click(function(){
+			// 	mui.openWindow({
+			// 		url: '/info/assets.html',
+			// 		id: '/info/assets.html'
+			// 	});
+			// })
+
+			// loadHtml();
+
+			function loadHtml() {
+				//获取用户资料
+				var info = "/app/user/info/index";
+				Common.muipost(info, null, function (data) {
+					//$("#userIcon").attr("src",".."+data.date.icon);
+					phone = data.date.phone;
+					$("#userName").text(data.date.userName);
+					$("#inventCode").text(data.date.extendCode);
+					$("#phone").text(data.date.phone);
+					isAuthed = data.date.isAuth;
+					if (isAuthed) {
+						$("#author_title").text(authorMap[0].title);
+						// $("#author_img").img(authorMap[0].img);
+						$("#author_img").attr('src', authorMap[0].img);
+						$("#m-author-content").css('background-color', authorMap[0].bgcolor);
+					} else {
+						$("#author_title").text(authorMap[1].title);
+						// $("#author_img").img(authorMap[1].img);
+						$("#author_img").attr('src', authorMap[1].img);
+						$("#m-author-content").css('background-color', authorMap[1].bgcolor)
+					}
+				}, function (data) {
+					mui.toast(data.content);
+				});
+			}
+
+
+			document.getElementById("outlog").addEventListener("tap", function () {
+				var url = '/app/auth/out';
+				mui.showLoading("退出登录中..", "body");
+				Common.muipost(url, {}, function (data) {
+					//location.href = "login.html";
+					mui.hideLoading();
+					plus.storage.removeItem("loginUser");
+					plus.runtime.restart();
+					return;
+				}, function (data) {
+					mui.toast(data.content);
+				});
+				mui.hideLoading();
+				//因为本页面既有顶部准确进度的进度条，也有顶部无限循环的进度条，因此这里需要强制定义progress: undefined覆盖；
+				//一般使用时，mui(container).progress()构造方法中不传入参数，就表示无限循环；
+				//mui('body').progressbar({
+				//	progress: undefined
+				//}).show();
+				//本示例5秒后自动消失，实际可根据实际情况决定关闭进度条的时机；
+				//setTimeout(function() {
+				//	mui('body').progressbar().hide();
+				//}, 5000);
+			});
+
+			//下拉刷新
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						style: 'circle',
+						callback: pulldownRefresh
+					},
+				}
+			});
+
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				setTimeout(function () {
+					//addData();
+					loadHtml();
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+				}, 1500);
+			}
+
+			window.addEventListener('refresh', function (e) {
+				//在父页面中添加监听事件，刷新页面
+				loadHtml();
+			});
+
+			//  复制方法
+			function copy_fun() { //参数copy是要复制的文本内容
+				mui.plusReady(function () {
+					var copy = $("#inventCode").text();
+					//判断是安卓还是ios
+					if (mui.os.ios) {
+						//ios
+						var UIPasteboard = plus.ios.importClass("UIPasteboard");
+						var generalPasteboard = UIPasteboard.generalPasteboard();
+						//设置/获取文本内容:
+						generalPasteboard.plusCallMethod({
+							setValue: copy,
+							forPasteboardType: "public.utf8-plain-text"
+						});
+						generalPasteboard.plusCallMethod({
+							valueForPasteboardType: "public.utf8-plain-text"
+						});
+						mui.toast("复制成功");
+					} else {
+						//安卓
+						var context = plus.android.importClass("android.content.Context");
+						var main = plus.android.runtimeMainActivity();
+						var clip = main.getSystemService(context.CLIPBOARD_SERVICE);
+						plus.android.invoke(clip, "setText", copy);
+						mui.toast("复制成功");
+					}
+				});
+			}
+
+			function getAppVersion() {
+				mui.plusReady(function () {
+					var v = plus.storage.getItem('version')
+					var t = 'V'
+					if (!v) {
+						if (mui.os.ios) {
+							mui.getJSON("http://localhost:13131/_www/manifest.json", null, function (data) {
+								// version = data.version.code;
+								upVersion(data.version.code);
+								plus.storage.setItem('version', JSON.stringify(data.version.code))
+							});
+						} else {
+							mui.getJSON("manifest.json", null, function (data) {
+								// version = data.version.code;
+								upVersion(data.version.code);
+								plus.storage.setItem('version', JSON.stringify(data.version.code))
+							});
+						}
+						/* mui.getJSON("manifest.json", null, function(data) {
+						v = data.version.code
+						plus.storage.setItem('version',JSON.stringify(v))
+					}) */
+					}
+					v = v.split('').join('.')
+					t += v
+					v && $('#app-version').text(t)
+				})
+			}
+		}
+	</script>
+</html>

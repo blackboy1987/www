@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>充值</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<style type="text/css">
+			.mui-icon {
+				color: #919194;
+			}
+
+			.mui-bar-nav {
+				background-color: #ffffff;
+				box-shadow: none;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" style="font-size: 20px;" id="teamName">充值</h1>
+		</header>
+
+		<div style="margin-bottom: 20px; margin-top: 46px; padding: 5px 20px; background-color: #F6F6F6;color: #FF7800;font-size: 14px;">
+			客服将在1个工作日内进行审核，审核时间9:00-21:00，审核无误后方可到账。
+		</div>
+		<div style="flex-direction: column; margin: 0 auto;width: 300px;display: flex;align-items: center;">
+
+			<img style="margin: 20px 0;" width="30px" src="../images/hashbox/success.png" />
+			<div style="margin-bottom: 20px;color: #2E2E31;">提交成功</div>
+
+			<div>
+				<div style="margin: 10px 0;">
+					<span style="color: #969699;font-size: 16px;">充值金额：</span>
+					<span style="color: #FF7800;">￥<span id="yuer"></span></span>
+				</div>
+				
+				<div>
+					<span style="color: #969699;font-size: 16px;">提交时间：</span>
+					<span style="color: #333333;" id="createDate"></span>
+				</div>
+			</div>
+		</div>
+
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/mui.js"></script>
+		<script src="../js/common/common.js"></script>
+
+		<script> 
+			window.onload = function() { 
+				$('#createDate').html(getTime());
+				
+				// var s2_2=localStorage.getItem("names_money");
+				// var p2_2=JSON.parse(s2_2);
+				// $("#yuer").html(p2_2);
+			}
+			mui.plusReady(function () {
+				var current = plus.webview.currentWebview();
+				var money = current.money;
+				$("#yuer").html(money)
+			})
+			//时间格式化
+			function getTime() {
+				var date = new Date();
+				var fullYear = date.getFullYear();
+				var month = date.getMonth() + 1;
+				var ms = month < 10 ? "-" + "0" + month : "-" + month;
+				var day = date.getDate();
+				var ds = day < 10 ? "-" + "0" + day : "-" + day;
+				var rs = fullYear + ms + ds;
+				var time = date.getHours();
+				if (time < 10) {
+					rs += " 0" + time;
+				} else {
+					rs += " " + time;
+				}
+				var minutes = date.getMinutes();
+				var min = minutes < 10 ? ":0" + minutes : ":" + minutes;
+				var seconds = date.getSeconds();
+				var sed = seconds < 10 ? ":0" + seconds : ":" + seconds;
+				rs += min + sed;
+				return rs;
+			}
+			
+		</script>
+	</body>
+</html>

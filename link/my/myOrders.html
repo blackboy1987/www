@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>我的订单</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../css/style.css">
+		<style>
+			.mui-content>.mui-table-view:first-child{margin-top: 0}
+			.mui-table-view-cell:after{right: 15px;}
+			html,body{height: 100%;}
+			.cloud-index-buy{ background-color: #fff; padding: 0px;}
+		</style>
+	</head>
+	<body>
+	<header class="mui-bar mui-bar-nav other">
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		<h1 class="mui-title">我的订单</h1>
+	</header>
+		<div class="mui-content my shouyi">
+			<div class="mui-scroll">
+				<ul class="mui-table-view mui-table-view-chevron" id="pullrefresh"></ul>
+			</div>
+		</div>
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script src="../js/jquery.min.js"></script>
+	<script src="../js/common/common.js"></script>
+	<script>
+		
+		mui.init({
+			pullRefresh: {
+				container: '#pullrefresh',
+				down: {
+					style:'circle',
+					callback: pulldownRefresh
+				},
+				up: {
+					auto:true,
+					contentrefresh: '正在加载...',
+					callback: pullupRefresh
+				}
+			}
+		});
+        
+    	var excision = 0;
+		var page = 1;
+        function pulldownRefresh() {
+        	excision = 0;
+        	page = 1;
+        	var url = "/app/user/order/page";
+        	Common.muipost(url, {excision: excision, page: page}, function(data) {
+        		if (data.date.list && data.date.list.length > 0) {
+					var content = "";
+					mui.each(data.date.list, function(index, item){
+						var changeValue = "";
+						content += createItem(item);
+					});
+					$("#pullrefresh").html(content);
+					
+					excision = data.date.excision;
+					page++;
+				} else {
+					
+				}
+        	}, function(data){
+        		
+        	});
+        	
+			mui('#pullrefresh').pullRefresh().endPulldownToRefresh(true);
+			mui('#pullrefresh').pullRefresh().refresh(true);
+        }
+		
+		function pullupRefresh() {
+			var _this = this;
+        	var url = "/app/user/order/page";
+        	Common.muipost(basePath + url, {excision: excision, page: page}, function(data) {
+        		if (data.date.list && data.date.list.length > 0) {
+					var content = "";
+					mui.each(data.date.list, function(index, item){
+						content += createItem(item);
+					});
+//					$("#pullrefresh").append(html);
+					console.log(content);
+					if ($("#pullrefresh > li").length > 0) {
+						$("#pullrefresh > li:last").after(content);
+					} else {
+						$("#pullrefresh").prepend(content);
+					}
+					
+					if (data.date.list.length < 10) {
+						_this.endPullupToRefresh(true);
+					} else {
+						_this.endPullupToRefresh(false);
+					}
+					
+					excision = data.date.excision;
+					page++;
+				} else {
+					_this.endPullupToRefresh(true);
+				}
+        	}, function(data){
+        		console.log(JSON.stringify(data));
+				_this.endPullupToRefresh(true);
+        	});
+    	}
+		
+		function createItem(item) {
+			var stateName = "";
+			if (item.state == 0) {
+				stateName = "待支付";
+			} else if (item.state == 1) {
+				stateName = "待支付";
+			} else if (item.state == 2) {
+				stateName = "待入账";
+			} else if (item.state == 3) {
+				stateName = "已完成";
+			} else {
+				stateName = "已取消";
+			}
+			var product = "<div class='cloud-index-buy'>"
+							+ "<div class='mui-row cib-buy'>"
+							+ "<div class='mui-col-xs-4'>"
+							+ "<img src='" + basePath + item.productIcon + "' width='80px'>"
+							+ "</div>"
+							+ "<div class='mui-col-xs-8'>"
+							+ "<h2>" + item.productName + "</h2>"
+							+ "<div class='mt20'>价格<span class='mui-pull-right'>" + Common.moneyFormat(item.price) + " USDT</span></div>"
+							+ "<div><span class='mui-pull-right fc9'>x " + item.quantity + "</span></div>"
+							+ "</div>"
+							+ "</div>"
+							+ "</div>";
+			var content = "<div class='mui-card'>" +
+				"<div class='mui-card-content'>" +
+				"<div class='mui-card-content-inner'>" +
+				"<p>" + item.createDate + "<span style='float: right;'>" + stateName + "</span></p>" +
+				product +
+				"</div>" +
+				"</div>" +
+				"<div class='mui-card-footer'>" +
+				"<span class='mui-card-link'>订单编号:" + item.sn + "</span>" +
+				"<span class='mui-card-link'>" + Common.moneyFormat(item.amount) + " USDT</span>" +
+				"</div>" +
+				"</div>";
+			return content;
+		}
+	</script>
+</html>

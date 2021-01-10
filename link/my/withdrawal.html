@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>账户资产</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../css/style.css">
+		<link rel="stylesheet" href="../css/hashbox.css">
+		<style>
+			::-webkit-input-placeholder { color:#b3b3b3; }
+			::-moz-placeholder { color:#b3b3b3; } /* firefox 19+ */
+			:-ms-input-placeholder { color:#b3b3b3; } /* ie */
+			input:-moz-placeholder { color:#b3b3b3; }
+			.assets-tbmx .mui-row .mui-col-sm-7{width: 65%;}
+			.assets-tbmx .mui-row .mui-col-sm-5{ width: 35%; text-align: right;}
+			.assets-tbmx .mui-row .mui-col-sm-7 p,.assets-tbmx .mui-row .mui-col-sm-5 p{ font-size: 13px; color: #4d4d4d;}
+			.assets-tbmx .mui-row .mui-col-sm-5 p span.box{float:right;width: 54px;margin-top: 5px; border-radius: 3px; height: 20px; display: block; border: 1px solid #ccc; font-size: 12px; text-align: center;line-height: 20px;}
+			.assets-tbmx .mui-row .mui-col-sm-5 p span.success{ color: #1dce68; border-color: #1dce68;}
+			.assets-tbmx .mui-row .mui-col-sm-5 p span.fail{ color: #e82b2b; border-color: #e82b2b;}
+			.assets-tbmx .mui-row .mui-col-sm-5 p span.processing{ color: #e27c19; border-color: #e27c19;}
+			.assets-tbmx .mui-row .mui-col-sm-5 p span{font-size: 13px; color: #2C95E8;}
+			.assets-tbmx .mui-row .mui-col-sm-5 p.money{ color: #f05c22; font-size: 17px;}
+			.assets-tbmx .mui-row .mui-col-sm-5 p a{width: 80px;margin-top: 5px; border-radius: 3px; height: 30px; display: block; border: 1px solid #2C95E8; font-size: 13px; color: #2C95E8; text-align: center;line-height: 30px;}
+
+		</style>
+
+	</head>
+	<body id="pullrefresh">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="detialTitle">账户资产RMB<!-- ETH--></h1>
+		</header>
+		<div class="mui-content a-assets" style="background: #fff">
+			<div class="assets-all" style="background-color: #2c95e8;">
+				<div class="all-ass" id="detialCountTitle" style="color: white;">总资产 <!--ETH--></div>
+				<p id="detialTotalMoney">--</p>
+			</div>
+			<!--<div class="mui-row assets-al">
+				<div class="mui-col-xs-6">
+					<div class="all-ass">可用资产</div>
+					<p id="detialMoney">--</p>
+				</div>
+				<div class="mui-col-xs-6">
+					<div class="all-ass">冻结资产</div>
+					<p id="detialFrozenMoney">--</p>
+				</div>
+			</div>-->
+			<div id="slider" class="mui-slider pay-tb">
+				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+					<a class="mui-control-item mui-active" href="#item1mobile">
+						提现
+					</a>
+					<a class="mui-control-item " href="#item2mobile">
+						提现记录
+					</a>
+				</div>
+			</div>
+
+			<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-4"></div>
+			<div class="mui-slider-group pay-tb-all ">
+				
+				<div id="item1mobile" class="mui-slider-item mui-control-content box-sd pad10 mui-active">
+					<form class="tb-form  mui-input-group " id="drawForm">
+							
+							<p class="tb-title">提现金额</p>
+							<div class="mui-input-row">
+								<input id='drawNum' type="number" class="mui-input-clear mui-input" placeholder="最低提现金额10.00RMB" name="amount" onchange="drawNumChange(this)">
+								<div class="tb-addr-img"><a onclick="drawAll()">全部提现</a><font id="drawNumType"><!--ETH--></font> </div>
+							</div>
+							<div class="tb-how">最低提现金额 <span id="maxDrawNum"> 0 <!--ETH--></span></div>
+							<p class="tb-title">提现支付宝账户姓名</p>
+							<div class="mui-input-row">
+								<input type="text" class="mui-input-clear mui-input" placeholder="请输入支付宝账户姓名" name="comments">
+							</div>
+							<p class="tb-title">提现支付宝账号</p>
+							<div class="mui-input-row">
+								<input type="text" class="mui-input-clear mui-input" placeholder="请输入支付宝账号" name="comments">
+							</div>
+
+					</form>
+					<div class="tb-pay-tips">
+						<p>温馨提示</p>
+						<p id="drawDesc">
+							请正确填写您的支付宝账号，支付宝姓名与支付宝账号一致时才能提现成功
+							<!--ETH 地址只能向ETH地址发送资产，任何向非ETH地址发送资产将不可找回。ETH网络转账费为0.0005ETH,最低转出金额为0.01ETH。-->
+						</p>
+					</div>
+					<div class="tf-btn">
+						<button class="mui-btn main-button" id="drawBtn">确认提币</button>
+					</div>
+
+					<!--<div class="tb-arrive">
+						<ul class="mui-table-view arrive-title">
+							<li class="mui-table-view-cell">
+								正在处理中的转账<a href="#" id="refresh" class="mui-pull-right">刷新</a>
+							</li>
+						</ul>
+						<ul class="mui-table-view mui-table-view-chevron" id="drawRecord">
+							<li class="mui-table-view-cell no-data">没有更多数据</li>
+						</ul>
+					</div>-->
+				</div>
+				<div id="item2mobile" class="mui-slider-item mui-control-content ">
+					<div class="box-sd assets-tbmx">
+									<div class="mui-row">
+										<div class="mui-col-sm-7">
+											<p>提币时间：2019.02.25   15:30</p>
+											<p>订单号：123123131</p>
+											<p>到账支付宝：1379090</p>
+										</div>
+										<div class="mui-col-sm-5">
+											<p>提币金额(<span> RMB </span>)</p>
+											<p class="money">200</p>
+											<p><span class="box success">提币成功</span></p>
+										</div>
+									</div>
+								</div>
+								<div class=" assets-tbmx box-sd mt10">
+									<div class="mui-row">
+										<div class="mui-col-sm-7">
+											<p>提币时间：2019.02.25   15:30</p>
+											<p>处理时间：2019.02.25   15:30</p>
+											<p>到账支付宝：1379090</p>
+										</div>
+										<div class="mui-col-sm-5">
+											<p>提币金额(<span> BTC </span>)</p>
+											<p class="money">0.03</p>
+											<p><span class="box fail">提币失败</span></p>
+										</div>
+									</div>
+								</div>
+								<div class=" assets-tbmx box-sd mt10">
+									<div class="mui-row">
+										<div class="mui-col-sm-7">
+											<p>提币时间：2019.02.25   15:30</p>
+											<p>处理时间：2019.02.25   15:30</p>
+											<p>到账支付宝：1379090</p>
+										</div>
+										<div class="mui-col-sm-5">
+											<p>提币金额(<span> BTC </span>)</p>
+											<p class="money">0.03</p>
+											<p><span class="box processing">处理中</span></p>
+										</div>
+									</div>
+								</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script src="../js/jquery.min.js"></script>
+	<script src="../js/qrcode.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../js/html5plus.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		/*mui.init({
+			swipeBack:true,
+			pullRefresh: {
+				container: '#pullrefresh',
+				down: {
+					style:'circle',
+					callback: function(){
+						plus.webview.currentWebview().reload(true);
+						mui('#pullrefresh').pullRefresh().endPulldown();
+					}
+				}
+			}
+		});*/
+		
+			//下拉刷新
+        mui.init({
+            pullRefresh: {
+                container: '#pullrefresh',
+                down: {
+                    style:'circle',
+                    callback: pulldownRefresh
+                },
+            }
+        });
+		
+		
+		function pulldownRefresh() {
+			
+			setTimeout(function() {
+               loadDetail();             
+                mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+            }, 1000);
+		}
+		
+		var assetName = "";
+		var assetType = "";
+		
+		var withdrawLimit = 0;
+		var withdrawMax = 0;
+		var withdrawRate = 0;
+		mui.plusReady(function() {
+			var current = plus.webview.currentWebview();
+			assetType = current.assetType;
+			assetName = current.name;
+			
+			$("#detialTitle").html(assetName);
+			//$("#detialCountTitle").html("总资产  " + assetName);
+			$("#walletExplain").html("向如下地址汇入"+ assetName +"完成充值");
+			
+			loadDetail();
+		});
+		/*mui.ready(function(){
+			console.log(assetName)
+			
+		});*/
+		
+		function loadDetail() {
+			Common.muipost("/app/user/money/details", {asset:assetType}, function(data){
+				if (data.type == 200 && data.date.money) {
+					withdrawMax = data.date.withdraw;
+					// var wallet = data.date.wallet;
+					var money = data.date.money.money;
+					var frozenMoney = data.date.money.frozenMoney;
+					var totalMoney = parseFloat(money) + parseFloat(frozenMoney);
+					//$("#moneyFormat").html(Common.moneyFormat(money));
+					//$("#detialFrozenMoney").html(Common.moneyFormat(frozenMoney));
+					if (assetName == "BTC") {
+						$("#detialTotalMoney").html(Common.moneyFormatByDecimals(totalMoney, 8));
+					} else {
+						$("#detialTotalMoney").html(Common.moneyFormat(totalMoney));
+					}
+					
+					/*$("#walletQrCode").html(wallet.walletAdd);
+					$("#walletQrcodeImg").text("")
+					var qrcode = new QRCode('walletQrcodeImg', {
+					  text: wallet.walletAdd,
+					  width: 180,
+					  height: 180,
+					  colorDark : '#000000',
+					  colorLight : '#ffffff',
+					  correctLevel : QRCode.CorrectLevel.H
+					});
+					var walletDescText = assetName + " 地址只能充值 "+ assetName +" 资产，任何充入非 "+ assetName +" 资产将不可找回。使用"+ assetName +"地址充值需要"+ data.date.coinNum +"个网络确认才能到账。最低存入金额为"+ data.date.rule.rechargeLimit +" "+ assetName +" 。";
+					$("#walletDesc").html(walletDescText);*/
+					
+					var rule = data.date.rule;
+					withdrawLimit = rule.withdrawLimit;
+					withdrawRate = rule.withdrawRate * 100;
+					$("#drawNum").attr("placeholder", "最低转出金额为 " + rule.withdrawLimit);
+					$("#drawNumType").html(assetName);
+					if (assetName == "BTC") {
+						$("#maxDrawNum").html(Common.moneyFormatByDecimals(withdrawMax, 8) +" "+ assetName);
+					} else {
+						$("#maxDrawNum").html(Common.moneyFormat(withdrawMax) +" "+ assetName);
+					}
+					
+					var drawDescText = assetName + "地址只能向"+ assetName +"地址发送资产，任何向非"+ assetName +"地址发送资产将不可找回。"+ assetName +"提现费为"+ withdrawRate +"% "+ assetName + "，最低转出金额为"+ rule.withdrawLimit +" "+ assetName +"。";
+					$("#drawDesc").html(drawDescText);
+					
+					if (!rule.canWithdraw) {
+						$("#drawBtn").prop("disabled","disabled").html("不可提币");
+					}
+					
+					
+					// loadRechargeList();
+					// loadDrawList();
+				} else {
+					console.log("未获取到数据");
+				}
+			}, function(){});
+		}
+		
+		function drawAll() {
+
+		}
+		
+		mui("body").on("tap", "#detailedLink", function(){
+	       	var _href = $(this).attr("data-href");
+	       	var webview = mui.openWindow({
+				url:_href,
+				id:_href,
+				extras:{
+					assetType: assetType,
+					assetName: assetName
+				}
+			});
+        });
+		
+		mui(".tf-btn").on("tap", "#drawBtn", function(){
+			var drawNum = $("#drawNum").val().replace(/^(.*\..{8}).*$/,"$1");
+			$("#drawNum").val(drawNum);
+			var formJson = $("#drawForm").serializeJson();
+			var addr = formJson.addr;
+			var amount = formJson.amount;
+			var comments = formJson.comments;
+			
+			var reg = new RegExp("[^0-9a-zA-Z]");
+			if (!addr || addr.length < 15) {
+				mui.toast("提币地址错误");
+				return false;
+			}
+			console.log(addr);
+			if (reg.test(addr)) {
+				mui.toast("提币地址错误");
+				return false;
+			}
+			
+			if (!amount || parseFloat(amount) > withdrawMax || parseFloat(amount) < withdrawLimit) {
+				mui.toast("请输入正确的提币数量");
+				return false;
+			}
+			if (comments && comments.length > 200) {
+				mui.toast("备注过长");
+				return false;
+			}
+			
+			/*var fee = (amount * withdrawRate).toFixed(4);
+			var actual = amount - fee;*/
+			mui.prompt('实际到账'+ amount +", 手续费"+ amount +"*"+ withdrawRate + "%",'','请输入密码',['取消','确认提币'], function(e){
+				if (e.index == 1) {
+					Common.muipost("/app/user/money/outcome", {asset: assetType, money:amount, to:addr, pass:e.value}, function(data){
+						if (data.type == 200) {
+							plus.webview.currentWebview().reload(true);
+						} else {
+							mui.toast(data.content);
+						}
+					}, function(da){});
+				}
+				
+			}, 'div');
+			document.querySelector('.mui-popup-input input').type='password'; 
+
+		});
+		
+		function drawNumChange(thizz){
+			/*var val = thizz.value;
+			if (val && val.indexOf(".") != -1) {
+				thizz.value = parseFloat(val).toFixed(4);
+			}*/
+			thizz.value = thizz.value.replace(/^(.*\..{8}).*$/,"$1");
+		}
+	</script>
+	
+	<!--二维码扫描返回数据-->
+	<script type="text/javascript">
+var img = null;
+var blist = [];
+function scaned(t, r, f){
+	console.log(r)
+	$("#tb-addr").val(r);
+	//li.setAttribute('onclick', 'selected(id)');
+	blist[blist.length] = {type:t,result:r,file:f};
+	update(t, r, f);
+}
+function selected(id){
+	var h = blist[id];
+	update( h.type, h.result, h.file );
+	if(h.result.indexOf('http://')==0  || h.result.indexOf('https://')==0){
+		plus.nativeUI.confirm(h.result, function(i){
+			if(i.index == 0){
+				plus.runtime.openURL(h.result);
+			}
+		}, '', ['打开', '取消']);
+	} else{
+		plus.nativeUI.alert(h.result);
+	}
+}
+function update(t, r, f){
+	outSet('扫描成功：');
+	outLine(t);
+	outLine(r);
+	outLine('\n图片地址：'+f);
+	if(!f || f=='null'){
+		img.src = '../img/barcode.png';	
+	} else{
+		plus.io.resolveLocalFileSystemURL(f, function(entry){
+			img.src=entry.toLocalURL();
+		});
+		//img.src = 'http://localhost:13131/'+f;
+	}
+}
+function onempty(){
+	if(window.plus){
+		plus.nativeUI.alert('无扫描记录');
+	} else {
+		alert('无扫描记录');
+	}
+}
+function cleanHistroy(){
+	if(blist.length > 0){
+		var hl = document.getElementById('history');
+		hl.innerHTML = '<li id="nohistory" class="ditem" onclick="onempty();">无历史记录	</li>';
+	}
+	plus.io.resolveLocalFileSystemURL('_doc/barcode/', function(entry){
+		entry.removeRecursively(function(){
+			// Success
+		}, function(e){
+			//alert( "failed"+e.message );
+		});
+	});
+}
+		</script>
+</html>

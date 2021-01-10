@@ -1,0 +1,575 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>我的算力</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!--标准mui.css-->
+    <link rel="stylesheet" href="../css/mui.min.css">
+
+    <!--App自定义的css-->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/hashbox.css">
+
+</head>
+<style type="text/css">
+    html {background-color: #F5F5F5;}
+    .subs {background-image: url(../images/hashbox/sldd-banner.png);background-size: 100% 100%;width: 100%;height: 150px;}
+    .m10 {margin: 0;}
+    .status > .success {line-height: 38px;}
+    .myHashbox .mhh-line1 {color: #e6e5e5;text-align: center;font-size: 20px;}
+    .myHashbox .mhh-line2 {margin-top: 0px;color: #FFFFFF;text-align: center;}
+    .arrow {width: 10px;height: 10px;border-top: 1px solid #919194;border-right: 1px solid #919194;transform: rotate(45deg);}
+    .record {display: flex;justify-content: space-between;padding: 15px;color: #7c7c7d;width: 100%;height: 55px;font-size: 15px;align-items: center;}
+    .record-name {height: 75.5px;padding-top: 17.5px;}
+    .unitPrice {font-size: 14px;color: #979797;margin-top: 10px;}
+    .quantity {float: right;font-size: 14px;color: #979797;}
+    .xian {border-bottom: 1px solid #E5E5E5;margin: 0 15px 0 15px;}
+    .mui-scroll-wrapper {background: #fbfbfb;}
+    .mui-segmented-control.mui-scroll-wrapper .mui-control-item {width: auto}
+    .mui-segmented-control.mui-scroll-wrapper .mui-scroll {width: 100%}
+    .pay-tb .mui-segmented-control .mui-control-item {color: inherit;}
+    .pay-tb.mui-slider .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {border: none;pointer-events: none;}
+    .pay-tb .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {color: #323233;}
+    .pay-tb.mui-slider .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active .m-span {display: inline-block;height: 100%;color: #0068f7;}
+    .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {border-bottom: none;pointer-events: none;}
+    #productList > .mui-active {color: #0068f7;border-bottom: 0;}
+    #productList > .mui-control-item {font-size: 17px}
+    .zc-list ul li {height: 100%;}
+    .mui-bar-nav ~ .mui-content {padding-top: 15px;}
+    li {list-style: none;}
+    .mui-navigate-right:after,
+    .mui-push-right:after {content: '';}
+    .mui-navigate-right {height: 170px;}
+    .myHashList .record-data .date {float: left;color: #969699;font-size: 14px;}
+    .change {color: #FF7800;}
+    .xian {border-bottom: 1px solid #E5E5E5;margin: 0 5px 0 2px;width: 100%;}
+    .status {display: flex;width: 100%;height: 40px;justify-content: space-between;}
+    .mui-table-view-chevron .mui-table-view-cell > a:not(.mui-btn) {margin-bottom: 10px;}
+    .record-data {line-height: 46px;display: flex;width: 106%;margin-left: -10px;justify-content: space-between;background-color: #fbfbfb;height: 43px;}
+    .date {margin-left: 10px;}
+    .change {margin-right: 10px;}
+    .amount {color: #b3b3b3;font-size: 14px;}
+    .mui-slider-group #item1mobile {background-color: #fbfbfb;border-bottom: 1px solid #e5e5e5;}
+    .buy-record {margin-bottom: 10px;}
+    .pad10 {padding: 0;padding-top: 10px;}
+    .myHashbox .mhh-line2 span:nth-of-type(1) {margin-right: 0;}
+    #itemmobile li {background: #fff;border: none;width: 95%;height: auto;margin: 0 auto}
+    .mui-control-content, .mui-control-content ul {background: #f5f5f5;margin-top: 0;}
+    .mui-table-view:before, .mui-table-view-cell:after {height: 0;}
+    .myHashbox .mhh-line1, .myHashbox .mhh-line2 {color: #fff;opacity: .9;}
+    #item3mobile li, #item2mobile li, #item1mobile li {background: #ffffff;}
+    .zc-list ul li {border-bottom: 0px;}
+    .mui-segmented-control .mui-control-item.m-block {display: block;width: 100%;text-align: left;color: #2E2E31;}
+    .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.m-block.mui-active {border: none;color: #FF7800;background: #F8F8F8;}
+    .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.m-block.mui-active:after {color: #FF7800;content: '\2713';top: unset;margin-top: 25px;font-size: 18px;}
+    .mui-table-view-cell > a:not(.mui-btn) {padding-left: 15px;padding-right: 15px;}
+    .m-size15.mui-active > .m-span > .btc-left {width: 35px;height: 4px;background-color: #0068f7;border: 1px solid #0068f7;margin: 0 auto;border-radius: 4px}
+    .m-size15.mui-active > .m-span > .btc-right {width: 35px;height: 4px;background-color: #0068f7;border: 1px solid #0068f7;margin: 0 auto;border-radius: 4px}
+    .container {margin: 0 auto; /*width: 400px;*/height: 8px;position: relative;bottom: 5px;}       /*进度条*/
+</style>
+<body style="background: #fff">
+<div class="mui-content" id="index-html" style="background: #fff">
+    <div class="mui-control-content mui-active myHashbox">
+        <div class="m10 subs" style="">
+            <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"
+               style="font-size: 25px;color: #ffffff !important;padding-top: 17px;padding-left: 10px"></a>
+            <div style="padding-top: 50px">
+                <div class="mhh-line2" style=""><span style="font-size: 30px;" id="invest"> T </span><span></span></div>
+                <div class="mhh-line1" id="bore" style="">BTC总算力</div>
+            </div>
+            <div class="content">
+            </div>
+        </div>
+        <div class="zc-list" style="margin: auto;z-index:9999">
+            <div id="" class="mui-slider pay-tb">
+                <div id="sliderSegmentedControl"
+                     class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+                    <a class="mui-control-item mui-control-item-a m-size15 mui-active" _id="0"
+                       _type="1" _coinType='1' id="typeBtc">
+                        <span class="m-span" style="font-size: 23px">BTC <div class="btc-left"></div></span>
+                    </a>
+                    <a class="mui-control-item mui-control-item-a m-size15" _id="6" _type="1"
+                       _coinType='5' id="typeEth">
+                        <span class="m-span" style="font-size: 23px">ETH <div class="btc-right"></div></span>
+                    </a>
+                    <a class="mui-control-item mui-control-item-a m-size15" _id="7" _type="1"
+                       _coinType='6' id="typeFli">
+                        <span class="m-span" style="font-size: 23px">FIL <div class="btc-right"></div></span>
+                    </a>
+                </div>
+            </div>
+            <div class="mui-slider-group" id="pullrefresh"
+                 style="border-top-left-radius: 5px;border-top-right-radius: 5px;">
+                <div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
+                    <div style="position: relative;height: 45px;width: 100%;z-index:9999;" class="">
+                        <div class="px-sm-1 m-bbm" style="background: #FFFFFF;" _id="0">
+                            <div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ul id="itemmobile" style="margin-top: 0;">
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/mui.min.js"></script>
+<script src="../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/progressbar.js"></script>
+<script>
+    var _coinType = "1"
+    var _this = null;
+    var time =[];
+    var sort,
+        r = 0,
+        _id = 0,
+        orderType = '',
+        zl = '',
+        sl = '',
+        dq = '',
+        type = 1,
+        excision = 0,
+        page = 1;
+    // load();
+
+    load()
+    function load() {
+        $('.mui-scroll-wrapper').html('')
+        Common.muipost("/app/user/v2/invest/invest", {coinType: _coinType}, function (data) {
+            if (_coinType == 1) {
+                $("#invest").text(data.date.invest + 'T');
+                sort = '份';
+               let btc = '<div class="mui-scroll btc-tab mui-hidden">\n' +
+                            '<a class="mui-control-item m-block1 mui-active" _type="1">普通产品</a>\n' +
+                            '<a class="mui-control-item m-block1" _type="5">期货产品</a>\n' +
+                            '<a class="mui-control-item m-block1" _type="8">短期产品</a>\n' +
+                    '</div>'
+                $('.mui-scroll-wrapper').html(btc)
+                $('.btc-tab').removeClass('mui-hidden')
+                $('.eth-tab').addClass('mui-hidden')
+                $('.fil-tab').addClass('mui-hidden')
+                $('.mui-segmented-control.mui-scroll-wrapper .mui-control-item').css('width','33.3%')
+            } else if (_coinType == 5) {
+                $("#invest").text(data.date.invest + 'M');
+                sort = '份';
+                let eth = ' <div class="mui-scroll eth-tab mui-hidden">\n' +
+                            '<a class="mui-control-item m-block1 mui-active" _type="1">普通产品</a>\n' +
+                            '<a class="mui-control-item m-block1" _type="5">期货产品</a>\n' +
+                            '<a class="mui-control-item m-block1" _type="8">短期产品</a>\n' +
+                            '<a class="mui-control-item m-block1" _type="12">整机产品</a>\n' +
+                    '</div>'
+                $('.mui-scroll-wrapper').html(eth)
+                $('.btc-tab').addClass('mui-hidden')
+                $('.fil-tab').addClass('mui-hidden')
+                $('.eth-tab').removeClass('mui-hidden')
+                $('.mui-segmented-control.mui-scroll-wrapper .mui-control-item').css({'width':'24%','padding':'0px 10px'})
+            }else if (_coinType == 6) {
+                $("#invest").text(data.date.invest + 'T');
+                sort = '份';
+                let fil = '<div class="mui-scroll fil-tab mui-hidden">\n' +
+                            '<a class="mui-control-item m-block1 mui-active" _type="1">普通产品</a>\n' +
+                            '<a class="mui-control-item m-block1" _type="5">期货产品</a>\n' +
+                            '<a class="mui-control-item m-block1" _type="12">整机产品</a>\n' +
+                    '</div>'
+                $('.mui-scroll-wrapper').html(fil)
+                $('.btc-tab').addClass('mui-hidden')
+                $('.fil-tab').removeClass('mui-hidden')
+                $('.eth-tab').addClass('mui-hidden')
+                $('.mui-segmented-control.mui-scroll-wrapper .mui-control-item').css({'width':'33%','padding':'0px 10px'})
+            }
+
+            },function (data) {
+            mui.toast(data.content);
+        });
+    }
+
+    //初始化刷新组件
+    mui.init({
+        swipeBack: true,
+        pullRefresh: {
+            container: '#itemmobile', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+            down: {
+                style: 'circle',
+                callback: pulldownRefresh
+            },
+            up: {
+                height: 50, //可选.默认50.触发上拉加载拖动距离
+                auto: true, //可选,默认false.自动上拉加载一次
+                contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+                contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+                callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+            },
+        }
+    });
+
+    mui("body").on("tap", ".m-block1", function () {
+        time = []
+        mui('#itemmobile').pullRefresh().refresh(true);
+        type = $(this).attr("_type")
+        orderType = $(this).attr("_orderType")
+        $("#itemmobile > li").remove();
+        page = 1
+        excision = 0
+        pullupRefresh()
+    })
+
+    mui("body").on("tap", ".mui-control-item-a", function () {
+        console.log(1);
+        time = []
+        mui('#itemmobile').pullRefresh().refresh(true);
+        _coinType = $(this).attr("_coinType")
+        type = 1
+        if (_coinType == 1) {
+            $("#bore").text('BTC总算力');
+        } else if (_coinType == 5){
+            $("#bore").text('ETH总算力');
+        }else if (_coinType == 6){
+            $("#bore").text('FIL总算力');
+        }
+        _id = $(this).attr("_id")
+        $("#itemmobile > li").remove();
+        $("#leaseContainer > li").remove();
+        page = 1
+        excision = 0
+
+        if (type == 0) {
+            orderType = sl
+        } else if (type == 2) {
+            orderType = zl
+        } else {
+            orderType = ''
+        }
+        pullupRefresh()
+        load()
+    })
+
+    //上拉刷新
+    function pullupRefresh() {
+        if (!_this) {
+            _this = this;
+        }
+        Common.muipost("/app/user/v2/order/myPage", {
+            excision: excision,
+            page: page,
+            type: type,
+            orderType: orderType,
+            coinType: _coinType,
+
+        }, function (data) {
+            if (data.date.list && data.date.list.length > 0) {
+                var content = "";
+                mui.each(data.date.list, function (index, item) {
+                    time.push(item.encapsulationRate)
+                    var changeValue = "";
+                    var unitPrice = "";
+                    if (item.productType == 2 || item.productType == 4) {
+                        changeValue = item.amount + ' 元';
+                        unitPrice = item.price + ' 元';
+                    } else {
+                        changeValue = item.amount + ' USDT';
+                        unitPrice = item.price + ' USDT';
+                    }
+                    var state = "";
+                    var d = new Date(new Date(new Date(item.expirationDate.replace(/-/g, '/')).toLocaleDateString()).getTime())
+                    d.setDate(d.getDate() + 1)
+                    var createDate = Date.parse(item.investTime)
+                    var cur = Date.parse(item.today)
+                    var _status = ''
+                    if (!item.state || item.state == 1) {
+                        if (createDate < cur) {
+                            state = '<div class="success m-size15" style="color:red">待支付</div>'
+                            _status = true
+                        } else {
+                            state = '<div class="success m-size15" style="color:#ff625e">待支付</div>'
+                            _status = ''
+                        }
+                    } else if (item.state == 2) {
+                        state = '<div class="success m-size15">已支付</div>'
+                    } else if (item.state == 3) {
+                        state = `<div class="success m-size15" style="color:#0068f7">已完成</div>`;
+                    }
+                    var isReward = ''
+                    if (item.isReward) {
+                        isReward = '<span class="m-size12" style="padding:0px 10px;border-radius:15px;display:inline-block;margin-right:5px;color:#fff;background:#FF3A3F;">奖励</span>'
+                    }
+                    var sn = item.sn ? item.sn : ''
+                    content += '<li class="mui-table-view-cell mt1 mt10 toDetails toDetails' + type + '" _status="' + _status + '" _state=' + item.state + ' _id=' + item.id + '>' +
+                        '<a class="mui-navigate-right">' +
+                        '<div class="status">' +
+                        '<div class="hash-num m-size13 c96" style="line-height: 38px">订单号: ' + sn + '</div>' +
+                        state +
+                        '</div>' +
+                        '<div class="xian"></div>' +
+                        '<div class="buy-record">' +
+                        '<div class="record-name m-size15 e2e">' + isReward +
+
+                        '<div class="productName">' + item.productName + ' <span class="quantity">x' + item.quantity + '' + sort + '</span></div><div class="unitPrice">' + item.createDate + '</div>' + '</div>' +
+                        '<div class="container"></div>' +
+                        '<div class="record-data">' +
+                        '<span class="date m-size13 c96">金额：<span style="color: #FF6E00">' + changeValue + ' ≈ ' + item.rmbPrice + '￥</span></span>' +
+                        '<span class="change m-size15"><span class="amount"></span></span>'+
+                    '</div>' +
+                    '</div>' +
+                    '</a>' +
+                    '</li>';
+                });
+                if (type == 1 || type == 5 || type == 8 || type == 12) {
+                    if ($(".toDetails").length > 0) {
+                        $("#itemmobile > li:last").after(content);
+                    } else {
+                        $("#itemmobile").prepend(content);
+                    }
+                };
+                if ($(".container").length >= 1 && _coinType == 6) {
+                    $('.container').each(function(i) {
+                            // $('.container> svg:eq(1)').remove()
+                        let bar = new ProgressBar.Line(this, {
+                            strokeWidth: 7,
+                            easing: 'easeInOut',
+                            duration: 1400,
+                            color: '#ffcda0',
+                            trailColor: '#f7f7f7',
+                            trailWidth: 7,
+                            svgStyle: {width: '100%', height: '100%','border-radius': '4px'},
+                            text: {
+                                style: {
+                                    // Text color.
+                                    // Default: same as stroke color (options.color)
+                                    color: '#999',
+                                    position: 'absolute',
+                                    right: '0',
+                                    top: '30px',
+                                    padding: 0,
+                                    margin: 0,
+                                    transform: null
+                                },
+                                autoStyleContainer: false
+                            },
+                            from: {color: '#FFEA82'},
+                            to: {color: '#ED6A5A'},
+                            // step: (state, bar) => {
+                            //     bar.setText(Math.round(bar.value() * 100) + ' %');
+                            // }
+                        });
+                        bar.animate(time[i]);  // Number from 0.0 to 1.0
+                        $('div.container > svg:nth-child(2)').remove()
+                    });
+                }
+                excision = data.date.excision;
+                page++;
+                if (data.date.page >= data.date.totalPage) {
+                    _this.endPullupToRefresh(false);
+                }
+                _this.endPullupToRefresh(data.date.totalPage <= data.date.page); //结束转雪花进度条的“正在加载...”过程
+            }
+        }, function (err) {
+            if (err.type == 500 && $(".toDetails").length == 0){
+                _this.endPullupToRefresh(true);
+            }
+        });
+    }
+
+    // pulldownRefresh()
+
+    //下拉刷新
+    function pulldownRefresh() {
+        excision = 0;
+        if (!_this) {
+            _this = this;
+        }
+        page = 1
+        Common.muipost("/app/user/v2/order/myPage", {
+            excision: excision,
+            page: page,
+            type: type,
+            orderType: orderType,
+            coinType: _coinType,
+
+        }, function (data) {
+            if (data.date.list && data.date.list.length > 0) {
+                mui('#itemmobile').pullRefresh().endPulldown();
+                var content = "";
+                mui.each(data.date.list, function (index, item) {
+                    time.push(item.encapsulationRate)
+                    var changeValue = "";
+                    var unitPrice = "";
+                    if (item.productType == 2 || item.productType == 4) {
+                        changeValue = item.amount + ' 元';
+                        unitPrice = item.price + ' 元';
+                    } else {
+                        changeValue = item.amount + ' USDT';``
+                        unitPrice = item.price + ' USDT';
+                    }
+                    var state = "";
+                    var d = new Date(new Date(new Date(item.expirationDate.replace(/-/g, '/')).toLocaleDateString()).getTime())
+                    d.setDate(d.getDate() + 1)
+                    var createDate = Date.parse(item.investTime)
+                    var cur = Date.parse(item.today)
+                    var _status = ''
+                    if (!item.state || item.state == 1) {
+                        if (createDate < cur) {
+                            state = '<div class="success m-size15" style="color:red">待支付</div>'
+                            _status = true
+                        } else {
+                            state = '<div class="success m-size15" style="color:#ff625e">待支付</div>'
+                            _status = ''
+                        }
+                    } else if (item.state == 2) {
+                        state = '<div class="success m-size15">已支付</div>'
+                    } else if (item.state == 3) {
+                        state = '<div class="success m-size15" style="color:#0068f7">已完成</div>';
+                    } else if (item.state == 4) {
+                        state = '<div class="success m-size15" style="color:#969699">已取消</div>';
+                    } else if (item.state == 5) {
+                        state = '<div class="success m-size15">退款中</div>';
+                    } else if (item.state == 6) {
+                        state = '<div class="success m-size15">已退款</div>';
+                    } else if (item.state == 7) {
+                        if (createDate < cur) {
+                            state = '<div class="success m-size15" style="color:#969699">已失效</div>'
+                            _status = true
+                        } else {
+                            state = '<div class="success m-size15" style="color:#FE6A6A">预订成功</div>'
+                            _status = ''
+                        }
+                    } else if (item.state == 8) {
+                        state = '<div class="success m-size15" style="color:#969699">已失效</div>'
+                    }
+                    var isReward = ''
+                    if (item.isReward) {
+                        isReward = '<span class="m-size12" style="padding:0px 10px;border-radius:15px;display:inline-block;margin-right:5px;color:#fff;background:#FF3A3F;">奖励</span>'
+                    } else {
+                        isReward = ''
+                    }
+                    var sn = item.sn ? item.sn : ''
+                    content += '<li class="mui-table-view-cell mt1 mt10 toDetails toDetails' + type + '" _status="' + _status + '" _state=' + item.state + ' _id=' + item.id + '>' +
+                        '<a class="mui-navigate-right">' +
+                        '<div class="status">' +
+                        '<div class="hash-num m-size13 c96" style="line-height: 38px">订单号: ' + sn + '</div>' +
+                        state +
+                        '</div>' +
+                        '<div class="xian"></div>' +
+                        '<div class="buy-record">' +
+                        '<div class="record-name m-size15 e2e">' + isReward +
+                        '<div class="productName">' + item.productName + '<span class="quantity">x' + item.quantity + ''+sort+'</span></div><div class="unitPrice">' + item.createDate + '</div>' +
+                        '<div class="container"></div>' +
+                        '</div>' +
+                        '<div class="record-data">' +
+                        '<span class="date m-size13 c96">金额：<span style="color: #FF6E00">' + changeValue + ' ≈ ' + item.rmbPrice + '￥</span></span>' +
+                        '<span class="change m-size15"><span class="amount"></span></span>'+
+                    '</div>' +
+                    '</div>' +
+                    '</a>' +
+                    '</li>';
+                });
+                $("#itemmobile > li").remove()
+                if (type == 1 || type == 5 || type == 8 || type == 12) {
+                    if ($(".toDetails1").length > 0) {
+                        $("#itemmobile > li:last").after(content);
+                    } else {
+                        $("#itemmobile").prepend(content);
+                    }
+                };
+                if ($(".container").length >= 1) {
+                    $('.container').each(function(i) {
+                        let bar = new ProgressBar.Line(this, {
+                            strokeWidth: 7,
+                            easing: 'easeInOut',
+                            duration: 1400,
+                            color: '#ffcda0',
+                            trailColor: '#f7f7f7',
+                            trailWidth: 7,
+                            svgStyle: {width: '100%', height: '100%','border-radius': '4px'},
+                            // text: {
+                            //     style: {
+                            //         // Text color.
+                            //         // Default: same as stroke color (options.color)
+                            //         color: '#999',
+                            //         position: 'absolute',
+                            //         right: '0',
+                            //         top: '30px',
+                            //         padding: 0,
+                            //         margin: 0,
+                            //         transform: null
+                            //     },
+                            //     autoStyleContainer: false
+                            // },
+                            from: {color: '#FFEA82'},
+                            to: {color: '#ED6A5A'},
+                            // step: (state, bar) => {
+                            //     bar.setText(Math.round(bar.value() * 100) + ' %');
+                            // }
+                        });
+                        bar.animate(time[i]);  // Number from 0.0 to 1.0
+                    });
+                }
+                excision = data.date.excision;
+                page++;
+                if (data.date.page >= data.date.totalPage) {
+                    _this.endPullupToRefresh(true)
+                    mui('#itemmobile').pullRefresh().disablePullupToRefresh();
+                }
+            }
+        }, function (err) {			//请求失败
+            if (err.type == 500){
+                _this.endPullupToRefresh(true);
+            }
+            mui('#itemmobile').pullRefresh().endPulldownToRefresh(true);
+        });
+    }
+
+
+
+    //详情页面跳转
+    mui("body").on("tap", "li.toDetails", function () {
+        var _id = $(this).attr("_id");
+        var _state = $(this).attr("_state");
+        var _status = $(this).attr("_status");
+        type = $(".mui-scroll > a.mui-active").attr('_type')
+
+        if (_coinType === "1"){
+            mui.openWindow({
+                url: 'myHashDetails.html',
+                id: 'myHashDetails.html',
+                extras: {
+                    orderId: _id
+                }
+            });
+        }else {
+            mui.openWindow({
+                url: 'myHashDetails.html',
+                id: 'myHashDetails.html',
+                extras: {
+                    orderId: _id,
+                    dfzq: true,
+                    isETH: true,
+                }
+            })
+        }
+
+    });
+    //算力购买记录
+    $("#power_record").click(function () {
+        mui.openWindow({
+            url: '/index/record.html',
+            id: '/index/record.html'
+        });
+    });
+    //我的收益
+    $("#toProfit").click(function () {
+        mui.openWindow({
+            url: '/index/profit.html',
+            id: '/index/profit.html'
+        });
+    });
+
+</script>
+</body>
+</html>

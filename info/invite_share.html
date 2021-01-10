@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>合作方案</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+
+	</head>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			background: url(../images/c_background.png) no-repeat;
+			background-size: 100% 800%;
+			overflow-x: hidden;
+		}
+
+		.yuan {
+			width: 25px;
+			height: 25px;
+			margin-top: -8px;
+			transform: rotate(46deg);
+			position: absolute;
+			/* left: 62px; */
+		}
+
+		.mui-icon {
+			color: #919194;
+		}
+
+		.contentsss {
+			width: 100%;
+			height: 100%;
+		}
+
+		#play {
+			color: #4A8FDD;
+			text-align: center;
+			font-size: 15px;
+			margin-top: 3px;
+		}
+
+		.completed {
+			background-color: #747677;
+			color: #FFFFFF;
+			width: 75px;
+			height: 30px;
+			border-radius: 15px 0 0 15px;
+			text-align: center;
+			line-height: 30px;
+			position: absolute;
+			right: 0;
+		}
+
+		.common {
+			width: 90px;
+			margin-left: 25px;
+			text-align: center;
+			justify-content: space-around;
+		}
+
+		.min {
+			color: #797E93;
+			text-align: center;
+			margin-top: -15px;
+			font-size: 15px;
+		}
+
+		.father {
+			display: flex;
+			padding-top:80px;
+			width: 100%;
+			justify-content: space-between;
+			position: relative;
+			/* right: -35px; */
+			/* background-color: pink; */
+		}
+
+		.one_open1 {
+			background-color: #FFFFFF;
+			
+			margin: 1.875rem 15px 0 15px;
+			box-sizing: border-box;
+			border-radius: 10px;
+			position: relative;
+		}
+
+		.background0 {
+			background-color: #E9ECEE !important;
+		}
+
+		.background1 {
+			background-color: #D7E2F1 !important;
+		}
+
+		.background2 {
+			background-color: #FBF6EF !important;
+		}
+
+		.background3 {
+			background-color: #FBF5E0 !important;
+		}
+
+		.types {
+			display: flex;
+			align-items: center;
+
+		}
+
+		.info {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-around;
+		}
+
+		.now_status {
+			margin: 0 10px 0 10px;
+
+		}
+
+		.grade_flex {
+			margin-top: 10px;
+			display: flex;
+			align-items: center;
+			flex-direction: column;
+		}
+
+		.footer_btn {
+			display: flex;
+			justify-content: space-between;
+			bottom: 20;
+			width: 100%;
+			padding: 15px 15px;
+			margin:0.8rem 0;
+			box-sizing: border-box;
+		}
+
+		.btn1 {
+			border-radius: 5px;
+			width: 44%;
+			height: 44px;
+			background-color: #1F75DA;
+			text-align: center;
+			color: #FFFFFF;
+			line-height: 44px;
+		}
+
+		.btn2 {
+			border-radius: 5px;
+			width: 44%;
+			height: 44px;
+			background-color: #1F75DA;
+			text-align: center;
+			color: #FFFFFF;
+			line-height: 44px;
+		}
+
+		.tops {
+			padding-top: 15px;
+		}
+
+		.circle-chart {
+			width: 65px;
+			height: 65px;
+		}
+
+		.circlechart {
+			align-content: center;
+		}
+
+		li {
+			display: inline;
+			line-height: 40px;
+			float: left;
+			width: 120px;
+			list-style: none;
+		}
+
+		.lists {
+			display: flex;
+			flex-flow: row nowrap;
+			list-style: none;
+		}
+
+		.top_common {
+			margin-top: 5px;
+		}
+
+		.mui-slider {
+			margin-top: -10px;
+		}
+
+		.common img {
+			width: 75%;
+		}
+
+		#records {
+			z-index: 111111;
+
+		}
+
+		.mui-title {
+			z-index: 1;
+		}
+
+		.mui-popup-inner:after {
+			height: 0;
+			background-color: #ffffff;
+		}
+
+		.mui-popup-buttons {
+			height: 62px;
+		}
+
+		.mui-popup-button:first-child:last-child {
+			height: 60px;
+		}
+
+		.mui-popup-inner {
+			padding-bottom: 25px;
+
+		}
+
+		.meui-mask {
+			position: fixed;
+			z-index: 99;
+			top: 0;
+			right: 0;
+			left: 0;
+			bottom: 0;
+			background-color: rgba(0, 0, 0, .3);
+		}
+
+		.cons {
+			position: absolute;
+			width: 300px;
+			height: 190px;
+			left: 50%;
+			top: 50%;
+			margin-left: -150px;
+			margin-top: -95px;
+			background-color: #ffffff;
+			border-radius: 10px;
+			text-align: center;
+		}
+
+		svg:not(:root) {
+			overflow: visible;
+		}
+
+		.mui-slider .mui-slider-group .mui-slider-item {
+			margin-top: -5px;
+		}
+
+		.colorRed {
+			color: #FFFFFF !important;
+		}
+
+		.margtop {
+			margin-top: 8px;
+			
+		}
+
+		.mui-bar-nav {
+			background-color: #ffffff;
+			box-shadow: none;
+		}
+		/* .contentsss{padding-bottom: 70px;} */
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" style="font-size: 20px;" id="teamName">合作方案</h1>
+			<!-- <div id="records" class="mui-pull-right mui-btn-link record" style="color: #000000;font-size: 16px;position: absolute;right: 10px;z-index: 1111;">我的返佣</div> -->
+		</header>
+		<div class="contentsss">
+			
+			<div class="father">
+				<ul class="lists" id="topIcon">
+
+				</ul>
+
+			</div>
+
+			<div class="mui-slider">
+
+				<div class="mui-slider-group" id="levelBody">
+
+				</div>
+			</div>
+		</div>
+		<div class="footer_btn" style="z-index: 50000;">
+
+			<div class="btn1">
+				邀请好友
+			</div>
+
+			<div class="btn2">
+				立即购买
+			</div>
+
+		</div>
+
+		<div class="meui-mask" style="display: none;" id="bank_info">
+			<div class="cons">
+				<div style="margin-top: 40px;">
+					<h3 style="font-weight: 400;color:#373737;margin-top:25px;margin-bottom:15px">恭喜您获得返佣权益<h3>
+				</div>
+				<p style="color:#999999;font-size: 16px;margin: 18px 0;">去填写收款信息吧</p>
+				<div class="go_set" style="height: 45px; margin: 0 auto;border-radius: 7px;width: 155px;background-color:#1F75DA;color:#FFFFFF;margin-top:15px;text-align: center;"><span
+					 style="line-height: 45px;">立即前往</span></div>
+				<img class="closes" src="../images/failes.png" style="margin-top: 55px;width: 35px;" />
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/common/common.js"></script>
+		<script src="../js/echarts.min.js"></script>
+		<script>
+			var tempIndex = 0;
+			var userId = '';	 		
+			mui.plusReady(function() {
+				userId = JSON.parse(plus.storage.getItem("loginUser")).id;	
+				pullupRefresh();
+			});
+			window.addEventListener('newsPage',function(event){
+				pullupRefresh()
+			});
+			function pullupRefresh() {
+				var userData = {};
+				Common.muipost("/app/userLevel/getUserLevel", {
+					userId: userId //用户id  
+				}, function(res) {
+					userData = res.date;
+					// console.log(JSON.stringify(userData))
+					Common.muipost("/app/userType/listData", null, function(res) {
+						var htmlStr = "";
+						var htmlBody = "";
+						for (var i = 0; i < res.date.length; i++) {
+							htmlStr += '<li><div class="one common index'+ i +'"><div><img src="' + basePath + res.date[i].ico2 +
+								'" /></div><div class="min">' +
+								res.date[i].name + '</div></div></li>';
+							htmlBody += '<div class="mui-slider-item" data-id="' + i + '">' +
+								' <div class="one_open1 background' + i + ' comms" style="display: block;"> ' +
+								'	<div class="yuan background' + i + '"></div> ' +
+								'	<div class="types tops"> ' +
+								'		<div class="now_status" style="width: 70px;margin-right: 0px;"> ' +
+								'			<img style="width: 54px;" src="' + basePath + res.date[i].ico + '" /> ' +
+								'		</div> ' +
+								'		<div class="info"> ' +
+								'			<span style="color: #333333;font-size: 18px;font-weight: 500;">'+
+								 ' ' + res.date[i].name +
+								' </span> ' +
+								'			<span style="color: #999999;margin-top: 5px;font-size: 15px;">';
+							// if (res.date[i].commission > 0) {
+							// 	htmlBody += '返佣权益<span style="color: #FA6803;font-size: 17px;">' + res.date[i].commission + '元/T</span>';
+							// } else {
+							// 	htmlBody += '无返佣权益';
+							// }
+							htmlBody += '</span> ' +
+								'		</div> ' +
+								'		<div class="completed"> ';
+							if (userData.nowLevelId > res.date[i].id) {
+								htmlBody += '已完成';
+							} else if (userData.nowLevelId == res.date[i].id) {
+								htmlBody += '当前等级';
+							} else {
+								htmlBody += '待升级';
+							}
+							htmlBody += '		</div> ' +
+								'	</div> ' +
+								'	<div class="grade_flex"> ' +
+								// '		<span style="color: #333333;font-size: 15px;">当前等级【' + userData.name + '】</span> ';
+								'<span></span>'
+								// if(userData.nowLevelId === res.date[res.date.length - 1].id){
+								// 	htmlBody += '		<span style="color: #91969A;margin-top: 5px;font-size: 15px;">恭喜您，已经是最高等级啦！</span> ';
+								// }else{
+								// 	htmlBody += '		<span style="color: #91969A;margin-top: 5px;font-size: 15px;">距离升级' + userData.nextName + '不远啦，多多推广吧</span> ';
+								// }
+								htmlBody += '	</div> ' +
+								// '<div id="play">查看升级攻略</div>'+
+								'	<div class="types margtop"> ' +
+								'		<div class="circlechart now_status baifenbi" value="';
+							if (userData.realSelfBuying < res.date[i].selfBuying) {
+								htmlBody += ((userData.realSelfBuying / res.date[i].selfBuying) * 100).toString().substring(0, 2);
+							} else {
+								htmlBody += "100"; 
+							}
+							htmlBody += '" style="width: 64px;height: 64px;"></div> ' +
+							
+								'		<div class="info"> ' +
+								'			<span style="color: #333333;font-size: 15px;">自购算力</span> ' +
+								'			<div class="top_common"> ' +
+								'				<span style="color: #333333;font-size: 18px;">' + userData.realSelfBuying +
+								'<span style="font-size: 13px;">T</span></span><span style="color: #999999;font-size: 13px;">（目标：≥' + res.date[i].selfBuying + 'T）</span> ' +
+								'			</div> ' +
+								'		</div> ' +
+								'	</div> ' +
+								'	<div class="types"> ' +
+								'		<div class="circlechart now_status baifenbi" value="';
+							if (userData.realSell < res.date[i].sell) {
+								htmlBody += ((userData.realSell / res.date[i].sell) * 100).toString().substring(0, 2);
+							} else {
+								htmlBody += "100";
+							}
+							htmlBody += '" style="width: 64px;height: 64px;"></div> ' +
+								'		<div class="info"> ' +
+								'			<span style="color: #333333;font-size: 15px;">推荐算力</span> ' +
+								'			<div class="top_common"> ' +
+								'				<span style="color: #333333;font-size: 18px;">' + userData.realSell +
+								'<span style="font-size: 13px;">T</span></span><span style="color: #999999;font-size: 13px;">（目标：≥' + res.date[i].sell + 'T）</span> ' +
+								'			</div> ' +
+								'		</div> ' +
+								'	</div> ' +
+								'	<div class="types"> ' +
+								'		<div class="circlechart now_status baifenbi" value="';
+							if (userData.realRegistered < res.date[i].registered) {
+								htmlBody += ((userData.realRegistered / res.date[i].registered) * 100).toString().substring(0, 2);
+							} else {
+								htmlBody += "100";
+							}
+							// htmlBody += '" style="width: 64px;height: 64px;"></div> ' +
+							// 	'		<div class="info"> ' +
+							// 	'			<span style="color: #333333;font-size: 15px;">推荐实名注册用户</span> ' +
+							// 	'			<div class="top_common"> ' +
+							// 	'				<span style="color: #333333;font-size: 18px;">' + userData.realRegistered +
+							// 	'<span style="font-size: 13px;">人</span></span><span style="color: #999999;font-size: 13px;">（目标：≥' + res.date[i].registered + '人）</span> ' +
+							// 	'			</div> ' +
+							// 	'		</div> ' +  
+							// 	'	</div> ' +
+							// 	'	<div class="types" style="padding-bottom: 5px;"> ' +
+							// 	'		<div class="circlechart now_status baifenbi" value="';
+							if (userData.total < res.date[i].buyNumber) {
+								htmlBody += ((userData.total / res.date[i].buyNumber) * 100).toString().substring(0, 2);
+							} else {
+								htmlBody += "100";
+							}
+
+							htmlBody += 
+							'"></div> ' +
+								// '		<div class="info"> ' +
+								// '			<span style="color: #333333;font-size: 15px;">下级产生购买人数</span> ' +
+								// '			<div class="top_common"> ' +
+								// '				<span style="color: #333333;font-size: 18px;">' + userData.total +
+								// '<span style="font-size: 13px;">人</span></span><span style="color: #999999;font-size: 13px;">（目标：≥' + res.date[i].buyNumber + '人）</span> ' +
+								// '			</div> ' +
+								// '		</div> ' +
+								'	</div> ' +
+								'</div> ' +
+								'</div>';
+							if (res.date[i].id === userData.nowLevelId) {
+								tempIndex = i;  
+							} 
+						}
+						$('#topIcon').html(htmlStr);
+						$('#levelBody').html(htmlBody);
+						echartsInit(i);
+						setPosition(tempIndex);
+						
+						var names=userData.name;
+						var s2=JSON.stringify(names);
+						localStorage.setItem("names",s2);
+						
+						var imgs=userData.ico;
+						var images=JSON.stringify(imgs);
+						localStorage.setItem("imgs",images);
+						
+						if (userData.noBank === -1 && userData.nowLevelId !== res.date[0].id) {
+						   $('#bank_info').show();
+						  }
+						  var gallery = mui('.mui-slider');
+						  gallery.slider({
+						   interval: 0
+						  }).gotoItem(tempIndex);
+					}, function() {});
+				}, function() {});
+
+			}
+			
+			//百分比进度条
+			function echartsInit(i) {
+				var childer = $('.circlechart');
+				for (var i = 0; i < childer.length; i++) {
+					var Chart4 = echarts.init(childer[i]);
+					var e = $(childer[i]).attr('value');
+					option = {
+						title: {
+							show: true,
+							text: e + '%',
+							x: 'center',
+							y: 'center',
+							textStyle: {
+								fontSize: '15',
+								color: '#80B93B',
+								fontWeight: 'normal'
+							}
+						},
+						color: ['#80B93B', '#C8D3E2'],
+						tooltip: {
+							trigger: 'item',
+							formatter: "{d}%",
+							show: false
+						},
+						legend: {
+							orient: 'vertical',
+							x: 'left',
+							show: false
+						},
+						series: {
+							name: '',
+							type: 'pie',
+							radius: ['65%', '80%'],
+							avoidLabelOverlap: true,
+							hoverAnimation: false,
+							label: {
+								normal: {
+									show: false,
+									position: 'center'
+								},
+								emphasis: {
+									show: false
+								}
+							},
+							labelLine: {
+								normal: {
+									show: false
+								}
+							},
+							data: [{
+									value: e,
+									name: ''
+								},
+								{
+									value: 100 - e,
+									name: ''
+								}
+							]
+						}
+			
+					};
+			
+					if (e < 100) {
+						this.option.color = ['#FA6803', '#C8D3E2'];
+						this.option.title.textStyle.color = '#FA6803'
+					} else {
+						this.option.title.text = "达成";
+					}
+					Chart4.setOption(option);
+				}
+			}
+			
+
+			var startX = 0;
+			var startY = 0;
+			document.body.addEventListener('touchstart', function(e) {
+				startX = e.changedTouches[0].pageX;
+			});
+			
+			//禁止页面左右滑动
+			document.body.addEventListener('touchmove', function(e) {
+				var moveEndX = e.changedTouches[0].pageX;
+				var X = moveEndX - startX;
+				if(X < 5 && X > -5){
+					
+				}else{
+					e.preventDefault(); 
+				}
+			}, {
+				passive: false
+			});
+
+			var startx, starty;
+			function getAngle(angx, angy) {
+
+				return Math.atan2(angy, angx) * 180 / Math.PI;
+
+			};
+
+			function getDirection(startx, starty, endx, endy) {
+
+				var angx = endx - startx;
+
+				var angy = endy - starty;
+
+				var result = 0;
+
+				//如果滑动距离太短
+
+				if (Math.abs(angx) < 2 && Math.abs(angy) < 2) {
+
+					return result;
+
+				}
+
+			}
+
+			//手指接触屏幕
+
+			document.addEventListener("touchstart", function(e) {
+
+				startx = e.touches[0].pageX;
+
+				starty = e.touches[0].pageY;
+
+			}, false);
+
+			//手指离开屏幕
+
+			document.addEventListener("touchend", function(e) {
+				document.querySelector('.mui-slider').addEventListener('slide', function(event) {
+					var current_num = event.detail.slideNumber;
+					setPosition(current_num);
+					
+				});
+				var endx, endy;
+
+				endx = e.changedTouches[0].pageX;
+
+				endy = e.changedTouches[0].pageY;
+
+				var direction = getDirection(startx, starty, endx, endy);
+
+			}, false);
+			
+
+			function setPosition(current_num) {
+				//定位
+				switch (current_num) {
+					case 0:
+						$(".father").css({
+							right: "-0.9rem",
+						});
+						var test1 = $(".index0").offset().left+20;
+						$(".yuan").css({left: test1+'px'});
+						break;
+					case 1:
+						$(".father").css({
+							right: "0.6rem",
+						});
+						var test2 = $(".index1").offset().left+13;
+						$(".yuan").css({left: test2+'px'});
+						break;
+					case 2:
+						$(".father").css({ 
+							right: "0.8rem",
+						});
+						var test3 = $(".index2").offset().left+15;
+						$(".yuan").css({left: test3+'px'});
+						break;
+					case 3:
+						$(".father").css({
+							right: "7rem",  
+						});
+						var test4 = $(".index3").offset().left+14;
+						$(".yuan").css({left: test4+'px'});
+						break;
+				}				  
+				
+				var length = $('.min').length;
+				for (var i = 0; i < length; i++) {
+					$($('.min')[i]).removeClass('colorRed');
+					$("#topIcon li:nth-child(" + (i + 1) + ") img").css("width", "54px"); 
+					$("#topIcon li:nth-child(" + (i + 1) + ")").css({
+						opacity: "0.6",
+						filter: "alpha(opacity=60)"
+					});
+					$("#topIcon li:nth-child(" + (i + 1) + ")").css("margin-top", "0px");
+				}
+				$("#topIcon li:nth-child(" + (current_num + 1) + ") img").css("width", "64px");
+				
+				$("#topIcon li:nth-child(" + (current_num + 1) + ")").css({
+					opacity: "1",
+					filter: "alpha(opacity=90)"
+				});
+				$("#topIcon li:nth-child(" + (current_num + 1) + ")").css("margin-top", "-10px");
+				$($('.min')[current_num]).addClass('colorRed');
+				
+			}
+
+			//我的返佣
+			$("#records").click(function() {
+				mui.openWindow({
+					url: './records.html',
+					id: './records.html',
+
+				});
+			});
+			//升级攻略
+			mui("body").on("tap", "#play", function() {
+				mui.openWindow({
+					url: '../info/shengji.html',
+					id: '../info/shengji.html',
+
+				});
+			})
+			//邀请好友
+			$('.btn1').click(function() {
+				mui.openWindow({
+					url: '../info/invite.html',
+					id: '../info/invite.html'
+
+				});
+			});
+			//立即购买
+			$('.btn2').click(function() {
+				mui.back()
+			});
+
+			
+			$('.completed').click(function() {
+				$('.meui-mask').show();
+
+			});
+			$('.closes').click(function() {
+				$('.meui-mask').hide();
+			});
+
+			//立即前往
+			$('.go_set').click(function() {
+				Common.muipost("/app/user/v2/auth/info", {}, function(data) {
+					if (data.date) {
+						mui.openWindow({
+							url: './info/account.html',
+							id: './info/account.html',
+							extras: {
+								name: data.date.name
+							}
+						});
+					} else {
+						mui.toast("请先实名认证");
+					}
+				}, function(){})
+				
+			});
+		</script>
+	</body>
+</html>

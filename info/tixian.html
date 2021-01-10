@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>提现申请</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/style.css">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<style type="text/css">
+			a{
+				color: #000;
+			}
+			p{
+				color: #fff;
+			}
+			.mui-icon {
+				color: #919194;
+			}
+
+			.mui-bar-nav {
+				background-color: #ffffff;
+				box-shadow: none;
+			}
+			.card_list{
+				border-radius: 10px;
+				background-color: #F6F6F6;
+				margin: 20px 15px;
+				padding: 5px 0;
+				box-sizing: border-box;
+			}
+			.mui-table-view:after{
+				height: 0;
+			}
+			.card_list .name{
+				margin: 10px;
+				font-size:15px;
+			}
+			.copys{
+				color:#249CFF;
+				margin-left: 10px;
+
+			}
+			.cd{
+				margin-top: 5px;
+			}
+			.select_list{
+				width: 100%;
+				height: 125px;
+				margin-top: -20px;
+			}
+			.flexs{
+				display: flex;
+				margin: 0 10px;
+				height: 42px;
+				justify-content: space-around;
+				flex-wrap: wrap;
+			}
+			.flexs div{
+				border: 1px solid #C6C6C8;
+				width:30%;
+				border-radius:3px;
+				text-align: center;
+				height: 40px;
+				line-height: 40px;
+				font-size: 16px;
+				margin-top: 15px;
+				color: #333333;
+			}
+			.flexs .commons{
+				color: #1F75DA;
+				border: 1px solid #1F75DA;
+			}
+			.mui-segmented-control {
+				font-size: 16px;
+			}
+			.mui-segmented-control.mui-segmented-control-inverted .mui-control-item {
+				color: #000;
+			}
+			.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
+				color: #323233;
+			}
+			.meui-mask {
+				position: fixed;
+				z-index: 99;
+				top: 0;
+				right: 0;
+				left: 0;
+				bottom: 0;
+				background-color: rgba(0, 0, 0, .4);
+			}
+			.cons {
+				position: absolute;
+				width: 300px;
+				height: 190px;
+				left: 50%;
+				top: 50%;
+				margin-left: -150px;
+				margin-top: -95px;
+				background-color: #ffffff;
+				border-radius: 10px;
+				text-align: center;
+			}
+			.mui-popup-button{
+				color: #333333;
+				font-size: 15px;
+
+			}
+			.mui-popup-button.mui-popup-button-bold{
+				font-size: 15px;
+				color: #1F75DA;
+			}
+
+			.mui-popup-buttons{
+				background-color: white;
+				border-radius: 10px;
+			}
+			.mui-title{
+				text-align: left;
+			}
+			.cd {
+				width: 100%;
+				overflow:hidden;
+				text-overflow:ellipsis;
+				white-space:nowrap;
+				display: inline-block;
+			 }
+			::-webkit-input-placeholder {
+				font-size: 16px;
+			}
+
+			/* Firefox 4-18 */
+			:-moz-placeholder {
+				font-size: 16px;
+			}
+
+			/* Firefox 19-50 */
+			::-moz-placeholder {
+				font-size: 16px;
+			}
+
+			/* - Internet Explorer 10–11
+			- Internet Explorer Mobile 10-11 */
+			:-ms-input-placeholder {
+				color: #ccc !important;
+				font-weight: 400 !important;
+			}
+
+			/* Edge (also supports ::-webkit-input-placeholder) */
+			::-ms-input-placeholder {
+				font-size: 16px;
+			}
+
+			/* CSS Working Draft */
+			::placeholder {
+				font-size: 16px;
+			}
+			.mui-segmented-control .mui-control-item { line-height: unset; }
+			#sliderSegmentedControl {
+				padding: 0 !important;
+				height: 49px;
+			}
+			#sliderSegmentedControl .mui-control-item {
+				height: 100%;
+				line-height: 49px;
+				width: 50%;
+				border-bottom: 3px solid transparent !important;
+			}
+			#sliderSegmentedControl .mui-control-item span {
+				display: inline-block;
+				width: 100%;
+				height: 33px;
+				line-height: 33px;
+			}
+			#in_money { position: relative; }
+			#in_money::after {
+				content: "";
+				position: absolute;
+				right: 0;
+				width: 1px;
+				height: 100%;
+				background-color: #e5e5e5;
+			}
+			#sliderSegmentedControl .mui-active{
+				color: #0068f7;
+				border-bottom: 3px solid #0068f7 !important;
+			}
+			#pay-car-list::before {
+				content: none;
+			}
+			#pay-car-list .mui-table-view-cell {
+				margin-bottom: 16px;
+				padding: 0;
+			}
+			#pay-car-list .mui-table-view-cell::after {
+				content: none;
+			}
+			#pay-car-list .mui-selected a::after {
+				right: inherit !important;
+				border: 1px solid #2969e3;
+				border-radius: 50%;
+				background-color: #2969e3;
+				color: #fff !important;
+				font-size: 16px;
+			}
+			#pay-car-list a.mui-active {
+				background-color: transparent;
+			}
+			#pay-car-list a {
+				margin: 0;
+				padding-left: 1.5rem /* 24/16 */;
+			}
+			.pay{
+				width: 100%;
+				padding: 7px 0;
+				color: #ffffff;
+				border-radius: 5px;
+			}
+			.list{
+				height: 33px;
+				line-height: 33px;
+				margin-left: 20px;
+			}
+			.pay-bank{
+				background: url(../images/hashbox/j-02.svg) no-repeat;
+				background-size: 65px;
+				background-position:90% 50%;
+				background-color: #c5c5c5;
+			}
+			.pay-bank-before {
+				background-image: linear-gradient(45deg, #ffa155, #ffc697);
+			}
+			.pay-alipay-before {
+				background-image: linear-gradient(45deg, #3587f9, #85b7fb);
+			}
+			.pay-bank-before::before,
+			.pay-alipay-before::before {
+				content: '';
+				width: 98px;
+				height: 98px;
+				position: absolute;
+				top: 15px;
+				right: 25px;
+				opacity: .2;
+			}
+			.pay-bank-before::before {
+				background: url("../images/hashbox/yhk-03.svg") no-repeat;
+			}
+			.pay-alipay-before::before {
+				background: url("../images/hashbox/zfb-04.svg") no-repeat;
+			}
+			.pay-alipay{
+				background: url(../images/hashbox/j-02.svg) no-repeat;
+				background-size: 65px;
+				background-position:90% 50%;
+				background-color: #c5c5c5;
+			}
+			.mui-navigate-right:after, .mui-push-right:after {
+				left: 0;
+				right: inherit !important;
+				font-size: 16px !important;
+				content: '\e472' !important;
+				color: transparent !important;
+				border: 1px solid #9b9b9b;
+				border-radius: 50%;
+			}
+			.pd16 {
+				padding: 0 16px !important;
+			}
+			#itemmobile1::before,
+			#itemmobile2::before {
+				content: none;
+			}
+			.mui-icon-back:before, .mui-icon-left-nav:before {
+				color: #000;
+			}
+			#tixian_over,
+			#submit {
+				border-radius: 22px !important;
+				background-color: #0068f7 !important;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" style="font-size: 16px;" id="teamName">CNY账户</h1>
+			<div id="tixian_info" class="mui-pull-right mui-btn-link record" style="color: #000000;font-size: 16px;position: absolute;right: 10px;">交易明细</div>
+		</header>
+		<div style="margin-top: 45px;margin-bottom: 16px;">
+			<div id="slider" class="mui-slider pay-tb pd16">
+				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+					<a class="mui-control-item mui-active" href="#item1mobile">
+						<span class="p1" id="in_money">充值</span>
+					</a>
+					<a class="mui-control-item " href="#item2mobile" id="get_money">
+						<span class="p1">提现</span>
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
+			<div class="pad10 pt0">
+				<ul class="mui-table-view mui-table-view-chevron myHashList" id="itemmobile1">
+					<div style="padding: 5px 20px; background-color: #F6F6F6;color: #FF7800;font-size: 14px;">
+						请通过转账的方式充值所需金额，请确保充值金额和实际转账金额一致。客服审核无误后方可到账。
+					</div>
+					<div class="card_list">
+						<div class="name">
+							<div style="margin-top:10px;"><span style="color:#969699">收款方户名</span></div>
+							<div class="cd">
+								<span class="over" style="color:#333333;" id="cardName"></span>
+								<span class="copys" onclick="copy_fun(0)">复制</span>
+							</div>
+						</div>
+						<div class="name">
+							<span style="color:#969699">收款方账户</span>
+							<div class="cd">
+								<span class="over" style="color:#333333;" id="cardNum"></span>
+								<span class="copys" onclick="copy_fun(1)">复制</span>
+							</div>
+						</div>
+						<div class="name">
+							<span style="color:#969699">收款方银行</span>
+							<div class="cd" style="text-overflow: ellipsis;word-wrap: break-word;white-space: unset;">
+								<span class="over" style="color:#333333;" id="cards"></span>
+								<span class="copys" onclick="copy_fun(2)">复制</span>
+							</div>
+						</div>
+					</div>
+					<div style="color:#2E2E31;margin:20px 15px;font-size:15px;">充值金额</div>
+					<div class="select_list">
+						<div class="flexs">
+							<div class="one" _id="0">500元</div>
+							<div class="one" _id="1">1000元</div>
+							<div class="one" _id="2">5000元</div>
+							<div class="one" _id="3">10000元</div>
+							<div class="one" _id="4">50000元</div>
+							<div class="one" _id="5">自定义金额</div>
+						</div>
+					</div>
+					<div class="shows" style="margin:10px 15px;display:none">
+					<div style="border-bottom: 1px solid #E5E5E5;height: 42px;margin-top: 10px;">
+						￥<img class="clears" style="width: 20px;float: right;margin-top: 5px;display: none;" src="../images/hashbox/fail.png" />
+						<input class="inpt" style="font-size: 30px;color: #2E2E31;width: 80%; border: 0;height: 40px;" oninput="this.value=this.value.replace(/\D/g,'');"
+						pattern="[0-9]*" type="number" name="" placeholder="金额请输入整数" id="inpt" value="" />
+
+					</div>
+					<div style="color: #969699;margin-top: 10px;margin-bottom: 30px;font-size:13px;">自定义金额：金额充值范围为500至50万元</div>
+					</div>
+					<div id="submit" style="color: #FFFFFF;background-color: #1F75DA;margin: 15px; border-radius: 5px;height: 44px;text-align: center;line-height: 44px;">我已充值，提交审核</div>
+
+					<div style="margin:20px 15px 0 15px;color:#999999;font-size:13px;">充值审核时间为工作日9:00-21:00，如果一个工作日还未审核完成，请联系客服处理。</div>
+					<div style="margin:10px 15px;color:red;font-size:13px;">注：请操作完成转账成功后，再点击“我已充值，提交审核”！</div>
+				</ul>
+			</div>
+		</div>
+	</div>
+		<div id="item2mobile" class="mui-slider-item mui-control-content">
+			<div class="pad10 pt0">
+				<ul class="mui-table-view mui-table-view-chevron myHashList" id="itemmobile2">
+					<ul id="pay-car-list" class="mui-table-view mui-table-view-radio pd16">
+						<li class="mui-table-view-cell" selectable="false">
+							<a class="mui-navigate-right">
+								<div class="pay pay-bank">
+									<div class="list"><p class="bankName">添加银行卡账户</p></div>
+									<div class="list"><p class="bankCode">无</p></div>
+								</div>
+							</a>
+						</li>
+						<li class="mui-table-view-cell" selectable="false">
+							<a class="mui-navigate-right">
+								<div class="pay pay-alipay">
+									<div class="list"><p class="bankName">添加支付宝账户</p></div>
+									<div class="list"><p class="bankCode">无</p></div>
+								</div>
+							</a>
+						</li>
+					</ul>
+					<div style="padding: 0 20px;margin-top: 30px;">
+						<!-- <div>
+							<span style="color: #2E2E31;">到账银行</span>
+							<span style="color: #7A7A7A;margin-left: 10px;" bind-data="" id="bankCard"></span>
+						</div> -->
+						<div style="margin-top: 20px;color: #2E2E31;">
+							提现金额
+						</div>
+						<div style="border-bottom: 1px solid #E5E5E5;height: 42px;margin-top: 10px;">
+							￥<img class="clears" style="width: 20px;float: right;margin-top: 5px;display: none;" src="../images/hashbox/fail.png" />
+							<input class="tixian_inpt" style="font-size: 30px;color: #2E2E31;width: 80%; border: 0;height: 40px;" type="number" name="" id="tixian_inpt" value="" />
+
+						</div>
+						<div style="color: #969699;margin-top: 15px;margin-bottom: 15px;">可提现金额<span id="now"></span>元</div>
+						<div class="tixian_over" id="tixian_over" style="width: 100%;color: #FFFFFF;background-color: #1F75DA;margin: 0 auto; border-radius: 5px;height: 44px;text-align: center;line-height: 44px;">申请提现</div>
+					</div>
+					<div style="margin:20px;font-size:13px;color:#999999;text-align:justify;line-height: 2;">
+					<div>1：最低提现金额500元，提现低于3000元需收取2%的手续费，满3000元免手续费。</div>
+					<div>2：工作日9:00-16:30发起提现的，当天审核;16:30以后或者周末发起提现的顺延到下一个工作日确认。</div>
+					<div>3：如果16:30前充值,15分钟以后没有到账的话请联系客服处理。</div>
+					</div>
+				</ul>
+			</div>
+		</div>
+
+		<!-- 实名认证 -->
+		<div class="meui-mask" style="display: none;" id="bank_info">
+			<div class="cons">
+				<div style="margin-top: 40px;">
+					<h3 style="font-weight: 400;color:#373737;margin-top:25px;margin-bottom:15px">您还未实名认证</h3>
+				</div>
+				<p style="color:#999999;font-size: 16px;margin: 18px 0;">去完善认证信息吧</p>
+				<div class="go_set" style="height: 45px; margin: 0 auto;border-radius: 7px;width: 155px;background-color:#1F75DA;color:#FFFFFF;margin-top:15px;text-align: center;"><span
+					 style="line-height: 45px;">立即前往</span></div>
+				<img class="closes" src="../images/failes.png" style="margin-top: 55px;width: 35px;" />
+			</div>
+		</div>
+
+		<!-- 确认提交 -->
+		<div id="subs" class="mui-popup-in meui-mask" style="display: none;">
+			<div class="cons" style="height:118px">
+		    <div class="mui-popup-inner">
+		        <div class="mui-popup-text" style="margin:5px 0;letter-spacing:1px;text-align: left;">
+		        请确认您已经将<span id="qian"></span>元转账至平台账户，客服人员将进行人工审核
+		        </div>
+		    </div>
+		    <div class="mui-popup-buttons">
+		        <span id="nos" class="mui-popup-button">取消</span>
+		        <span id="okey" onclick="submitData()" class="mui-popup-button mui-popup-button-bold">确认提交</span>
+		    </div>
+			</div>
+		</div>
+		<div id="yzm" class="mui-popup-in meui-mask mui-hidden" style="z-index:99999;">
+			<div class="cons" style="height:118px">
+				<div class="mui-popup-inner">
+					<div class="mui-popup-text" style="margin:5px 0;text-align: center;border-bottom: 1px solid #E5E5E5;padding-bottom: 12px;">
+						短信验证
+					</div>
+					<div style="border: 1px solid rgba(0,0,0,.2);margin: 0 auto;width: 90%;height: 42px;">
+						<input id='yzmip' type="number" pattern="\d*" name="phonecode" class="mui-input-clear mui-input" style="float: left;width: 60%;margin-bottom: 0;border:none;" placeholder="短信验证码" maxlength="6">
+						<a type="button" class="fc2c9 fs15" style="line-height: 42px;" id="sendsms" onclick="sendSms()">获取验证码</a>
+					</div>
+
+				</div>
+				<div class="mui-popup-buttons">
+					<span onclick="nos()" class="mui-popup-button" style="color: #333333;">取消</span>
+					<span id="confirm" style="color: #1F75DA;" class="mui-popup-button mui-popup-button-bold" onclick="sms()">确认验证码</span>
+				</div>
+			</div>
+		</div>
+		<!-- 绑定银行卡 -->
+		<div id="go_card" class="mui-popup-in meui-mask" style="display: none;">
+			<div class="cons" style="height:110px">
+		    <div class="mui-popup-inner">
+		        <div class="mui-popup-text" style="margin:5px 0;letter-spacing:1px;text-align: center;">
+		        您还没有填写收款账户
+		        </div>
+		    </div>
+		    <div class="mui-popup-buttons">
+				<span id="quxiao" class="mui-popup-button">取消</span>
+		        <span id="go_bank" class="mui-popup-button mui-popup-button-bold">立即填写</span>
+		    </div>
+			</div>
+		</div>
+		<div id="txsubs" class="mui-popup-in meui-mask mui-hidden" style="z-index:99999;">
+			<div class="cons" style="height:118px">
+				<div class="mui-popup-inner">
+					<div class="mui-popup-text" style="margin:5px 0;text-align: center;border-bottom: 1px solid #E5E5E5;padding-bottom: 12px;">
+						请输入资金密码
+					</div>
+					<div style="border: 1px solid rgba(0,0,0,.2);margin: 0 auto;width: 90%;height: 42px;">
+						<input class="passwordInput" id="passwordInput" type="password" maxlength="6" style="float: left;width: 60%;margin-bottom: 0;border:none;" />
+					</div>
+
+				</div>
+				<div class="mui-popup-buttons">
+					<span onclick="cancel()" class="mui-popup-button" style="color: #333333;">取消</span>
+				<span id="pay_now" style="color: #1F75DA;" class="mui-popup-button mui-popup-button-bold">确认提币</span>
+				</div>
+			</div>
+		</div>
+
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/mui.js"></script>
+		<script src="../js/common/common.js"></script>
+
+		<script>
+			var userId = '';
+			var sucmoney = '';
+			var phone = ''
+			var isReal = false;
+			var card_data;
+			invest();
+			//去实名认证
+			function certification(){
+				Common.muipost("/app/user/v2/auth/info", {}, function(data) {
+					if (!data.date || (data.date && data.date.state != 2)) {
+						isReal = true;
+						$("#tixian_over").addClass('mui-disabled')
+					}
+				}, function(){})
+			}
+			mui.init({
+				beforeback: function() {
+					var lists = plus.webview.currentWebview().opener();
+					mui.fire(lists, 'changeList');
+					return true;
+				},
+
+			})
+			mui.plusReady(function() {
+				certification();
+				userId = JSON.parse(plus.storage.getItem("loginUser")).id;
+				phone = JSON.parse(plus.storage.getItem("loginUser")).username
+			});
+			//充值接口(银行卡)
+			function invest(){
+				Common.muipost("/app/user/pay/getCompanyBank",{
+				}, function(res) {
+					if (res && res.date){
+						card_data = res.date;
+						$("#cardName").html(card_data.name);
+						$("#cards").html(card_data.area);
+						$("#cardNum").html(card_data.bankCard);
+					}
+				}, function(s) {
+
+				});
+
+				}
+			//余额充值
+			$(".one").click(function(){
+				var indexs = $(this).attr('_id');
+				$(this).addClass("commons");
+				$(this).siblings().removeClass("commons");
+				if(indexs == 5){
+					$('#inpt').val('');
+					$(".shows").show();
+				}else{
+					$(".shows").hide();
+					$('#inpt').val($(this).text().replace('元',''));
+				}
+			})
+			$("#submit").click(function(){
+				var money = $('#inpt').val();
+				if(money === ''){
+					mui.toast('请选择充值金额');
+					return false;
+				}
+				if(money < 500 || money > 500000){
+					mui.toast('充值金额范围500至50万元');
+					return false;
+				}
+
+				$("#subs").show();
+				$("#qian").html(money);
+				$("#nos").click(function(){
+					$("#subs").hide();
+				})
+				sucmoney = $("#qian").text();
+			})
+
+			//关闭实名认证
+			$('.closes').click(function() {
+				$('.meui-mask').hide();
+			});
+			//去实名认证
+			$('.go_set').click(function() {
+				mui.openWindow({
+					url: './info/idCard.html',
+					id: './info/idCard.html',
+
+				});
+			});
+			//t提现
+			var nowmoney = 0
+			mui("body").on("tap", "#get_money", function() {
+				if(isReal){
+					$("#bank_info").show();
+					return false;
+				}
+				Common.muipost("/app/userWithdrawal/getBankCard_v2",{
+					userId: userId
+				}, function(res) {
+					if(res.date && res.date !== null && res.date.length > 0){
+						mui.each(res.date, function(index, item) {
+							// type:1-银行卡 2-支付宝
+							let li = $("#itemmobile2 li");
+							let i = 0;
+							let newClass = "pay-bank-before";
+							let oldClass = "pay-bank";
+							if (item.type == 2) {
+								i = 1;
+								newClass = "pay-alipay-before";
+								oldClass = "pay-alipay";
+							}
+							if (index == 0){
+								 item.type == 1 ? li.first().addClass("mui-selected") : li.last().addClass("mui-selected");
+							}
+							let el = $(li[i]);
+							el.attr({ "selectable": "true" });
+							el.find(".bankName").text(item.theirBank);
+							el.find(".pay").removeClass(oldClass).addClass(newClass);
+							el
+							.find(".bankCode")
+							.text(replaceStr(item.bankCard))
+							.attr({ "_bankId": item.bankId, "_type": item.type });
+						});
+						$("#now").text(res.date[0].money);
+						nowmoney = res.money;
+					}else{
+						$("#now").text("0");
+						$("#go_card").show();
+					}
+				}, function(s) {
+
+				});
+			})
+
+			$("#quxiao").click(function(){
+				$("#go_card").css('display','none');
+				mui.back();
+			})
+
+			//去绑定银行卡
+			$("#go_bank").click(function(){
+				Common.muipost("/app/user/v2/auth/info", {}, function(data) {
+					if (data.date) {
+						mui.openWindow({
+							url: '/info/info/account.html',
+							id: '/info/info/account.html',
+							extras: {
+								name: data.date.name
+							}
+						});
+						$("#go_card").css('display','none')
+					} else {
+						mui.toast("请先实名认证");
+					}
+				}, function(){})
+
+			})
+			var replaceStr = function (str, start = 3, end = 4) {
+					str += ''
+					if (!str.length) {
+							return false
+					}
+					var leng = str.length - (start + end) || 0
+					str = str.split('')
+					str.splice(start, leng, '****')
+					return str.join('')
+			}
+			//  复制方法
+			function copy_fun(index) { //参数copy是要复制的文本内容
+				var copy = ''
+				mui.plusReady(function() {
+					if (index == 0) {
+						copy = $("#cardName").text()
+					} else if (index == 1) {
+						copy = $("#cardNum").text()
+
+					} else {
+						copy = $("#cards").text();
+					}
+					//判断是安卓还是ios
+					if (mui.os.ios) {
+						//ios
+						var UIPasteboard = plus.ios.importClass("UIPasteboard");
+						var generalPasteboard = UIPasteboard.generalPasteboard();
+						//设置/获取文本内容:
+						generalPasteboard.plusCallMethod({
+							setValue: copy,
+							forPasteboardType: "public.utf8-plain-text"
+						});
+						generalPasteboard.plusCallMethod({
+							valueForPasteboardType: "public.utf8-plain-text"
+						});
+						mui.toast("复制成功");
+					} else {
+						//安卓
+						var context = plus.android.importClass("android.content.Context");
+						var main = plus.android.runtimeMainActivity();
+						var clip = main.getSystemService(context.CLIPBOARD_SERVICE);
+						plus.android.invoke(clip, "setText", copy);
+						mui.toast("复制成功");
+					}
+				});
+			}
+
+			$(".inpt").keydown(function() {
+				if ($(".inpt").val().trim() != "") {
+					$(".clears").show();
+				}
+			});
+			$(".inpt").keyup(function() {
+				if ($(".inpt").val().trim() != "") {
+					$(".clears").show();
+				}
+			});
+
+			$("#tixian_inpt").keydown(function() {
+				if ($("#tixian_inpt").val().trim() != "") {
+					$(".clears").show();
+				}
+			});
+			$("#tixian_inpt").keyup(function() {
+				if ($("#tixian_inpt").val().trim() != "") {
+					$(".clears").show();
+				}
+			});
+
+			$(".clears").click(function() {
+				$(".inpt").val("").empty();
+				$("#tixian_inpt").val("").empty();
+				$(".clears").hide();
+			})
+			function cancel () {
+				$("#txsubs").addClass("mui-hidden")
+			}
+			$("#tixian_over").click(function() {
+				if(isReal){
+					$("#bank_info").show();
+					return false;
+				}
+				var int=$("#tixian_inpt").val();
+				// 输入的ti现金额
+				var ints=JSON.stringify(int);
+				localStorage.setItem("int",ints);
+				if(!$("#tixian_inpt").val()){
+					mui.toast("请输入提现金额");
+				}else if (int < 500){
+					mui.toast("请输入不小于500的金额");
+				} else if (int > nowmoney) {
+					mui.toast("请输入正确金额的金额");
+				}else{
+					$("#txsubs").removeClass("mui-hidden")
+					// $("#yzm").removeClass("mui-hidden")
+				}
+			})
+			$("#pay_now").click(function() {
+				if (!$('#passwordInput').val()) {
+					mui.toast("请填写资金密码")
+					return
+				} else if($('#passwordInput').val().length < 6) {
+					mui.toast("请填写正确资金密码")
+					return
+				}
+				Common.muipost("/common/judgePass", {
+					password: $('#passwordInput').val()
+				}, function (data) {
+					$("#txsubs").addClass("mui-hidden")
+					$("#yzm").removeClass("mui-hidden")
+				}, function (err) {
+					mui.toast(err.content);
+				})
+			})
+			//发送验证码
+			function sendSms() {
+				var checkurl = "/common/obtain/phone/code";
+				// mui.showLoading("短信发送中", "body");
+				Common.muipost(checkurl, {tel: phone}, function (data) {
+					$("#sendsms").css("color", "#1F75DA");
+					// mui.hideLoading();
+					reget(60);
+				}, function (data) {
+					// mui.hideLoading();
+					mui.alert(data.content);
+				})
+			}
+			function reget(count) {
+				var btn = $("#sendsms");
+				btn.html("60s后重发");
+				var resend = setInterval(function() {
+					count--;
+					if (count > 0) {
+						btn.css('pointer-events','none')
+						btn.html(count + "s后重发");
+					} else {
+						clearInterval(resend);
+						btn.css('pointer-events','unset')
+						$("#sendsms").css("color", "#1F75DA");
+						btn.html("重获验证码");
+					}
+				}, 1000);
+			}
+			function sms () {
+				var phonecode = $("#yzmip").val()
+				if (Common.isNull(phonecode)) {
+					mui.toast("短信验证码不能为空");
+					return false;
+				}
+				Common.muipost("/common/verifier/phone/code", {phone: phone, phonecode: phonecode}, function (data) {
+					// mui.hideLoading();
+					$("#yzm").addClass("mui-hidden")
+					tx()
+				}, function (data) {
+					mui.alert(data.content);
+					$("#yzm").addClass("mui-hidden")
+					// mui.hideLoading();
+				})
+			}
+			function tx () {
+				getMoney($("#tixian_inpt").val(),function(res){
+					$("#tixian_inpt").val("");
+					if(res !== undefined && res.type !== undefined && res.date !== undefined && res.date.bankCard !== undefined && res.date.money !== undefined){
+						mui.openWindow({
+							url: '../info/tixian_over.html?bankCard='+res.date.bankCard + '&money='+res.date.money,
+							id: '../info/tixian_over.html',
+						});
+					}else{
+						console.log(err)
+					}
+				});
+			}
+			function nos () {
+				$("#yzmip").val("");
+				$("#yzm").addClass("mui-hidden");
+			}
+			function getMoney(money,callBack){
+				var el = $("#itemmobile2 li.mui-selected").find("p.bankCode");
+				var bankId = el.attr("_bankId");
+				var type = el.attr("_type");
+				Common.muipost("/app/userWithdrawal/requestWithdrawal_v2",{
+					userId: userId,
+					amount:	money,
+					bankId: bankId,
+					type: type
+				}, function(res) {
+					callBack & callBack(res);
+				}, function(s) {
+
+				});
+
+			}
+
+			$("#tixian_info").click(function() {
+				mui.openWindow({
+					url: './jiaoyi_details.html',
+					id: './jiaoyi_details.html',
+				});
+			})
+
+			function submitData(){
+				Common.muipost("/app/user/pay/request",{
+					money: sucmoney
+				}, function(res) {
+					var s2=JSON.stringify(sucmoney);
+					localStorage.setItem("names_money",s2);
+				}, function(s) {
+
+				});
+				$(".inpt").val("");
+				mui.openWindow({
+					url: './invest_money.html',
+					id: './invest_money.html',
+					extras: {
+						money: sucmoney
+					}
+				});
+				$("#subs").hide();
+				$(".one").removeClass("commons");
+				$(".shows").hide();
+			}
+			// 选择提现方式事件捕获
+			var listInfo = document.querySelector('.mui-table-view.mui-table-view-radio');
+			listInfo.addEventListener("selected", function(e) {
+				var el = $(e.detail.el);
+				var selectable = el.attr("selectable");
+				// 提现账户信息不存在禁止选中
+				if (!selectable || selectable == "false") {
+					$("#pay-car-list li[selectable='true']").addClass("mui-selected");
+					el.removeClass("mui-selected");
+					mui.toast("请完善提现账户信息");
+					return false;
+				}
+			});
+		</script>
+
+	</body>
+</html>

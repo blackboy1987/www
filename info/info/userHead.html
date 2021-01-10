@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>头像设置</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../../css/style.css">
+		<style>
+			.mui-content>.mui-table-view:first-child{margin-top: 0}
+			.mui-table-view-cell:after{right: 15px;}
+		</style>
+	</head>
+	<body style="background:#f5f5f5" id="pullrefresh">
+		<header class="mui-bar mui-bar-nav other">
+			<a href="javascript:save()" class="c2c-address mui-pull-left"><span class="mui-icon mui-icon-back"></span></a>
+			<h1 class="mui-title">头像设置</h1>
+		</header>
+		<div class="mui-content userhead" style="background: #f5f5f5;">
+			<div class="my-title">当前头像</div>
+			<img src="" id="headImg" data-src="">
+			<input type="hidden" id="digest" value="" />
+			<div class="my-title">更换头像</div>
+			<ul class="head-list" id="tab-images-flow">
+
+			</ul>
+		</div>
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/jquery.min.js"></script>
+	<script type='text/javascript' src='../../js/common/common.js'></script>
+	<script>
+		// 加载图片
+		for (var i = 1; i <= 24; i++) {
+			var src = ".png";
+			if (i < 10) {
+				src = "00" + i + src;
+			} else {
+				src = "0" + i + src;
+			}
+			$("#tab-images-flow").append("<li><img onclick='changeIcon(this)'  data-src='../../images/head/" + src +
+				"'  src='../../images/head/" + src + "'></li>");
+		}
+		
+		var isHead = false;
+		//保存头像
+		function save() {
+			if (isHead) {
+				var uodateHead = "/app/user/info/update";
+				var btnArray = ['确定', '取消'];
+				mui.confirm('确定保存头像？', '', btnArray, function(e) {
+					if (e.index == 0) {
+						var newdigest = $("#digest").val();
+						var newicon = $("#headImg").attr("data-src");
+						var params = {
+							icon: newicon,
+							digest: newdigest
+						};
+						Common.muipost(uodateHead, params, function(data) {
+							mui.toast("保存成功");
+							mui.back();
+						}, function(data) {
+							mui.toast(data.content);
+							mui.back();
+						});
+					} else {
+						mui.back();
+					}
+				})
+			} else {
+				mui.back();
+			}
+		}
+		
+		load();
+
+		function load() {
+			//获取用户头像
+			var info = "/app/user/info/index";
+			Common.muipost(info, null, function(data) {
+				$("#headImg").attr("src", "../.." + data.date.icon);
+				$("#digest").val(data.date.digest);
+			}, function(data) {
+				mui.toast(data.content);
+			});
+
+
+		}
+		//修改头像
+		function changeIcon(e) {
+			isHead = true;
+			var newicon = $(e).attr("data-src");
+			$("#headImg").attr("src", newicon);
+			$("#headImg").attr("data-src", newicon);
+
+		}
+		//下拉刷新
+		mui.init({
+			pullRefresh: {
+				container: '#pullrefresh',
+				down: {
+					style: 'circle',
+					callback: pulldownRefresh
+				},
+			}
+		});
+		/**
+		 * 下拉刷新具体业务实现
+		 */
+		function pulldownRefresh() {
+			setTimeout(function() {
+				//addData();
+				load();
+				mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+			}, 1500);
+		}
+
+		mui.init({
+			beforeback: function() {
+				//获得父页面的webview
+				var list = plus.webview.currentWebview().opener();
+				//触发父页面的自定义事件(refresh),从而进行刷新
+				mui.fire(list, 'refresh');
+				//返回true,继续页面关闭逻辑
+				return true;
+			}
+		});
+	</script>
+</html>

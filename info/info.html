@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>我的资料</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../css/style.css">
+		<link rel="stylesheet" href="../css/hashbox.css">
+		<style>
+			.mui-content>.mui-table-view:first-child{margin-top: 0}
+			.mui-table-view-cell:after{right: 15px;}
+			.mui-navigate-right:after, .mui-push-right:after{font-size: 30px;}
+			.mui-table-view-cell{line-height: 25px;font-size: 15px;color:#2E2E31;}
+		</style>
+	</head>
+	<body style="background:#eee">
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">安全设置</h1>
+		</header>
+		<div class="mui-content my" style="background: #fff;" id="pullrefresh">
+			<div>
+				<ul class="mui-table-view mui-table-view-chevron">
+					<li class="mui-table-view-cell">
+						<a id="assetsPwd" class="mui-navigate-right  p-sm-2">
+							设置资金密码<span class="status" id="isAddpass"></span>
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a id="updatePassword" class="mui-navigate-right p-sm-2">
+							设置登录密码<span class="status" id="loginPass"></span>
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a id="updatePhone" class="mui-navigate-right p-sm-2">
+							设置手机号码<span class="status" id="setPhone"></span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script src="../js/jquery.min.js"></script>
+	<script type='text/javascript' src='../js/common/common.js'></script>
+	<script>
+		//获取用户资料
+		loadHtml();
+		var isAuth = false;
+		var phone = "";
+
+		function loadHtml() {
+			var info = "/app/user/info/index";
+			Common.muipost(info, null, function(data) {
+			}, function(data) {
+				mui.toast(data.content);
+			});
+		}
+		// 初始化传值
+		mui.plusReady(function () {
+			var current = plus.webview.currentWebview();
+			phone = current.phone;
+		})
+		//下拉刷新
+		mui.init({
+			pullRefresh: {
+				container: '#pullrefresh',
+				down: {
+					style: 'circle',
+					callback: pulldownRefresh
+				},
+			}
+		});
+		/**
+		 * 下拉刷新具体业务实现
+		 */
+		function pulldownRefresh() {
+			setTimeout(function() {
+				//addData();
+				loadHtml();
+				mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+			}, 1500);
+		}
+
+		//资金密码 --跳转
+		$("#assetsPwd").click(function() {
+			mui.openWindow({
+				url: 'assetsPass.html',
+				id: 'assetsPass.html',
+				extras: {
+					phone: phone
+				}
+			});
+		});
+
+		//我的资料 -- 头像
+		// $("#userHead").click(function() {
+		// 	mui.openWindow({
+		// 		url: 'info/userHead.html',
+		// 		id: 'info/userHead.html'
+		// 	});
+		// });
+
+		//修改密码密码
+		$("#updatePassword").click(function() {
+			mui.openWindow({
+				url: './info/updatePassword.html',
+				id: './info/updatePassword.html'
+
+			});
+		});
+
+		//修改手机号码
+		$("#updatePhone").click(function() {
+			// mui.openWindow({
+			// 	url: './info/updatePhone.html',
+			// 	id: './info/updatePhone.html',
+			// 	extras: {
+			// 				phone: phone
+			// 			}
+			// });
+
+			mui.openWindow({
+				url: '/info/info/updatePhone.html',
+				id: '/info/info/updatePhone.html',
+				extras: {
+					phone: phone
+				}
+			});
+		});
+
+		//个人简历
+		// $("#personalProfile").click(function() {
+		// 	mui.openWindow({
+		// 		url: 'info/personalProfile.html',
+		// 		id: 'info/personalProfile.html'
+		// 	});
+		// });
+
+		window.addEventListener('refresh', function(e) {
+			//在父页面中添加监听事件，刷新页面
+			loadHtml();
+		});
+
+		mui.init({
+			beforeback: function() {
+				//获得父页面的webview
+				var list = plus.webview.currentWebview().opener();
+				//触发父页面的自定义事件(refresh),从而进行刷新
+				mui.fire(list, 'refresh');
+				//返回true,继续页面关闭逻辑
+				return true;
+			}
+		});
+	</script>
+</html>

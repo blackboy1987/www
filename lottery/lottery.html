@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>抽奖</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../css/style.css">
+        <link rel="stylesheet" href="../css/hashbox.css">
+        <style>
+            body, .mui-content{overflow-x: hidden;}
+            .m-white-col{color: #fff;}
+            #pullrefresh{position: relative;}
+            .mui-title{font-size: 18px;}
+            .mui-bar{z-index:9999;}
+            .mui-bar .mui-btn-link{color:#000000;font-size: 15px;}
+            .m-back{height: 82rem;background-image: url(../images/lottery/background.png);background-repeat: no-repeat;background-size: 100% 100%;background-position-y: 44px;}
+            .m-right-back{right:0;top: 50px;}
+            .m-right-back span{left:10px;line-height: 30px;color:#FFFFFF;font-size: 15px;}
+            .m-position{position: absolute;}
+            .m-img{top: 220px;z-index: 109;}
+            .mui-slider{opacity:.9;top: 220px;color:#fff;z-index: 108;}
+            .mui-slider-item{text-align: center;width: 60%;height: 20px;}
+            .m-bg{width: 100%;top:255px; }
+            #bg{background-image: url(../images/lottery/bg.png);background-repeat: no-repeat;height: 18rem;width: 18rem;background-size: 100% 100%;background-position:top;}
+            img[alt^="pointer"] {width: 15.5rem;top:20px;left:20px;}
+            img[alt^="turntable"] {z-index: 100;top:6rem;left:6.5rem;}
+            img[alt^="imform"] {top:615px;}
+            img[alt^="prize"] {margin-top: 15px;}
+            .m-times{text-align: center;top: 555px;width: 100%;}
+            .m-obtain{top: 635px;text-align: center;width: 100%;}
+            .m-times span,.m-obtain span{color:burlywood;}
+            .m-imform{top: 670px;}
+            .m-prize{top:20%;}
+            .m-prize .m-title{top:60px;width: 100%;text-align: center;color:#333333;font-size: 30px;}
+            .m-back-col{color:#FF5943;}
+            .m-award{top:95px;width: 100%;text-align: center;}
+            .m-lave{top:120px;width: 100%;text-align: center;}
+            .m-btn{top:135px;}
+            .m-pri-color{top:180px;text-align: center;width: 100%;color:#FFE064;font-size: 15px;}
+            .m-btc{top:220px;width: 100%;}
+            .m-col-btn{top:585px;width: 100%;}
+            .m-close{top:320px;}
+            #classA{top:20%;}
+            #classA .m-close{top:250px;}
+            .m-con{color:#FFF0B4;font-size: 18px;height:40px;line-height:40px;background:#FF5943;width: 190px;margin: 0 auto;text-align: center;border-radius: 20px;}
+            header{z-index: 110;padding-right: 0;}
+        </style>
+	</head>
+	<body style="background: #eee" id="pullrefresh">
+		<header class="mui-bar mui-bar-nav other">
+            <div class="c2c-address mui-pull-left mui-action-back"><span class="mui-icon mui-icon-back"></span></div>
+            <h1 class="mui-title">幸运转盘</h1>
+            <div id="ma-record" class="mui-pull-right mui-btn-link" style="position: absolute;right:10px;">抽奖记录</div>
+        </header>
+        <div class="m-back mui-content">
+            <div class="m-right-back m-position" id="m-rule"><span class="m-position">活动规则</span><img src="../images/lottery/rule.png" height="27px"></div>
+        </div>
+        <div class="m-bar">
+            <img class="m-position m-img" src="../images/lottery/center.png" height="auto" width="100%">
+            <div class="mui-slider m-slider m-position" style="height: 20px;line-height: 20px;"> 
+                <div class="mui-slider-group mui-slider-loop" id="adversite"></div>
+            </div>
+        </div>
+        <div class="m-position m-bg">
+            <div id="bg" class="m-position">
+                <img src="../images/lottery/pointer.png" class='m-position m-img1' alt="pointer">
+                <img src="../images/lottery/turntable.png" class='m-position m-img2' id="m-img" alt="turntable" width="85px">
+            </div>
+        </div>
+        <div class="m-position m-times m-white-col" id="m-number"></div>
+        <div class="m-position m-col-btn">
+            <div class="m-con" id="m-con">消耗10HBT抽奖</div>
+        </div>
+        <div class="m-position m-obtain m-white-col">
+            去<span class="m-invite">邀请好友</span>或<span class="m-buy">购买算力</span>获取机会
+        </div>
+        <div class="m-position m-imform" style="width: 96%;">
+            <img src="../images/lottery/inform.png" id="m-img3" alt="imform" width="96%">
+            <img src="../images/lottery/prize.png" alt="prize" width="96%">
+        </div>
+        <div class="mui-backdrop mui-hidden"></div>
+    </body>
+    <script src="../js/mui.min.js"></script>
+    <script src="../js/jquery.min.js"></script>
+	<script type='text/javascript' src='../js/common/common.js'></script>
+	<link rel="stylesheet" href="../js/common/mui.loading.css"/>
+	<script type="text/javascript" src="../js/common/mui.loading.js"></script>
+	<script>
+        let oPointer = $(".m-img2");
+        let oTurntable = $(".m-img1");
+        let cat = 45; //总共8个扇形区域，每个区域约45度
+        let num = 0; //转圈结束后停留的度数
+        let offOn = true; //是否正在抽奖
+        var rdm = 0; //随机度数
+        var id = '';
+        var prizeNum = '';
+        var numb = '';
+        var newArr = []
+        var phone = ''
+        var content = ''
+        var date = new Date()
+        var now = date.toLocaleTimeString().replace(/^\D*/, '')
+        var numTime = now.indexOf(':');
+        var time = now.substring(0, numTime);
+        var speed = 1000
+        // if (10 < time < 12) {
+        //     speed = 500
+        // } else if (12 < time < 14) {
+        //     speed = 2000
+        // } else if (14 < time < 21) {
+        //     speed = 800
+        // } else if (21 < time || time < 1) {
+        //     speed = 5000
+        // } else if (1 < time < 6) {
+        //     speed = 8000
+        // } else {
+        //     speed = 6000
+        // }
+        function randomCode (len,dict) {
+            for (var i = 0,rs = ''; i < len; i++)
+                rs += dict.charAt(Math.floor(Math.random() * 100000000) % dict.length);
+                return rs;
+        };
+        // 生成随机手机号码
+        function randomPhoneNumber (){
+            return [1,randomCode(2,'3458'),'****',randomCode(4, '0123456789')].join('');
+        };
+        function sum (m,n){
+        　　var num = Math.floor(Math.random()*(m - n) + n);
+            return num
+        }
+        function stochastic () {
+            var arr = ['1个HBT', '10个HBT', '100个HBT', '1000个HBT', '0.0001个BTC', '0.001个BTC', '0.01个BTC', '1T算力', '5T算力', '8T算力', '10T算力', '满200USDT减5USDT劵', '满500USDT减10USDT劵', '满2000USDT减30USDT劵', '满10000USDT减100USDT劵', '首单折扣劵95折', '1个HBT', '10个HBT', '100个HBT', '满200USDT减5USDT劵', '满500USDT减10USDT劵', '满2000USDT减30USDT劵', '满10000USDT减100USDT劵', '首单折扣劵95折', '1个HBT', '10个HBT', '100个HBT', '满200USDT减5USDT劵', '满500USDT减10USDT劵', '满2000USDT减30USDT劵', '满10000USDT减100USDT劵', '首单折扣劵95折']
+            var timerId = setInterval(function(){
+                if (newArr.length < 6) {
+                    randomPhoneNumber()
+                    newArr.push('恭喜' + randomPhoneNumber() + '抽中' + arr[sum(0, 32)])
+                } else {
+                    clearInterval(timerId)
+                }
+            }, 10);
+        }
+        function slider () {
+            content = '<div class="mui-slider-item mui-slider-item-duplicate"><img src="../images/zhanweifu.jpg" width="10" height="0%"></div>'
+            mui.each(newArr, function(index, item) {
+				content += '<div class="mui-slider-item">' + item + '</div>'
+            });
+            content += '<div class="mui-slider-item mui-slider-item-duplicate">' + newArr[0] + '</div>'
+            $('#adversite').html(content);
+            var gallery = mui('.m-slider');
+            gallery.slider({
+                interval: speed //自动轮播周期，若为0则不自动播放，默认为0；
+            });
+        }
+        (function($) {
+            stochastic()
+            setTimeout(function() {
+                slider()
+            }, 300);
+            size()
+        })(mui) 
+        function size () {
+            let bgWidth = ($(".mui-content").width() - $("#bg").width()) / 2 + 'px'
+            let imWidth = ($(".mui-content").width() - $("#m-img3").width()) / 2 + 'px'
+            $("#bg").css("left", bgWidth);
+            $(".m-imform").css("left", imWidth);
+        }
+        function number () {
+            let value = ''
+            Common.muipost('/app/prize/prizeCount', {
+                userId: id,
+            }, function(data) {
+                numb = data.date
+                if (numb > 0) {
+                    value = '您有<span> ' + numb + '</span> 次抽奖机会'
+                    $('.m-obtain').addClass('mui-hidden')
+                    $('.m-col-btn').addClass('mui-hidden')
+                    $('.m-imform').css('top', '585px')
+                } else {
+                    $("#m-img").attr('src','../images/lottery/hs.png');
+                    value = '您暂时没有抽奖机会'
+                    $('.m-obtain').removeClass('mui-hidden')
+                    $('.m-col-btn').removeClass('mui-hidden')
+                    $('.m-imform').css('top', '670px')
+                }
+                $('#m-number').html(value)
+            },function(err){})
+        }
+        mui.plusReady(function() {
+            id = JSON.parse(plus.storage.getItem("loginUser")).id
+            number()
+            var tel = JSON.parse(plus.storage.getItem("loginUser")).username
+            phone = tel.substr(0, 3) + '****' + tel.substr(7);  
+            
+        })
+        mui("body").on('tap','#m-img',function(){
+            if (numb === 0) return
+            $('#m-img').addClass('mui-disabled')
+            lottery(1)
+        })
+        //hbt抽奖
+        // $(".m-con").click(function(){
+        mui("body").on('tap','#m-con',function(){
+            lottery(2)
+            $(".m-con").addClass('mui-disabled')
+        })
+        $("#m-rule").click(function(){
+            mui.openWindow({
+				url: './rule.html',
+				id: './rule.html'
+			});
+        })
+        $("#ma-record").click(function(){
+            mui.openWindow({
+				url: './record.html',
+				id: './record.html'
+			});
+        })
+        $(".mui-backdrop").click(function(){
+            backdrop(1)
+        })
+        $('.m-invite').click(function(){
+            mui.openWindow({
+                url: '../info/invite.html',
+                id: '../info/invite.html'
+            });
+        })
+        $('.m-buy').click(function(){
+            var curr = plus.webview.currentWebview();
+            var wvs = plus.webview.all();
+            // for (var i = 0, len = wvs.length; i < len; i++) {
+                // if (wvs[i].getURL() == curr.getURL()){
+                    // plus.webview.close(wvs[i]);
+                    plus.webview.open('../main.html');
+                    curr.close();
+                // }
+            // }
+        })
+        function backdrop () {
+            rdm = 0
+            oTurntable.css('transform', 'rotate(0deg)')
+            oTurntable.css('transition', 'all 0.01s ease-in-out')
+            $('.mui-backdrop').addClass('mui-hidden')
+            $('#m-img').removeClass('mui-disabled')
+            $(".m-con").removeClass('mui-disabled')
+        }
+        function lottery (index) {
+            if (offOn) {
+                oTurntable.css('transform', 'rotate(0deg)')
+                offOn = !offOn;
+                ratating(index);
+            }
+        }
+        function ratating(index) {
+            mui.showLoading();
+            var url = ''
+            if (index === 1) {
+                url = '/app/prize/prizeResult'
+            } else {
+                url = '/app/prize/prizeHbtResult'
+            }
+            var timer = null;
+            clearInterval(timer);
+            timer = setInterval(function () {
+                if (Math.floor(rdm / 360) < 5) {
+                    rdm = (Math.floor(Math.random()*10) + 5) * 360;
+                } else {
+                    oTurntable.css('transition', 'all 5s ease-in-out')
+                    clearInterval(timer);
+                    setTimeout(function () {
+                        offOn = !offOn;
+                        num = rdm % 360;
+                    }, 10)
+                }
+            }, 10)
+            $('.mui-backdrop').html("")
+            Common.muipost(url, {
+                userId: id,
+            }, function(data) {
+                prizeNum = data.date.type
+                var html = ''
+                var val = numb - 1
+                if (data.date.type === 1) {
+                    rdm += 45 * 3
+                } else if (data.date.type === 2) {
+                    rdm += 45 * 5
+                } else if (data.date.type === 3) {
+                    rdm += 45 * 7
+                } else if (data.date.type === 4) {
+                    rdm += 45 * 2
+                } else if (data.date.type === 5) {
+                    rdm += 45 * 6
+                } else if (data.date.type === 6) {
+                    rdm += 45
+                } else if (data.date.type === 7) {
+                    rdm += 45 * 4
+                } else {
+                    rdm += 45 * 0
+                }
+                if (data.date.type == 6) {
+                    var text = ''
+                    var btn = ''
+                    var classA = ''
+                    if (val < 1) {
+                        text = '<div class="m-position m-award" style="font-size:15px;color:#999;">您没有免费抽奖机会了</div>'
+                        $("#m-img").attr('src','../images/lottery/hs.png');
+                        btn = '<div class="m-con m-hbt" id="m-hbt">消耗10HBT抽奖</div>'
+                        classA = "classA"
+                    } else {
+                        btn = '<div class="m-con m-continue">继续抽奖</div>'
+                        text = '<div class="m-position m-award" style="font-size:15px;color:#999;">别灰心，您还有 <span class="m-back-col">' + val + '</span> 次机会</div>'
+                        classA = ''
+                    }
+                    html = '<div class="m-prize m-position" id="' + classA + '"><img src="../images/lottery/xxcy.png" id="m-prize" alt="winning" width="275"><div class="m-position m-title">很遗憾没抽中</div>' +  text +'<div class="m-position m-btn" style="width: 100%;">' + btn + '</div><img class="m-position m-close" src="../images/lottery/close.png" alt="" width="33"></div>'
+                } else {
+                    content = ''
+                    var nText = ''
+                    var nBtn = ''
+                    // $("#adversite > li").remove();
+                    if (val < 1) {
+                        $("#m-img").attr('src','../images/lottery/hs.png'); 
+                        nText = '<div class="m-position m-lave" style="font-size:15px;color:#999;">您没有抽奖免费机会了</div>'
+                        nBtn = '<div class="m-con m-hbt" id="m-hbt">消耗10HBT抽奖</div>'
+                    } else {
+                        nBtn = '<div class="m-con m-continue">继续抽奖</div>'
+                        nText = '<div class="m-position m-lave" style="font-size:15px;color:#999;">您还有 <span class="m-back-col">' + val + '</span> 次抽奖机会</div>'
+                    }
+                    html = '<div class="m-prize m-position"><img src="../images/lottery/winning.png" alt="winning" id="m-prize" width="275"><div class="m-position m-title">恭喜您获得</div><div class="m-back-col m-position m-award">' + data.date.prizeName + '</div>' + nText + '<div class="m-position m-pri-color">奖品已经发放到您账户</div><div class="m-position m-btc">' + nBtn + '</div><img class="m-position m-close" src="../images/lottery/close.png" alt="" width="33"></div>'
+                }
+                oTurntable.css('transform', 'rotate(' + rdm + 'deg)')
+                number()
+                setTimeout(function () {
+                    $('.mui-backdrop').removeClass('mui-hidden')
+                    $('.mui-backdrop').html(html)
+                    $('.m-prize').css('left', ($(".mui-content").width() - 275) / 2 + 'px')
+                    $('.m-close').css('left', ($("#m-prize").width() / 2) - 17 + 'px')
+                    setTimeout(function () {
+                        rdm = 0
+                        oTurntable.css('transform', 'rotate(0deg)')
+                        oTurntable.css('transition', 'all 0.01s ease-in-out')
+                        newArr.push('恭喜' + phone + '抽中' + data.date.prizeName)
+                        slider()
+                    }, 300)
+                }, 5000)
+            },function(err){})
+            
+        }
+        mui("body").on('tap','.m-continue',function(){
+            backdrop()
+            setTimeout(function () {
+                lottery(1)
+            }, 100)
+        })
+        mui("body").on('tap','#m-hbt',function(){
+            backdrop()
+            setTimeout(function () {
+                lottery(2)
+            }, 100)
+        })
+		//下拉刷新
+		mui.init({
+			pullRefresh: {
+				container: '#pullrefresh',
+				down: {
+					style: 'circle',
+					callback: pulldownRefresh
+				},
+			}
+		});
+		/**
+		 * 下拉刷新具体业务实现
+		 */
+		function pulldownRefresh() {
+			setTimeout(function() {
+				mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+			}, 1500);
+		}
+	</script>
+</html>

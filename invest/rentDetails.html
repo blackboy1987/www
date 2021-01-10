@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>合约产品</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../css/style.css">
+		<link rel="stylesheet" href="../css/hashbox.css">
+		<style>
+            .shouyi.proDetails .prod-data .line-one, .shouyi.proDetails .prod-data .line-two{text-align: left;}
+            .e2e{color: #2E2E31;}
+            .m-xg{margin-left: 10px;padding: 3px;background: #FF7800;color: #fff;border-radius: 3px;}
+            .m-ff7800{color: #FF7800;padding: 3px;background: #FFE4CC;}
+            .ml_1{margin-left: 3px;background: #DBE7FE;padding: 3px;color: #4C88FA}
+            .m-del{color: #B4B4B8;margin-left: 3px;}
+            .m333{color: #333333;}
+            .pb50{padding-bottom: 50px;}
+			.mui-btn,.footer-buy button,.mui-btn.mui-disabled{background: #1F75DA;opacity: 1;}
+			.ff78{color: #FF7800!important;}
+			.work-time .mui-navigate-right:after, .mui-push-right:after{color: #919194;}
+			.work-time .mui-table-view-cell{padding: 12px 15px;}
+			.work-time .mui-table-view-cell:first-child{padding-top: 24px;}
+			.work-time .mui-table-view-cell:last-child, #m-limit{padding-bottom: 24px;}
+			.m-input-wrap{padding: 12px 0px;}
+			.mui-table-view-cell:after{height: 0;}
+			.work-time .mui-navigate-right:after, .mui-push-right:after{right: 15px;}
+		</style>
+	</head>
+	<body style="background: #f5f5f5" id="pullrefresh">
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="title"></h1>
+		</header>
+
+		<div class="mui-content" id="index-html" style="background: #f5f5f5">
+			<div class="mui-control-content mui-active shouyi proDetails">
+				<!-- <img src="../images/hashbox/banner_tz.png" width="100%" /> -->
+				<div class="" style="background-color: #f5f5f5!important;">
+					<div class="p1 pt2" style="background: #fff">
+						<div class="line-one m-size18 e2e" id="price">--</div>
+                        <div class="line-two pt-sm-2" id="money"></div>
+                        <p class="pt1 m-size13" id="m-text"></p>
+					</div>
+				</div>
+				<div class="my-sm-1 work-time">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell mui-disabled m-size15">
+							<span class="e2e m-size15">算力押金</span>
+							<span class="mui-pull-right ff78 m-size18 ff78" id="invest">--</span>
+						</li>
+						<li class="mui-table-view-cell mui-disabled m-size15">
+							<span class="e2e m-size15">算力租金</span>
+							<span class="mui-pull-right ff78 m-size18 ff78">0</span>
+						</li>
+						<!-- <li class="mui-table-view-cell mui-disabled m-size15">
+							<span class="e2e m-size15">管理费</span>
+							<span class="mui-pull-right ff78"><span class="m-manage"></span></span>
+						</li>
+						<li class="mui-table-view-cell mui-disabled m-size15">
+							<span class="e2e m-size15">电费</span>
+							<span class="mui-pull-right ff78" id="electric">--</span>
+                        </li> -->
+                        <li class="mui-table-view-cell mui-disabled m-size15">
+                            <span class="e2e m-size15">产品周期</span>
+                            <span class="mui-pull-right m333" id="validity">--</span>
+                        </li>
+                        <li class="mui-table-view-cell mui-disabled m-size15">
+                            <span class="e2e m-size15">预计每日产出</span>
+                            <span class="mui-pull-right ff78" id="profit">--</span>
+                        </li>
+						<li class="mui-table-view-cell mui-disabled m-size15" id="muiClass">
+							<span><a class="mui-navigate-right"><span class="fc2c9" id="productContract">查看产品详情</span></a></span>
+						</li>
+					</ul>
+				</div>
+				<div class="my-sm-1 mui-clearfix buy-num px-sm-1" style="background: #fff;">
+					<div class="m-input-wrap">
+						<span class="e2e m-size15">买入数量（THS）</span>
+						<div class="mui-numbox mui-pull-right" id="data1" >
+							<button class="mui-btn mui-btn-numbox-minus" type="button"><span class="mui-icon mui-icon-minus"></span></button>
+							<input id="quantity" class="mui-input-numbox" type="number" pattern="\d*" value="10" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+							<button class="mui-btn mui-btn-numbox-plus" type="button"><span class="mui-icon mui-icon-plus"></span></button>
+						</div>
+					</div>
+					<div id="m-limit" class="m-size13 c96"></div>
+                </div>
+                <div class="my-sm-1 work-time pb50">
+                    <ul class="mui-table-view">
+                        <li class="mui-table-view-cell mui-disabled m-size15">
+                            <span class="e2e m-size15">算力生效日期</span>
+                            <span class="mui-pull-right e2e m-size15" id="m-start">--</span>
+                        </li>
+                        <!-- <li class="mui-table-view-cell mui-disabled m-size15">
+                            <span class="e2e m-size15">收益到账日期</span>
+                            <span class="mui-pull-right e2e m-size15" id="m-end">--</span>
+                        </li> -->
+                    </ul>
+                </div>
+			</div>
+		</div>
+
+		<div class="footer-buy">
+			<div class="mui-pull-left proDe" id="yj"></div>
+			<button class="mui-btn main-button" onclick="create()" id="m-btn"></button>
+		</div>
+		<div id="subs" class="mui-popup-in meui-mask mui-hidden">
+			<div class="cons" style="height:118px">
+			<div class="mui-popup-inner">		        
+				<div class="mui-popup-text" id="tx" style="margin:5px 0;letter-spacing:1px;text-align: left;">
+					购买数量超出库存量，请减少购买数量或选择其他产品
+				</div>
+			</div>
+			<div class="mui-popup-buttons">
+				<span id="nos" onclick="cancel()" class="mui-popup-button">取消</span>
+				<span id="okey" onclick="submitData()" class="mui-popup-button mui-popup-button-bold">其他产品</span>
+			</div>
+			</div>
+		</div>
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/mui.lazyload.js"></script>
+		<script src="../js/mui.lazyload.img.js"></script>
+		<script src="../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="../js/common/mui.loading.css">
+		<script type="text/javascript" src="../js/common/mui.loading.js"></script>
+
+		<script>
+			var productId = 0;
+			var limit = 0;
+			var newsId = 0;
+            var productType = 0;
+			var day = 0
+			var surplus = 0
+			var invest = 1
+			mui.plusReady(function() {
+				var current = plus.webview.currentWebview();
+                productId = current.productId;
+                day = current.day;
+                load();
+			});
+			mui.init({
+				swipeBack: true, //启用右滑关闭功能
+				beforeback: function() {
+					//获得父页面的webview
+					var list = plus.webview.currentWebview().opener();
+					//触发父页面的自定义事件(refresh),从而进行刷新
+					mui.fire(list, 'refresh');
+					//返回true,继续页面关闭逻辑
+					return true;
+				}
+			});
+			function submitData () {
+				mui.back()
+			}
+			function cancel () {
+				$("#subs").addClass("mui-hidden")
+				$(".passwordInput").val("");
+			}
+			// 数据change事件
+			var productTmp;
+			$(document).on('change', "#quantity", function() {
+				if (productTmp == null || productTmp == undefined) {
+					return;
+				} else {
+					var num = $("#quantity").val();
+					// 修改价格等显示
+					var price = 0
+					if (day == 7) {
+						price = Common.accMul(Number(productTmp.price), num);
+					} else {
+						price = Common.accMul(Number(productTmp.earnest), num);
+					}
+					// if (productType == 2 || productType == 4) {
+					$("#product-price").text(Common.moneyFormat(price) + " 元");
+					// } else {
+                    //     $("#product-price").html(Common.moneyFormat(price) + " USDT</span>");
+					// }
+                    var profit = Common.moneyFormatByDecimals(productTmp.profit, 8);
+                    $("#profit").text(profit + " BTC")
+				}
+			});
+
+			function create() {
+				if (productId == 0) {
+					return;
+				} else {
+					// 获取数量
+					var quantity = $("#quantity").val();
+					if (surplus < quantity * invest) {
+						$("#subs").removeClass("mui-hidden")
+						return
+					}
+					if (quantity < limit) {
+						mui.alert(limit + "个产品起售，请选择产品数量")
+						return;
+					} else {
+						var url = "/app/user/order/create";
+						mui.showLoading("正在生成订单...", "body");
+						Common.muipost(url, {
+							'productId': productId,
+							'quantity': quantity
+						}, function(data) {
+							// 打开支付页面
+							mui.openWindow({
+								url: 'order/productDetails.html',
+								id: 'order/productDetails.html',
+								extras: {
+									orderId: data.date.id,
+									dete: 1
+								}
+							});
+						}, function(data) {
+							$("#tx").html('购买数量超出库存量，请减少购买数量或选择其他产品。')
+							$("#subs").removeClass("mui-hidden")
+						});
+					}
+				}
+			}
+			//产品详情	
+			$("#muiClass").click(function() {
+				mui.openWindow({
+					url: 'contract/contract.html',
+					id: 'contract/contract.html',
+					extras: {
+						newsId: newsId
+					}
+				});
+			});
+            // function numbox (limit) {
+            //     mui('#data1').numbox().setValue(limit);
+            // }
+			function load() {
+				Common.muipost("/app/user/v2/product/detail", {
+					id: productId
+				}, function(data) {
+                    mui('#data1').numbox().setOption('min', data.date.limit)
+					mui('#data1').numbox().setOption('max', data.date.maxLimit)
+					surplus = data.date.stock
+					productTmp = data.date
+					productType = data.date.type;
+					newsId = data.date.newsId;
+					invest = data.date.invest
+                    var vaData = JSON.parse(data.date.validity)
+					day = Number(vaData[0]) * 365 +  Number(vaData[1]) * 30 + Number(vaData[2])
+					var expiration = new Date(data.date.investTime.replace(/-/g,'/'))
+					var d = new Date(data.date.investTime.replace(/-/g,'/'))
+					var yq = ''
+					var limitText = ''
+					d.setDate(d.getDate() - 1)
+                    if (day == 7) {
+						$("#price").html('<span style="vertical-align: bottom;">' + data.date.name + '</span><span class="m-size10 m-xg">限购一笔</span>')
+						$("#m-text").html('本产品算力生效时间为<span class="ff7d44">'+ (expiration.getMonth() + 1) +'月'+ expiration.getDate() +'日</span>。本产品收益合约期内每日产出BTC扣除管理费和电费，其余归用户所有，到期后每'+ data.date.invest +'T额外奖励' + data.date.profitYear + ' USDT。押金自动退回到余额。')
+						yq = ''
+						limitText = ''
+						$("#yj").html('押金: ' + '<span id="product-price">'+ Common.moneyFormat(Common.accMul(Number(data.date.price), data.date.limit)) +' 元</span>')
+						$("#m-btn").text('提交订单')
+                    } else {
+						$("#price").html(data.date.name)
+						$("#m-text").html('本产品算力生效时间为<span class="ff7d44">'+ (expiration.getMonth() + 1) +'月'+ expiration.getDate() +'日</span>。本产品收益合约期内每日产出BTC扣除管理费和电费，其余归用户所有，到期后每'+ data.date.invest +'T额外奖励' + data.date.profitYear + ' USDT。押金自动退回到余额。')
+						yq = '<span class="m-size13">预定截止至' + Common.dateFtt("yyyy-MM-dd", d) + ' 20:00  </span>'
+						limitText = '您当前' + data.date.name + '持仓总量为<span class="ff78">' + data.date.interest + 'T</span>，还可购买<span class="ff78">' + data.date.surplus + 'T</span>。'
+						$("#yj").html('定金: ' + '<span id="product-price">'+ Common.moneyFormat(Common.accMul(Number(data.date.earnest), data.date.limit)) +' 元</span>')
+						$("#m-btn").text('提交预订')
+					}
+                    $("#money").html(yq + '<span class="ff7d44 m-size13">   剩余' + data.date.stock + 'T</span>')
+					$("#title").text(data.date.name);
+					$("#quantity").val(data.date.limit);
+					$("#m-limit").html(limitText)
+					limit = data.date.limit;
+					productId = data.date.id;
+                    $("#invest").text('￥' + data.date.price + " /" + data.date.invest +"T");
+                    $(".m-manage").text(data.date.manage * data.date.manageDiscount + '%')
+                    $(".m-del").text(' ' + data.date.manage + '%')
+                    $("#validity").text('有效期' + day + '天')
+                    $("#profit").text(Common.moneyFormatByDecimals(data.date.profit, 8) + " BTC");
+                    $("#m-start").text(Common.dateFtt('yyyy-MM-dd', expiration))
+				})
+			}
+			window.addEventListener('refresh', function(e) {
+				//在父页面中添加监听事件，刷新页面
+				//订单详情
+				load();
+				if (e.detail == 7) {
+					$(".footer-buy").addClass("mui-hidden")
+				}
+			});
+		</script>
+
+	</body>
+</html>

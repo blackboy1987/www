@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>教学区</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<!-- <link rel="stylesheet" href="../css/mui.min.css"> -->
+		<link rel="stylesheet" href="../css/mui-l.css"/>
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../css/style.css">
+		<style>
+			.o-question.mui-content {
+				background: unset
+			}
+
+			.o-question .mui-table-view-cell.mui-collapse .mui-collapse-content {
+				background: #f2f2f2;
+			}
+
+			.o-question .mui-table-view-cell>a:not(.mui-btn) {
+				background: #fff;
+			}
+
+			.o-question .mui-content-padded {
+				margin-top: 1rem;
+				margin-left: 1rem;
+				color: #333;
+			}
+
+			.o-question .mui-card {
+				margin: 10px 0
+			}
+
+.o-question .mui-table-view-cell:after {position: absolute;top: 0;left: 0;height: 1px;width: 200%;content:'';display: block;-webkit-transform: scale(0.5);transform: scale(0.5);transform-origin: left top;background-color: #e5e5e5;}
+
+			/* .o-question .mui-table-view-cell:after {
+				left: 0;
+				height: 1px;
+			} */
+
+			.mui-active.mui-table-view-cell {
+				border-top: 1px solid #c8c7cc;
+			}
+
+			.mui-collapse-content p {
+				background-color: #F7F8FC;
+				text-indent: 2em;
+				line-height: 2;
+				padding: 10px 0;
+			}
+
+			html {
+				background-color: #F5F5F5;
+			}
+
+			.o-question .mui-table-view-cell.mui-collapse .mui-collapse-content {
+				background-color: #ffffff;
+				padding: 0;
+			}
+
+			.o-question.mui-content {
+				background-color: #ffffff;
+
+			}
+
+			.mui-table-view-cell.mui-collapse>.mui-navigate-right:after,
+			.mui-table-view-cell.mui-collapse>.mui-push-right:after {
+				content: '\e583';
+				font-size: 20px;
+				right: 0;
+			}
+
+			.mui-table-view-cell.mui-collapse.mui-active>.mui-navigate-right:after,
+			.mui-table-view-cell.mui-collapse.mui-active>.mui-push-right:after {
+				content: '\e581';
+				font-size: 20px;
+				right: 0;
+			}
+
+			.mui-table-view-cell {
+				margin: 0 15px;
+				border: 0;
+			}
+
+			.o-question .mui-table-view-cell>a:not(.mui-btn) {
+				padding-left: 0;
+				/* border-top: 1px solid #eee; */
+			}
+
+			.mui-card {
+				box-shadow: 0 0 0 0;
+			}
+			.mui-navigate-right{
+				border-top: 1px solid #eee;
+			}
+			.mui-table-view-cell:after{
+				background:#fff;
+			}
+			.mui-active.mui-table-view-cell{
+				border: none;
+			}
+			.m-collapse{margin-left:0;margin-right:0;}
+			.o-question .mui-table-view-cell .m-navigate,.px-sm-2{padding-left: 15px!important;padding-right: 15px!important;}
+			.mui-table-view-cell.mui-collapse.mui-active>.mui-navigate-right:after, .mui-table-view-cell.mui-collapse.mui-active>.mui-push-right:after,.mui-table-view-cell.mui-collapse>.mui-navigate-right:after, .mui-table-view-cell.mui-collapse>.mui-push-right:after{right:15px;}
+		</style>
+	</head>
+	<body class="bg-f2">
+		<header class="mui-bar mui-bar-nav other">
+			<div class="c2c-address mui-pull-left mui-action-back"><span class="mui-icon mui-icon-back"></span></div>
+			<h1 class="mui-title">常见问题</h1>
+		</header>
+		<!--中间内容-->
+		<!--中间内容-->
+		<div class="mui-content o-question">
+			<h4 class="mui-content-padded" style="font-weight: 200;">算力</h4>
+			<div class="mui-card">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell mui-collapse m-collapse">
+						<a class="mui-navigate-right m-navigate" href="#"><span style="font-size: 30px;">. </span>什么是挖矿？</a>
+						<div class="mui-collapse-content">
+							<p class="px-sm-2">
+								通俗的说比特币网络通过‘挖矿’来生成新的比特币。所谓的‘挖矿’实质是用计算机不断解决一系列复杂的密码，来保证比特币网络分布记账系统的一致性。比特币网络会自动调整数学问题的难度，让整个网络约每10分钟得到一个合格答案。随后比特币网络会新生成一定量的比特币作为赏金，奖励获得答案的人。挖矿的人叫做矿工，挖矿就是记账的过程。
+								<!-- 挖矿是通过挖矿设备（即矿机）为整个网络提供运算能力，解决数字难题以确认交易的过程。 -->
+							</p>
+						</div>
+					</li>
+					<li class="mui-table-view-cell mui-collapse m-collapse">
+						<a class="mui-navigate-right m-navigate" href="#"><span style="font-size: 30px;">. </span>什么是算力？</a>
+						<div class="mui-collapse-content">
+							<p class="px-sm-2">
+								算力可以理解为通过计算机挖掘比特币的能力，你的算力越多产出的比特币就越多。在通过挖矿得到比特币的过程中，一个节点每秒钟能做多少次算力，就是其算力的代表，单位为THS。你的算力占全网的算力比例越高，算力产出的比特币就越多
+								<!-- 算力可以理解为通过计算机挖掘比特币的能力。您的算力越多产出的的比特币就越多。在通过挖矿得到比特币的过程中，一个节点每秒钟能做多少次计算，就是其算力的代表，单位为THS。您的算力占全网算力的比例越高，算力产出的比特币就越多。 -->
+							</p>
+						</div>
+					</li>
+					<li class="mui-table-view-cell mui-collapse m-collapse">
+						<a class="mui-navigate-right m-navigate" href="#"><span style="font-size: 30px;">. </span>什么是算力到账日期？</a>
+						<div class="mui-collapse-content">
+							<p class="px-sm-2">
+								购买的算力将于购买日的当天发放到账，到账后第二天开始开启挖矿，到账后的第三天，收益到账。
+								<!-- 购买的算力将于购买日的当日发放到账。普通算力是到账第二天后开始产生收益，期货算力是开始产出收益的第二天开始收益到账。 -->
+							</p>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<h4 class="mui-content-padded" style="font-weight: 200;">收益</h4>
+			<div class="mui-card">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell mui-collapse m-collapse">
+						<a class="mui-navigate-right m-navigate" href="#" ><span style="font-size: 30px;">. </span>收益如何产生？</a>
+						<div class="mui-collapse-content">
+							<p class="px-sm-2">
+								通过挖矿产生的收益，将以个人所购买的算力份额进行相应的发放，持有算力越多，产生收益越多。
+								<!-- 通过挖矿产生的收益，将以个人所购买的算力份额进行相应的发放，持有算力越多，产生收益越多。 -->
+							</p>
+						</div>
+					</li>
+					<li class="mui-table-view-cell mui-collapse m-collapse">
+						<a class="mui-navigate-right m-navigate" href="#"><span style="font-size: 30px;">. </span>收益什么时候发放？</a>
+						<div class="mui-collapse-content">
+							<p class="px-sm-2">
+								今天购买算力，明天开始挖矿，后天12点发放收益。
+								<!-- 普通算力为当日购买成功算力，次日开始挖币，后天开始收益自动到账！ -->
+							</p>
+						</div>
+					</li>
+					<li class="mui-table-view-cell mui-collapse m-collapse">
+						<a class="mui-navigate-right m-navigate" href="#"><span style="font-size: 30px;">. </span>收益产生的是什么？</a>
+						<div class="mui-collapse-content">
+							<p class="px-sm-2">
+								比特币算力产生的收益是比特币，以太坊算力产生的收益是以太坊。
+								<!-- 以比特币的形式进行发放收益。 -->
+							</p>
+						</div>
+					</li>
+					<li class="mui-table-view-cell mui-collapse m-collapse">
+						<a class="mui-navigate-right m-navigate" href="#"><span style="font-size: 30px;">. </span>预计每日收益如何计算？</a>
+						<div class="mui-collapse-content">
+							<p class="px-sm-2">
+								预计日收益=持有算力份额每日所得收益-电费-管理费。
+								<!-- 预计日收益=持有算力份额每日所得收益-电费-管理费 -->
+							</p>
+						</div>
+					</li>
+					<li class="mui-table-view-cell mui-collapse m-collapse">
+						<a class="mui-navigate-right m-navigate" href="#"><span style="font-size: 30px;">. </span>预计年收益回报比如何计算？</a>
+						<div class="mui-collapse-content">
+							<p class="px-sm-2">
+								预计年收益回报比=（预计日收益*365）除以买入本金*100%*实际收益情况，会因市场行情和全网算力产生较大波动，预计年收益回报率仅供参考使用。
+								<!-- 预计年收益回报比=（预计日收益*365）除以买入本金*100%*实际收益情况，会因市场行情和全网算力产生较大波动，预计年收益回报率仅供参考使用。 -->
+							</p>
+						</div>
+					</li>
+					<li class="mui-table-view-cell mui-collapse m-collapse">
+						<a class="mui-navigate-right m-navigate" href="#"><span style="font-size: 30px;">. </span>可以退还本金吗？</a>
+						<div class="mui-collapse-content">
+							<p class="px-sm-2">
+								算力投资是一次性投入行为，本金无法返还。
+								<!-- 除租赁算力之外，普通算力投资是一次性投入行为，本金不会返还。 -->
+							</p>
+						</div>
+					</li>
+					<li class="mui-table-view-cell mui-collapse m-collapse">
+						<a class="mui-navigate-right m-navigate" href="#"><span style="font-size: 30px;">. </span>什么情况下昨日收益为0？</a>
+						<div class="mui-collapse-content">
+							<p class="px-sm-2">
+								当挖矿收益小于矿机的电费和管理费时显示收益为0，当收益重新大于电费和管理费时将发放正收益。
+								<!-- 当挖矿收益小于矿机的电费和管理费时显示收益为0，当收益重新大于电费和管理费时将发放正收益。 -->
+							</p>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<h4 class="mui-content-padded" style="font-weight: 200;">提币</h4>
+			<div class="mui-card">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell mui-collapse m-collapse">
+						<a class="mui-navigate-right m-navigate" href="#"><span style="font-size: 30px;">. </span>怎么操作充币和提币？</a>
+						<div class="mui-collapse-content">
+							<p class="px-sm-2">
+								可以在“资产”界面中进行操作。
+							</p>
+						</div>
+					</li>
+					<li class="mui-table-view-cell mui-collapse m-collapse">
+						<a class="mui-navigate-right m-navigate" href="#"><span style="font-size: 30px;">. </span>提币需要手续费么？</a>
+						<div class="mui-collapse-content">
+							<p class="px-sm-2">
+								比特币收取提币总数的5%作为手续费，且最高不超过0.001BTC。
+								以太坊收取提币总数的5%作为手续费，且最高不超过0.01ETH。
+								<!-- BTC：收取提现总额的5%作为手续费，且最高不超过0.001BTC。 -->
+							</p>
+						</div>
+					</li>
+					<li class="mui-table-view-cell mui-collapse m-collapse">
+						<a class="mui-navigate-right m-navigate" href="#"><span style="font-size: 30px;">. </span>提币有最低数量要求吗？</a>
+						<div class="mui-collapse-content">
+							<p class="px-sm-2">
+								比特币提币最低数量为0.003BTC
+								以太坊提币最低数量为0.1ETH
+								<!-- BTC：提现最低数量为0.003BTC,需注意提现到账地址的最低充值数量的规则要求！ -->
+							</p>
+						</div>
+					</li>
+					<li class="mui-table-view-cell mui-collapse m-collapse">
+						<a class="mui-navigate-right m-navigate" href="#"><span style="font-size: 30px;">. </span>操作提币后何时到账？</a>
+						<div class="mui-collapse-content">
+							<p class="px-sm-2">
+								提币操作成功后，一般情况下，第二个自然日24:00前自动到账；（比特币、以太坊网络拥堵情况下，时间会稍微偏长）
+							</p>
+						</div>
+					</li>
+					<li class="mui-table-view-cell mui-collapse m-collapse">
+						<a class="mui-navigate-right m-navigate" href="#"><span style="font-size: 30px;">. </span>出现提币失败怎么办？</a>
+						<div class="mui-collapse-content">
+							<p class="px-sm-2">
+								提币失败通常是网络拥堵造成的，可以重新发起提币操作。
+							</p>
+						</div>
+					</li>
+					<li class="mui-table-view-cell mui-collapse m-collapse">
+						<a class="mui-navigate-right m-navigate" href="#"><span style="font-size: 30px;">. </span>提币到错误地址怎么办？</a>
+						<div class="mui-collapse-content">
+							<p class="px-sm-2">
+								由于区块链地址的匿名性，我们无法找到对方。如果您提到错误的地址，请与通过其他方式寻找目标地址的所有者协商找回。
+							</p>
+						</div>
+					</li>
+					<!-- <li class="mui-table-view-cell mui-collapse m-collapse">
+						<a class="mui-navigate-right m-navigate" href="#"><span style="font-size: 30px;">. </span>提现后的数字货币如何转换成RMB？</a>
+						<div class="mui-collapse-content">
+							<p class="px-sm-2">
+								可以在场外交易平台或数字货币交易所，将数字货币兑换成人民币。具体的变现流程如果不懂可以联系客服由客服教您操作。
+							</p>
+						</div>
+					</li> -->
+				</ul>
+			</div>
+
+		</div>
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script src="../js/jquery.min.js"></script>
+</html>

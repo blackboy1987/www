@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>个人简介</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../../css/style.css">
+		<style>
+			.mui-content>.mui-table-view:first-child{margin-top: 0}
+			.mui-table-view-cell:after{right: 15px;}
+		</style>
+	</head>
+	<body id="pullrefresh">
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">个人简介</h1>
+			<a href="javascript:void(0);" onclick="updateDigest()" class="mui-pull-right" style="padding: 10px;font-size: 16px;;">保存</a>
+		</header>
+		<div class="mui-content userhead">
+			<input type="hidden" id="headImg" />
+			<textarea placeholder="简介，将展示在您的个人资料上面，纯文本不超过200字" style="font-size: 14px;min-height: 150px;" id="digest" maxlength="200"></textarea>
+		</div>
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/jquery.min.js"></script>
+	<script type='text/javascript' src='../../js/common/common.js'></script>
+	<script>
+		load();
+		//修改简介
+		var updateUrl = "/app/user/info/update";
+
+		function updateDigest() {
+			var newdigest = $("#digest").val();
+			var newicon = $("#headImg").val();
+			var params = {
+				icon: newicon,
+				digest: newdigest
+			};
+			Common.muipost(updateUrl, params, function(data) {
+				mui.toast("修改成功");
+				mui.back();
+			}, function(data) {
+				mui.toast(data.content);
+			});
+		}
+
+		function load() {
+			//获取用户资料
+			var info = "/app/user/info/index";
+			Common.muipost(info, null, function(data) {
+				$("#digest").text(data.date.digest);
+				$("#headImg").val(data.date.icon);
+			}, function(data) {
+				mui.toast(data.content);
+			});
+		}
+		//下拉刷新
+		mui.init({
+			pullRefresh: {
+				container: '#pullrefresh',
+				down: {
+					style: 'circle',
+					callback: pulldownRefresh
+				},
+			}
+		});
+		/**
+		 * 下拉刷新具体业务实现
+		 */
+		function pulldownRefresh() {
+			setTimeout(function() {
+				//addData();
+				load();
+				mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+			}, 1500);
+		}
+	</script>
+
+</html>

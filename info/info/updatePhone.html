@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>修改电话号码</title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/style.css" rel="stylesheet" />
+		<link href="../../css/hashbox.css" rel="stylesheet" />
+		<link href="../../css/verify.css" rel="stylesheet" />
+		<style>
+			.login-content{ top: 50px;}
+			.mui-input-group:before{
+				position:static;
+			}
+			.mui-input-group:after{
+				position:static;
+			}
+			.mui-btn-block {
+				padding: 8px 0;
+			}
+			.mui-bar-nav~.mui-content{padding-top: 10px;}
+			
+			.up-ps {font-size: 13px;padding:30px 15px;margin: 0;background:#eee;}
+			.fs15 {height: 40px;top:40px;}
+			.mui-input-group .mui-input-row:after{left:0;}
+			#update-from{padding:0 15px;}
+			.login-content{top:40px;}
+			.m-ps{background: #fff;}
+			.mui-input-row label~input{padding-right:0;}
+	</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">修改电话号码</h1>
+		</header>
+		<div id="item1mobile" class="mui-slider-item mui-control-content login-content update-password mui-active">
+			<div class="up-ps m-ps" style="padding-bottom: 0;">
+				<p style="text-align: center;color:#969699;font-size: 13px;">当前绑定的手机号</p>
+				<p style="text-align: center;color:#333333;font-size: 18px;" id="m-ph"></p>
+				<p style="text-align: center;color:#1F75DA;font-size: 15px;" id="upSeconds" onclick="sendSms()">获取验证码</p>
+			</div>
+			<form id='update-from' class="mui-input-group">
+				<div class="mui-input-row">
+					<label for="vcode" class="pl0">验证码</label>
+					<input id="vcode" type="number" pattern="\d*" class="mui-input-clear mui-input" placeholder="请输入验证码" name="vcode"
+					 maxlength="6">
+				</div>
+			</form>
+			<div class="mui-content-padded mx0 px-sm-2">
+				<button id='nextStep' type="button" class="mui-btn mui-btn-block mui-btn-primary">下一步</button>
+				<a href="javascript:void(0)" class="login-word mui-pull-right mui-hidden">无法收到验证码?</a>
+			</div>
+		</div>
+		<div id="item2mobile" class="mui-slider-item mui-control-content login-content update-password">
+			<div class="up-ps py-sm-2">
+				<span>手机号码请使用本人的手机号码并在本站未注册过的，由此产生的账号被盗，本站概不负责。</span>
+			</div>
+			<form id='update-from' class="mui-input-group">
+				<div class="mui-input-row">
+					<label for="phone" class="pl0">新手机号</label>
+					<input id='phone' name="phone" type="number" pattern="\d*" class="mui-input-clear mui-input" placeholder="请输入新手机号码"
+					 maxlength="11" style="padding: 10px 15px 10px 0;">
+				</div>
+
+				<div class="mui-input-row yzm">
+					<label for="yzm" class="pl0">验证码</label>
+					<input id='yzm' type="number" pattern="\d*" name="yzm" class="mui-input-clear mui-input" placeholder="请输入短信验证码"
+					 maxlength="6">
+					<span class="achieve fc2c9 fs15" id="sendPhoneSms">获取验证码</span>
+				</div>
+			</form>
+			<div class="mui-content-padded mx0 px-sm-2">
+				<button id='lastStep' type="button" class="mui-btn mui-btn-block mui-btn-primary">确认修改</button>
+			</div>
+		</div>
+		<div id="verify-content"></div>
+		<script type='text/javascript' src='../../js/jquery-1.11.1.min.js'></script>
+		<script type='text/javascript' src="../../js/mui.min.js"></script>
+		<link href="../../js/common/mui.loading.css" rel="stylesheet" />
+		<script type="text/javascript" src="../../js/common/mui.loading.js"></script>
+		<script type="text/javascript" src="../../js/crypto-js.js"></script>
+		<script type="text/javascript" src="../../js/ase.js"></script>
+		<script type="text/javascript" src="../../js/verify.js"></script>
+		<script type='text/javascript' src='../../js/common/common.js'></script>
+		<script>
+			mui.init({
+				beforeback: function() {
+					//获得父页面的webview
+					var list = plus.webview.currentWebview().opener();
+					//触发父页面的自定义事件(refresh),从而进行刷新
+					mui.fire(list, 'refresh');
+					//返回true,继续页面关闭逻辑
+					return true;
+				}
+			});
+			var phone, mPhone;
+			mui.plusReady(function() {
+				var current = plus.webview.currentWebview();
+				phone = current.phone;
+				mPhone = current.phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
+				$('#m-ph').text(mPhone)
+				mui("body").on("tap", "#nextStep", function() {
+					var vcode = $("#vcode").val();
+					if (Common.isNull(vcode)) {
+						mui.toast("请输入验证码");
+					} else if (vcode.length != 6) {
+						mui.toast("请输入正确的验证码");
+					} else {
+						// 验证码是否正确
+						$("input").blur();
+						var checkurl = "/app/user/safe/checkbind";
+						mui.showLoading("验证码认证中...", "body");
+						Common.muipost(checkurl, {
+							code: vcode
+						}, function() {
+							mui.hideLoading();
+							// 认证成功
+							$("#item1mobile").removeClass("mui-active");
+							$("#item2mobile").addClass("mui-active");
+						}, function() {
+							mui.toast(data.content);
+						});
+					}
+				});
+
+				mui("body").on("tap", "#lastStep", function() {
+					var mobile = $('#phone').val();
+					if (Common.isNull(mobile)) {
+						mui.toast("手机号不能为空");
+						return false;
+					} else if (Common.isPhoneAvailable(mobile)) {
+						mui.toast("请输入正确的手机号");
+						return false;
+					}
+					var code = $("#yzm").val();
+					if (Common.isNull(code)) {
+						mui.toast("请输入验证码");
+						return false;
+					} else if (code.length != 6) {
+						mui.toast("请输入正确的验证码");
+						return false;
+					}
+					$("input").blur();
+					var checkurl = "/app/user/safe/rebind";
+					mui.showLoading("信息更新中...", "body");
+					Common.muipost(checkurl, {
+						tel: mobile,
+						code: code
+					}, function() {
+						mui.hideLoading();
+						// 更新成功
+						mui.alert("电话号码更新成功", function() {
+							mui.back();
+						});
+					}, function() {
+						mui.toast(data.content);
+					});
+				});
+			});
+
+
+			var isGetCode = true;
+			//发送验证码
+			function sendSms() {
+				if (isGetCode) {
+					isGetCode = false;
+					var checkurl = "/common/code/phone/up_phone";
+					mui.showLoading("验证码获取中...", "body");
+					mui.ajax(basePath + checkurl, {
+						data: {},
+						dataType: 'json', //服务器返回json格式数据
+						type: 'POST',
+						timeout: 5000, //超时时间设置为10秒；
+						success: function(data) {
+							mui.hideLoading();
+							if (data.type == 200) {
+								reget(60);
+							} else {
+								// 500 warn
+								isGetCode = true;
+								mui.alert(data.content);
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							mui.hideLoading();
+							isGetCode = true;
+							mui.toast('网络异常，无法访问' + xhr.status);
+						}
+					});
+				}
+			}
+
+			function reget(count) {
+				var $upSeconds = $("#upSeconds");
+				$("#upSeconds").css("color", "#999");
+				var count = count;
+				$upSeconds.html("60s后重发");
+				var resend = setInterval(function() {
+					count--;
+					if (count > 0) {
+						$upSeconds.css('pointer-events','none')
+						$upSeconds.html(count + "s后重发");
+					} else {
+						clearInterval(resend);
+						$("#upSeconds").css("color", "#00CDB9");
+						$upSeconds.css('pointer-events','unset')
+						$upSeconds.html("重获验证码");
+						isGetCode = true;
+					}
+				}, 1000);
+			}
+
+			var isGetPhoneCode = true;
+
+			function sendPhoneSms() {
+				var mobile = $("#phone").val();
+				if (isGetPhoneCode) {
+					isGetPhoneCode = false;
+					var checkurl = "/common/code/phone/add_user";
+					mui.showLoading("验证码获取中...", "body");
+					mui.ajax(basePath + checkurl, {
+						data: {
+							tel: mobile
+						},
+						dataType: 'json', //服务器返回json格式数据
+						type: 'POST',
+						timeout: 5000, //超时时间设置为10秒；
+						success: function(data) {
+							mui.hideLoading();
+							if (data.type == 200) {
+								regetPhone(60);
+							} else {
+								// 500 warn
+								isGetPhoneCode = true;
+								mui.alert(data.content);
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							mui.hideLoading();
+							isGetPhoneCode = true;
+							mui.toast('网络异常，无法访问' + xhr.status);
+						}
+					});
+				}
+			}
+
+			function regetPhone(count) {
+				var $sendsms = $("#sendPhoneSms");
+				$sendsms.css("color", "#999");
+				var count = count;
+				$sendsms.html("60s后重发");
+				var resend = setInterval(function() {
+					count--;
+					if (count > 0) {
+						$sendsms.css('pointer-events','none')
+						$sendsms.html(count + "s后重发");
+					} else {
+						$sendsms.css('pointer-events','unset')
+						isGetPhoneCode = true;
+						clearInterval(resend);
+						$sendsms.css("color", "#00CDB9");
+						$sendsms.html("重获验证码");
+						isGetCode = true;
+					}
+				}, 1000);
+			}
+			$("#phone").on("input", function () {
+				var mobile = $("#phone").val();
+				if (mobile.length == 11) {
+					if (!checkPhone()) return false;
+					popVerify({
+						rootEl: $('#verify-content'),
+						clickEl: 'sendPhoneSms',
+						phone: mobile,
+						successCallback: sendPhoneSms
+					});
+				}
+			})
+			var checkPhone = function () {
+				var mobile = $("#phone").val();
+				if (Common.isNull(mobile)) {
+					mui.toast("手机号不能为空");
+					return false;
+				}
+				if (Common.isPhoneAvailable(mobile)) {
+					mui.toast("请输入正确的手机号");
+					return false;
+				}
+				return true;
+			}
+		</script>
+	</body>
+
+</html>

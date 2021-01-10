@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>实名认证</title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/style.css" rel="stylesheet" />
+		<link href="../../css/hashbox.css" rel="stylesheet" />
+		<style>
+			::-webkit-input-placeholder {
+				color: #ccc;
+				font-size: 15px;
+			}
+
+			::-moz-placeholder {
+				color: #ccc;
+				font-size: 15px;
+			}
+			/* firefox 19+ */
+
+			:-ms-input-placeholder {
+				color: #ccc;
+				font-size: 15px;
+			}
+			/* ie */
+
+			input:-moz-placeholder {
+				color: #ccc;
+				font-size: 15px;
+			}
+
+			.mui-input-group:after {
+				height: 0;
+			}
+			label{color:#333333;}
+			.m-right{text-align: right;color:#C8C8C8;}
+			.mui-input-group:before{height: 0;}
+			#submit{border-radius: 5px;font-size: 16px;display: block;width: 100%;margin-bottom: 10px;padding: 15px 0;line-height: 0;background: #1F75DA;color:#fff;border:none;}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">填写信息</h1>
+		</header>
+		<div class="mui-content realname">
+            <div class="up-ps px-sm-2 py-sm-2 m0">为了您的资金安全，需验证您的身份。算力蜂认证需年满18周岁，认证信息一经认证将不能修改，请如实填写。</div>
+			<div class="m10 mt20 pad10">
+				<form class="mui-input-group rn-form">
+					<div class="mui-input-row">
+						<label>真实姓名</label>
+						<input type="text" class="mui-input-clear m-clear" placeholder="请输入真实姓名" id="name" readonly="readonly">
+
+					</div>
+					<div class="mui-input-row pCard">
+						<label>身份证号</label>
+						<input type="text" maxlength="18" class="mui-input-clear m-clear" placeholder="请输入18位身份证号" id="card" readonly="readonly">
+					</div>
+					<div class="mui-input-row mui-hidden" id="m-status">
+						<label>状态</label>
+						<input type="text" id="status" readonly="readonly">
+					</div>
+					<div class="mui-input-row m-attest mui-hidden">
+						<label>身份认证</label>
+						<input type="text" maxlength="18" class="mui-input-clear m-clear" id="attest" readonly="readonly">
+					</div>
+				</form>
+			</div>
+			<div class="realname-btn" style="padding: 0 20px;">
+				<button class="mui-btn main-button mui-disabled" id="submit">下一步</button>
+			</div>
+		</div>
+		<script type='text/javascript' src='../../js/jquery-1.11.1.min.js'></script>
+		<script type='text/javascript' src="../../js/mui.min.js"></script>
+		<script type='text/javascript' src='../../js/common/common.js'></script>
+		<script type='text/javascript' src='../../js/reaName/ID.js'></script>
+		<!-- aliyun upload js -->
+		<link href="../../js/common/mui.loading.css" rel="stylesheet" />
+		<script type="text/javascript" src="../../js/common/mui.loading.js"></script>
+		<script type="text/javascript">
+
+			mui.plusReady(function() {
+				loadAuth();
+			});
+
+			// 加载数据
+			function loadAuth() {
+				Common.muipost("/app/user/v2/auth/info", {}, function(data) {
+					if (data.date == null) {
+						// 无数据，带提交
+						$(".realname").removeClass("mui-hidden");
+						$("#submit").removeClass("mui-disabled");
+						// 可以上传
+						canUp = true;
+						$("#name").removeAttr("readonly");
+						$("#card").removeAttr("readonly");
+					} else {
+						// 显示数据
+						var images = JSON.parse(data.date.certPhoto);
+
+						// 验证是否为服务器图片
+						var zheng = images[0];
+						if (zheng.indexOf("/static/") == 0) {
+							zheng = basePath + zheng;
+							$("#zheng").attr("src", zheng);
+						} else {
+							// 阿里云
+							Common.muipost("/common/oss/sts/auth", {key: zheng}, function(data) {
+								zheng = data.date;
+								$("#zheng").attr("src", zheng);
+							}, function(data) {
+								mui.toast("图片服务异常，无法显示");
+							});
+						}
+						var hand = images[1];
+						if (hand.indexOf("/static/") == 0) {
+							hand = basePath + hand;
+							$("#hand").attr("src", hand);
+						} else {
+							// 阿里云
+							Common.muipost("/common/oss/sts/auth", {key: hand}, function(data) {
+								hand = data.date;
+								$("#hand").attr("src", hand);
+							}, function(data) {
+								mui.toast("图片服务异常，无法显示");
+							});
+						}
+						let value = data.date.certNo.replace(/^(.{3})(?:\d+)(.{4})$/,"$1***********$2");
+						if (data.date.state == 0) {
+							$("#name").val(data.date.name);
+							$("#card").val(value);
+							$("#submit").html("审核中");
+							$('#attest').val('审核中');
+							$('.mui-title').html('实名认证')
+							$(".up-ps").addClass("mui-hidden");
+							$(".realname-btn").addClass("mui-hidden");
+							$('.m-clear').removeClass("mui-input-clear");
+							$('.m-clear').addClass("m-right");
+							$('.m-attest').removeClass("mui-hidden");
+						} else if (data.date.state == 2) {
+							$("#name").val(data.date.name);
+						$("#card").val(value);
+							$("#submit").html("审核通过");
+							$('#attest').val('审核通过');
+							$('.m-clear').addClass("m-right");
+							$('.mui-title').html('实名认证');
+							$(".up-images").addClass("mui-disabled");
+							$(".up-ps").addClass("mui-hidden");
+							$(".realname-btn").addClass("mui-hidden");
+							$('.m-clear').removeClass("mui-input-clear");
+							$('.m-attest').removeClass("mui-hidden");
+						} else {
+							// 审核失败
+							// $("#submit").html("审核失败");
+							$("#m-status").removeClass("mui-hidden");
+							// $("#status").val("审核失败");
+							$("#submit").removeClass("mui-disabled");
+							$(".realname-fail").removeClass("mui-hidden");
+							// 可以重新上传
+							canUp = true;
+							$("#name").removeAttr("readonly");
+							$("#card").removeAttr("readonly");
+						}
+						$(".realname").removeClass("mui-hidden");
+					}
+				}, function(data) {
+					mui.alert(' ', data.content, '确定', function (e) {
+					}, 'body');
+				});
+			}
+
+
+
+			window.addEventListener('refresh', function(e) {
+                loadAuth()
+            })
+			mui("body").on("tap", "#submit", function() {
+				var name = $("#name").val();
+				var card = $("#card").val();
+				if (card == '' || card == null) {
+					mui.toast("请输入身份证号");
+					return false;
+				}
+				if (isCardNo(card) === false) {
+					mui.toast("您输入的身份证号码不正确");
+					return false;
+				}
+				if (checkProvince(card) === false) {
+					mui.toast("您输入的身份证号码不正确");
+					return false;
+				}
+				//校验生日
+				if (checkBirthday(card) === false) {
+					mui.toast("您输入的身份证号码不正确");
+					return false;
+				}
+				//检验位的检测
+				if (checkParity(card) === false) {
+					mui.toast("您输入的身份证号码不正确");
+					return false;
+				}
+				mui.openWindow({
+                    url: '/info/info/realName.html',
+                    id: '/info/info/realName.html',
+                    extras: {
+                        name: name,
+                        card: card
+                    }
+                });
+
+			});
+
+
+		</script>
+	</body>
+
+</html>

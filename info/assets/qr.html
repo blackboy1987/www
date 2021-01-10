@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="HandheldFriendly" content="true" />
+		<meta name="MobileOptimized" content="320" />
+		<title></title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/style.css" rel="stylesheet" />
+		<script type='text/javascript' src='../../js/jquery-1.11.1.min.js'></script>
+		<script type='text/javascript' src="../../js/mui.min.js"></script>
+		<script type="text/javascript" src="../../js/html5plus.js"></script>
+		<style type="text/css">
+			#bcid {
+				width: 100%;
+				position: absolute;
+				top: 40px;
+				bottom: 0px;
+				text-align: center;
+			}
+
+			.tip {
+				color: gray;
+				font-weight: bold;
+				text-shadow: 0px -1px #103E5C;
+			}
+
+			footer {
+				width: 100%;
+				height: 44px;
+				position: absolute;
+				bottom: 0px;
+				line-height: 44px;
+				text-align: center;
+				color: #FFF;
+			}
+
+			.fbt {
+				width: 50%;
+				height: 100%;
+				background-color: #00CDB9;
+				float: left;
+			}
+
+			.fbt:active {
+				-webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.5);
+				box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.5);
+			}
+		</style>
+	</head>
+	<body style="">
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">提币地址</h1>
+			<a id="btn-more" class="mui-pull-right">
+				<span class="mui-icon mui-icon-more"></span>
+			</a>
+		</header>
+		<div id="bcid">
+			<div style="height:40%"></div>
+			<p class="tip">...载入中...</p>
+		</div>
+
+		<!-- 下方弹出 -->
+		<div id="picture" class="mui-popover mui-popover-action mui-popover-bottom">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="appendByGallery()">从相册中选取</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#picture"><b>取消</b></a>
+				</li>
+			</ul>
+		</div>
+
+
+		<script type="text/javascript">
+			var ws = null,
+				wo = null;
+			var scan = null,
+				domready = false;
+			// H5 plus事件处理
+			function plusReady() {
+				if (ws || !window.plus || !domready) {
+					return;
+				}
+				// 获取窗口对象
+				ws = plus.webview.currentWebview();
+				wo = ws.opener();
+				// 开始扫描
+				ws.addEventListener('show', function() {
+					scan = new plus.barcode.Barcode('bcid');
+					scan.onmarked = onmarked;
+					scan.start({
+						conserve: true,
+						filename: '_doc/barcode/'
+					});
+				}, false);
+				// 显示页面并关闭等待框
+				ws.show('pop-in');
+				wo.evalJS('closeWaiting()');
+
+				mui("body").on("tap", "#btn-more", function() {
+					if (mui.os.plus) {
+						var buttonTit = [{
+							title: "从手机相册选择"
+						}];
+						plus.nativeUI.actionSheet({
+							cancel: "取消",
+							buttons: buttonTit
+						}, function(b) { /*actionSheet 按钮点击事件*/
+							switch (b.index) {
+								case 0:
+									break;
+								case 1:
+									scanPicture(); /*打开相册*/
+									break;
+								default:
+									break;
+							}
+						})
+					}
+				}, false);
+			}
+			if (window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener('plusready', plusReady, false);
+			}
+			// 监听DOMContentLoaded事件
+			document.addEventListener('DOMContentLoaded', function() {
+				domready = true;
+				plusReady();
+			}, false);
+
+			// 二维码扫描成功
+			function onmarked(type, result, file) {
+				switch (type) {
+					case plus.barcode.QR:
+						type = 'QR';
+						break;
+					case plus.barcode.EAN13:
+						type = 'EAN13';
+						break;
+					case plus.barcode.EAN8:
+						type = 'EAN8';
+						break;
+					default:
+						type = '其它' + type;
+						break;
+				}
+				result = result.replace(/\r\n/g, '');
+				result = result.replace(/\"/g, '');
+				console.log(result);
+				wo.evalJS("scaned('" + type + "','" + result + "','" + file + "');");
+				back();
+			}
+
+			// 从相册中选择二维码图片 
+			function scanPicture() {
+				plus.gallery.pick(function(path) {
+					plus.barcode.scan(path, onmarked, function(error) {
+						plus.nativeUI.alert('无法识别此图片', function() {
+							mui.back();
+						});
+					});
+				}, function(err) {
+					console.log('Failed: ' + err.message);
+				});
+			}
+		</script>
+	</body>
+</html>

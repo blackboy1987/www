@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>收益明细</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!--标准mui.css-->
+    <link rel="stylesheet" href="../css/mui.min.css">
+    <!--App自定义的css-->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/hashbox.css">
+    <style>
+        .mui-content > .mui-table-view:first-child {
+            margin-top: 0
+        }
+
+        .mui-table-view-cell:after {
+            right: 15px;
+            background-color: #ffffff;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        .my .shouyi-mx.mui-table-view:after {
+            height: 0;
+        }
+
+        .box-sd {
+            position: relative;
+            top: -30px;
+        }
+
+        .mui-icon-arrowright {
+            font-size: 22px;
+            margin-top: 9px;
+            color: #969699;
+        }
+        .mui-pull-bottom-pocket{
+            background: #fff;
+        }
+
+        .shouyi .shouyi-name div {
+            padding-top: 10px;
+        }
+
+        .mui-bar .mui-title {
+            width: 130px;
+            margin-left: -15px;
+        }
+
+        .mui-action-back {
+            line-height: 44px;
+        }
+
+        .pay-tb .mui-segmented-control .mui-control-item {
+            color: #7D7D80;
+        }
+
+        .pay-tb.mui-slider .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
+            border: none;
+        }
+
+        .pay-tb .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
+            color: #323233;
+        }
+
+        .pay-tb.mui-slider .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active .m-span {
+            display: inline-block;
+            height: 100%;
+            border-bottom: 3px solid #1F74D7;
+        }
+
+        .zc-list ul li {
+            height: 100%;
+            border-bottom: 0;
+        }
+
+        .m-block1:after {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            left: 0px;
+            height: 1px;
+            content: '';
+            -webkit-transform: scaleY(.5);
+            transform: scaleY(.5);
+            background-color: #e5e5e5;
+        }
+
+        .mui-table-view-cell.invest-list.toDetails0 {
+            height: auto;
+        }
+
+        .mui-table-view-cell.invest-list.toDetails0 {
+            padding-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+<header class="mui-bar mui-bar-nav other">
+    <a class="mui-action-back mui-pull-left"><img src="../images/hashbox/slf-47.svg" style="width: 15px"></a>
+    <h1 class="mui-title">BTC总收益明细</h1>
+</header>
+<div class="mui-content" id="index-html" style="background: #fff"></div>
+<div class="zc-list" style="margin: auto;background: #fff">
+    <div id="slider" class="mui-slider pay-tb">
+
+    </div>
+    <div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-4"></div>
+    <div class="mui-slider-group" id="pullrefresh"
+         style="border-top-left-radius: 5px;border-top-right-radius: 5px;background: #ecedef">
+        <div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
+            <ul id="itemmobile" style="margin-top:0;">
+            </ul>
+        </div>
+        <div id="item2mobile" class="mui-slider-item mui-control-content">
+            <ul id="leaseContainer" style="margin-top:0;">
+            </ul>
+        </div>
+        <div id="item3mobile" class="mui-slider-item mui-control-content">
+            <ul id="itemmobil3e" style="margin-top:0;"></ul>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+<script src="../js/mui.min.js"></script>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/common/common.js"></script>
+<script>
+    var coinType, types
+    mui.plusReady(function () {
+        var current = plus.webview.currentWebview();
+        types = Number(current.target.type);
+        if (types) {
+            switch (types) {
+                case 1:
+                    coinType = 'BTC';
+                    break;
+                case 5:
+                    coinType = 'ETH';
+                    break;
+                case 6:
+                    coinType = 'FIL';
+                    break;
+                default:
+                    break;
+            }
+            $('.mui-title').text(coinType + '总收益明细')
+        }
+
+        if (types == 6) {
+            $("#bore").html('FIL<span style="color: #ffcda0">已释放</span>');
+            $("#income").text('FIL总收益明细');
+            $("#fil").css('display', 'block');
+            $(".mui-col-xs-6").addClass('mui-col-xs-4')
+        }
+    });
+
+    mui.init({
+        swipeBack: true,
+        pullRefresh: {
+            container: '#pullrefresh', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+            up: {
+                height: 50, //可选.默认50.触发上拉加载拖动距离
+                auto: true, //可选,默认false.自动上拉加载一次
+                contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+                contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+                callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+            },
+            down: {
+                style: 'circle',
+                callback: pulldownRefresh
+            }
+        }
+    });
+    mui("body").on("tap", ".mui-control-item", function () {
+        $("#itemmobile > li").remove();
+        $("#leaseContainer > li").remove();
+        $("#itemmobil3e > li").remove();
+        page = 1
+        excision = 0
+        type = $(this).attr('_id')
+        pullupRefresh()
+    })
+    var excision = 0;
+    var page = 1;
+    var type = 0
+
+    function pullupRefresh() {
+        var _this = this;
+        var url = "/app/user/v2/invest/page/byDate";
+        Common.muipost(url, {
+            limit: 10,
+            page: page,
+            coinType: types
+        }, function (data) {
+            if (data.date.list && data.date.list.length > 0) {
+                var content = "";
+                mui.each(data.date.list, function (index, item) {
+                    var investBtc = Common.moneyFormatByDecimals(item.investBtc, 8);
+                    var investHpt = Common.moneyFormat(item.investHpt);
+                    var investFil = Common.moneyFormatByDecimals(item.investFil, 8);          //FIL已释放收益
+                    var delayFil = Common.moneyFormatByDecimals(item.delayFil, 8);           //FIL待释放收益
+                    var investEth = Common.moneyFormatByDecimals(item.investEth, 8);           //FIL待释放收益
+                    if (item.createDate != null && item.createDate != undefined) {item.createDate = item.createDate.substring(0, 10)};
+                    if (types == 6) {
+                        content += `
+                    <li class="mui-table-view-cell invest-list toDetails${type}">
+                    <div class="mui-row">
+
+                    <div class="mui-col-xs-12 m-block1 box-border-bottom" _createdate="${item.createDate}">
+                    <span class="finan-date c96 m-size13 mui-pull-left">${item.createDate}</span>
+                    <span class="mui-pull-right m-size13 c96" style="position:relative;right:3px;">收益明细 <a class="mui-pull-right" href="">
+                    <span class="mui-icon mui-icon-arrowright"></span></a>
+                    </span>
+                    </div>
+
+                    <div class="mui-col-xs-12 box-border-bottom"><p class="finan-title c33 m-size13 mui-pull-left">FIL 已释放收益</p>
+                    <p class="finan-stats ff843a mui-pull-right">${investFil} ${coinType}</p></div>
+                     <div class="mui-col-xs-12 box-border-bottom"><p class="finan-title c33 m-size13 mui-pull-left">FIL 待释放收益</p>
+                    <p class="finan-stats ff843a mui-pull-right">${delayFil} ${coinType}</p></div>
+
+                    <sapn class="mui-col-xs-12" style="height: 2px;"></sapn>
+
+                    <div class="mui-col-xs-12" style="height: 45px">
+                    <p class="finan-title c33 m-size13 mui-pull-left" style="line-height: 45px">HBT奖励</p>
+                    <p class="finan-stats ff843a mui-pull-right" style="line-height: 45px">${investHpt}</p></div>
+                    </div>
+                    </li>
+                    `
+                    } else if (types == 1){
+                        content += `
+                            <li class="mui-table-view-cell invest-list toDetails0">
+                            <div class="mui-row">
+                            <div class="mui-col-xs-12 m-block1 box-border-bottom" _createdate="${item.createDate}">
+                            <span class="finan-date c96 m-size13 mui-pull-left">${item.createDate}</span>
+                            <span class="mui-pull-right m-size13 c96" style="position:relative;right:3px;">收益明细
+                            <a class="mui-pull-right" href=""><span class="mui-icon mui-icon-arrowright"></span></a>
+                            </span>
+                            </div>
+                            <div class="mui-col-xs-12"><p class="finan-title c33 m-size13 mui-pull-left">${coinType}算力产出</p>
+                            <p class="finan-stats ff843a mui-pull-right">${investBtc} ${coinType}</p></div>
+                            <sapn class="mui-col-xs-12 box-border-bottom" style="height: 2px;"></sapn><div class="mui-col-xs-12">
+                            <p class="finan-title c33 m-size13 mui-pull-left">HBT奖励</p>
+                            <p class="finan-stats ff843a mui-pull-right">${investHpt} HBT</p></div></div>
+                            </li>
+                            `
+                    }else if (types == 5){
+                        content += `
+                            <li class="mui-table-view-cell invest-list toDetails0">
+                            <div class="mui-row">
+                            <div class="mui-col-xs-12 m-block1 box-border-bottom" _createdate="${item.createDate}">
+                            <span class="finan-date c96 m-size13 mui-pull-left">${item.createDate}</span>
+                            <span class="mui-pull-right m-size13 c96" style="position:relative;right:3px;">收益明细
+                            <a class="mui-pull-right" href=""><span class="mui-icon mui-icon-arrowright"></span></a>
+                            </span>
+                            </div>
+                            <div class="mui-col-xs-12"><p class="finan-title c33 m-size13 mui-pull-left">${coinType}算力产出</p>
+                            <p class="finan-stats ff843a mui-pull-right">${investEth} ${coinType}</p></div>
+                            <sapn class="mui-col-xs-12 box-border-bottom" style="height: 2px;"></sapn><div class="mui-col-xs-12">
+                            <p class="finan-title c33 m-size13 mui-pull-left">HBT奖励</p>
+                            <p class="finan-stats ff843a mui-pull-right">${investHpt} HBT</p></div></div>
+                            </li>
+                            `
+                    }
+                });
+                if ($(".toDetails0").length > 0) {
+                    $("#itemmobile > li:last").after(content);
+                } else {
+                    $("#itemmobile").prepend(content);
+                }
+                excision = data.date.excision;
+                page++;
+                _this.endPullupToRefresh(data.date.totalPage <= data.date.page);
+            } else {
+                _this.endPullupToRefresh(true);
+            }
+        }, function (data) {
+            _this.endPullupToRefresh(true);
+        });
+    }
+
+    function pulldownRefresh() {
+        excision = 0;
+        page = 1;
+        var url = "/app/user/v2/invest/page/byDate";
+        Common.muipost(url, {
+            limit: 10,
+            page: page,
+            coinType: types
+        }, function (data) {
+            $("#itemmobile > li").remove();
+            $("#leaseContainer > li").remove();
+            $("#itemmobil3e > li").remove();
+            if (data.date.list && data.date.list.length > 0) {
+                var content = "";
+                mui.each(data.date.list, function (index, item) {
+                    var investBtc = Common.moneyFormatByDecimals(item.investBtc, 8);
+                    var investHpt = Common.moneyFormat(item.investHpt);
+                    var investFil = Common.moneyFormatByDecimals(item.investFil, 8);          //FIL已释放收益
+                    var delayFil = Common.moneyFormatByDecimals(item.delayFil, 8);           //FIL待释放收益
+                    var investEth = Common.moneyFormatByDecimals(item.investEth, 8);           //FIL待释放收益
+                    if (item.createDate != null && item.createDate != undefined) {item.createDate = item.createDate.substring(0, 10)};
+                    if (types == 6) {
+                        content += `
+                    <li class="mui-table-view-cell invest-list toDetails${type}">
+                    <div class="mui-row">
+
+                    <div class="mui-col-xs-12 m-block1 box-border-bottom" _createdate="${item.createDate}">
+                    <span class="finan-date c96 m-size13 mui-pull-left">${item.createDate}</span>
+                    <span class="mui-pull-right m-size13 c96" style="position:relative;right:3px;">收益明细 <a class="mui-pull-right" href="">
+                    <span class="mui-icon mui-icon-arrowright"></span></a>
+                    </span>
+                    </div>
+
+                    <div class="mui-col-xs-12 box-border-bottom"><p class="finan-title c33 m-size13 mui-pull-left">FIL 已释放收益</p>
+                    <p class="finan-stats ff843a mui-pull-right">${investFil} ${coinType}</p></div>
+                     <div class="mui-col-xs-12 box-border-bottom"><p class="finan-title c33 m-size13 mui-pull-left">FIL 待释放收益</p>
+                    <p class="finan-stats ff843a mui-pull-right">${delayFil} ${coinType}</p></div>
+
+                    <sapn class="mui-col-xs-12" style="height: 2px;"></sapn>
+
+                    <div class="mui-col-xs-12" style="height: 45px">
+                    <p class="finan-title c33 m-size13 mui-pull-left" style="line-height: 45px">HBT奖励</p>
+                    <p class="finan-stats ff843a mui-pull-right" style="line-height: 45px">${investHpt}</p></div>
+                    </div>
+                    </li>
+                    `
+                    } else if (types == 1){
+                        content += `
+                            <li class="mui-table-view-cell invest-list toDetails0">
+                            <div class="mui-row">
+                            <div class="mui-col-xs-12 m-block1 box-border-bottom" _createdate="${item.createDate}">
+                            <span class="finan-date c96 m-size13 mui-pull-left">${item.createDate}</span>
+                            <span class="mui-pull-right m-size13 c96" style="position:relative;right:3px;">收益明细
+                            <a class="mui-pull-right" href=""><span class="mui-icon mui-icon-arrowright"></span></a>
+                            </span>
+                            </div>
+                            <div class="mui-col-xs-12"><p class="finan-title c33 m-size13 mui-pull-left">${coinType}算力产出</p>
+                            <p class="finan-stats ff843a mui-pull-right">${investBtc} ${coinType}</p></div>
+                            <sapn class="mui-col-xs-12 box-border-bottom" style="height: 2px;"></sapn><div class="mui-col-xs-12">
+                            <p class="finan-title c33 m-size13 mui-pull-left">HBT奖励</p>
+                            <p class="finan-stats ff843a mui-pull-right">${investHpt} HBT</p></div></div>
+                            </li>
+                            `
+                    }else if (types == 5){
+                        content += `
+                            <li class="mui-table-view-cell invest-list toDetails0">
+                            <div class="mui-row">
+                            <div class="mui-col-xs-12 m-block1 box-border-bottom" _createdate="${item.createDate}">
+                            <span class="finan-date c96 m-size13 mui-pull-left">${item.createDate}</span>
+                            <span class="mui-pull-right m-size13 c96" style="position:relative;right:3px;">收益明细
+                            <a class="mui-pull-right" href=""><span class="mui-icon mui-icon-arrowright"></span></a>
+                            </span>
+                            </div>
+                            <div class="mui-col-xs-12"><p class="finan-title c33 m-size13 mui-pull-left">${coinType}算力产出</p>
+                            <p class="finan-stats ff843a mui-pull-right">${investEth} ${coinType}</p></div>
+                            <sapn class="mui-col-xs-12 box-border-bottom" style="height: 2px;"></sapn><div class="mui-col-xs-12">
+                            <p class="finan-title c33 m-size13 mui-pull-left">HBT奖励</p>
+                            <p class="finan-stats ff843a mui-pull-right">${investHpt} HBT</p></div></div>
+                            </li>
+                            `
+                    }
+
+                });
+                $("#itemmobile>li").remove()
+                $("#itemmobile").html(content);
+                excision = data.date.excision;
+                page++;
+            } else {
+                mui('#pullrefresh').pullRefresh().endPulldownToRefresh(true);
+                mui('#pullrefresh').pullRefresh().refresh(true);
+            }
+        }, function (data) {
+
+        });
+        mui('#pullrefresh').pullRefresh().endPulldownToRefresh(true);
+        mui('#pullrefresh').pullRefresh().refresh(true);
+    }
+
+    mui("body").on("tap", "div.m-block1", function () {
+        responseData = {};
+        var create = $(this).attr("_createDate");
+        responseData.createDate = create.replace(/\//g, "-")
+        responseData.type = types
+        mui.openWindow({
+            url: 'profitDayFull.html',
+            id: 'profitDayFull.html',
+            extras: {
+                target: responseData
+            }
+
+        });
+    })
+</script>
+</html>

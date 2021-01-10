@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>忘记密码</title>
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/style.css" rel="stylesheet" />
+		<link href="../css/hashbox.css" rel="stylesheet" />
+		<link href="../css/verify.css" rel="stylesheet" />
+		<link href="../css/mui.picker.css" rel="stylesheet" />
+		<link href="../css/mui.poppicker.css" rel="stylesheet" />
+		<script type='text/javascript' src='../js/jquery-1.11.1.min.js'></script>
+		<script type='text/javascript' src="../js/mui.min.js"></script>
+		<script type='text/javascript' src='../js/common/common.js'></script>
+		<link href="../js/common/mui.loading.css" rel="stylesheet" />
+		<script type="text/javascript" src="../js/common/mui.loading.js"></script>
+		<script type="text/javascript" src="../js/crypto-js.js"></script>
+		<script type="text/javascript" src="../js/ase.js"></script>
+		<script type="text/javascript" src="../js/verify.js"></script>
+		<style>
+			html, body {height: 100%}
+			input[type=color], input[type=date], input[type=datetime-local], input[type=datetime], input[type=email], input[type=month], input[type=number], input[type=password], input[type=search], input[type=tel], input[type=text], input[type=time], input[type=url], input[type=week], select, textarea{border-radius: 50px;margin-bottom: 6%;height: 43px}
+			::-webkit-input-placeholder {color: #b3b3b3;font-size: 15px;}
+			::-moz-placeholder {color: #b3b3b3;font-size: 15px;}
+
+			/* firefox 19+ */
+			:-ms-input-placeholder {color: #b3b3b3;font-size: 15px;}
+
+			/* ie */
+			input:-moz-placeholder {color: #b3b3b3;font-size: 15px;}
+			.login-content{top: 0%;}
+			.reg .mui-checkbox.mui-left label {color: #ffffff}
+			.reg .mui-checkbox a {color: #ffd200 !important;}
+			.mui-content {background: none;}
+			.mui-input-row.back{margin-top: 9%;margin-bottom: 9%;}
+			.achieve{right: 14px;color: #0560f5 !important;}
+			.achieve span {border-bottom: 1px solid;}
+			#login-form.mui-input-group .mui-input-row {margin-bottom: 10px;}
+			.login-content button#register{border-radius: 20px;font-size: 16px;display: block;width: 85%;margin: 0 auto;padding: 15px 0;line-height: 0;background: #ffd200;color:#000;border:none;margin-bottom: 10%;}
+			#particles{background: url("../images/login-register/bj-03.png")no-repeat center center;height: 100%;position: relative;}
+			.mui-input-row{width: 85%;margin: 0 auto;}
+			#login-form, .mui-content-padded{margin: 0}
+			#login-form .mui-input-row {
+				display: flex;
+				align-items: center;
+			}
+			#login-form .error-msg {
+				width: 4%;
+				margin-bottom: 3%;
+				color: rgb(207, 54, 54);
+			}
+			#login-form>div:last-child .error-msg {
+				margin-bottom: 12%;
+			}
+			.link-arealink-area{width: 85%;margin: 0 auto;}
+			.mui-checkbox input[type=checkbox]:before, .mui-radio input[type=radio]:before {color: #ffffff;background: #ffffff;border-radius: 34px;}
+			.reg .mui-checkbox input[type=checkbox]:before, .mui-radio input[type=radio]:before {font-size: 19px;}
+			input[type=color], input[type=date], input[type=datetime-local], input[type=datetime], input[type=email], input[type=month], input[type=number], input[type=password], input[type=search], input[type=tel], input[type=text], input[type=time], input[type=url], input[type=week], select, textarea {border: 1px solid rgb(255,255,255); -webkit-text-fill-color: #999999;}
+			#yzm {margin-bottom: 15%;}
+			.footer {width: 100%;position: absolute; bottom: 35px;text-align: center;z-index: 1;}
+			.footer span,
+			.footer a {font-size: 15px;}
+			.footer span {color: #fff;}
+			.footer a {color: #ffd200;}
+		</style>
+	</head>
+	<body>
+		<div id="particles">
+			<div class="mui-content login-content ">
+				<div class="mui-input-row back" style="width: 91%">
+					<img src="../images/login-register/register-logo.png" alt="" style="width: 100px;">
+				</div>
+				<form id='login-form' class="">
+					<div class="mui-input-row">
+						<div class="error-msg">*</div>
+						<input id='phone' name="phone" type="number" pattern="\d*" class="mui-input-clear mui-input" placeholder="请输入手机号码"
+						 maxlength="11" style="padding: 10px 15px;">
+					</div>
+					<div class="mui-input-row">
+						<div class="error-msg">*</div>
+						<input id='password' name="password" type="password" class="mui-input-clear mui-input" placeholder="请输入8-16位密码"
+						 maxlength="16">
+					</div>
+					<div class="mui-input-row">
+						<div class="error-msg">*</div>
+						<input id='repassword' name="repassword" type="password" class="mui-input-clear mui-input" placeholder="请再次输入密码"
+						 maxlength="16">
+					</div>
+
+					<div class="mui-input-row yzm">
+						<div class="error-msg">*</div>
+						<input id='yzm' type="number" pattern="\d*" name="phonecode" class="mui-input-clear mui-input" placeholder="请输入短信验证码"
+						 maxlength="6">
+						<a type="button" class="achieve fc2c9 fs15" id="sendsms-new"><span>发送验证码</span></a>
+					</div>
+				</form>
+
+				<div class="mui-content-padded">
+					<button id='register' type="button" class="mui-btn mui-btn-block mui-btn-primary">确认修改</button>
+				</div>
+			</div>
+			<div class="footer" id="go-to-login">
+				<span>已有账号</span> <a id="go-login" href="javascript::void(0);">登录>></a>
+			</div>
+			<div id="verify-content"></div>
+		</div>
+		<script>
+			var phone = 0;
+			var source = "forgetPassword";
+			$(window).resize(function(){
+				if ($(this).height() < 500){
+					var winHeight = $(window).height()
+					$('body').height(winHeight)
+					$('.footer').hide();
+				} else {
+					$('body').height('100%')
+					$('.footer').show()
+				}
+			})
+			mui.plusReady(function() {
+				var current = plus.webview.currentWebview();
+				source = current.source;
+				// 登录后忘记密码
+				if (source == "updatePwd") {
+					phone = JSON.parse(plus.storage.getItem("loginUser")).username;
+					// 移除手机号 移除去登录按钮
+					$("#phone").prevAll().remove();
+					$("#phone,#go-to-login").remove();
+					popVerify({
+						rootEl: $('#verify-content'),
+						clickEl: 'sendsms-new',
+						phone: phone,
+						successCallback: sendSms
+					});
+				} else {
+					phone = $('input[name="phone"]').val();
+					$('input[name="phone"]').on('input', function(e){
+						if (e.target.value.length == 11) {
+							var mobile = e.target.value;
+							if (!checkPhone(mobile)) return false;
+							// 加载点选验证码
+							popVerify({
+								rootEl: $('#verify-content'),
+								clickEl: 'sendsms-new',
+								phone: mobile,
+								beforeCheck: checkPhone,
+								successCallback: sendSms
+							});
+						}
+					})
+				}
+				document.getElementById('register').addEventListener('tap', function() {
+					var params = form.serializeJson();
+					var url = "/app/auth/pass";
+					if (source == 'updatePwd') {
+						params.phone = phone
+					}
+					if (source == "forgetPassword" && Common.isNull(params.phone)) {
+						mui.toast("手机号不能为空");
+						return false;
+					} else if (source == "forgetPassword" && Common.isPhoneAvailable(params.phone)) {
+						mui.toast("请输入正确的手机号");
+						return false;
+					}
+					if (Common.isNull(params.phonecode)) {
+						mui.toast("短信验证码不能为空");
+						return false;
+					}
+					if (Common.isNull(params.password)) {
+						mui.toast("密码不能为空");
+						return false;
+					} else if (Common.passWord(params.password)) {
+						mui.toast("请输入8位到16位的数字或字母的密码");
+						return false;
+					}
+	
+					if (Common.isNull(params.repassword)) {
+						mui.toast("确认密码不能为空");
+						return false;
+					} else if (Common.passWord(params.repassword)) {
+						mui.toast("请输入8位到16位的数字或字母的确认密码");
+						return false;
+					}
+	
+					if (params.password.trim() != params.repassword.trim()) {
+						mui.toast("两次密码输入不一致");
+						return false;
+					}
+	
+					$("#register").addClass("mui-disabled");
+					mui.showLoading("修改中...", "div");
+					mui.ajax(basePath + url, {
+						data: params,
+						dataType: 'json', //服务器返回json格式数据
+						type: 'POST',
+						timeout: 10000, //超时时间设置为10秒；
+						success: function(data) {
+							mui.hideLoading();
+							if (data.type == 200) {
+								mui.toast("修改成功，正在跳转登录页面");
+								setTimeout(function() {
+									try {
+										plus.storage.removeItem("loginUser");
+									} catch (e) {}
+									location.href = "../login.html";
+								}, 1500)
+							} else {
+								// 500 warn
+								$("#register").removeClass("mui-disabled");
+								mui.alert(data.content);
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							mui.hideLoading();
+							$("#register").removeClass("mui-disabled");
+							mui.toast('网络异常，无法访问' + xhr.status);
+						}
+					});
+				});
+			});
+			function checkPhone (mobile) {
+				if (isGetCode && source == "forgetPassword") {
+					var mobile = $('input[name="phone"]').val();
+					if (Common.isNull(mobile)) {
+						mui.toast("手机号不能为空");
+						return false;
+					}
+					if (Common.isPhoneAvailable(mobile)) {
+						mui.toast("请输入正确的手机号");
+						return false;
+					}
+				}
+				return true;
+			}
+			var form = $("#login-form");
+
+			var isGetCode = true;
+			//发送验证码
+			function sendSms() {
+				if (isGetCode) {
+					var mobile = source == 'forgetPassword' ? $('input[name="phone"]').val() : phone;
+					if (Common.isNull(mobile) && source == 'forgetPassword') {
+						mui.toast("手机号不能为空");
+						return false;
+					}
+					if (Common.isPhoneAvailable(mobile) && source == 'forgetPassword') {
+						mui.toast("请输入正确的手机号");
+						return false;
+					}
+					mui.showLoading("短信发送中", "div");
+
+					var checkurl = "/common/code/phone/forget_pass";
+					isGetCode = false;
+					mui.ajax(basePath + checkurl, {
+						data: {
+							tel: mobile
+						},
+						dataType: 'json', //服务器返回json格式数据
+						type: 'POST',
+						timeout: 10000, //超时时间设置为10秒；
+						success: function(data) {
+							mui.hideLoading();
+							if (data.type == 200) {
+								$("#sendsms-new").css("color", "#F20B0B");
+								reget(60);
+							} else {
+								// 500 warn
+								isGetCode = true;
+								mui.alert(data.content);
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							mui.hideLoading();
+							isGetCode = true;
+							mui.toast('网络异常，无法访问');
+						}
+					});
+				}
+			}
+
+			function reget(count) {
+				var btn = $("#sendsms-new");
+				var count = count;
+				var resend = setInterval(function() {
+					count--;
+					if (count > 0) {
+						btn.css('pointer-events','none')
+						btn.html(count + "s后重发");
+					} else {
+						btn.css('pointer-events','unset')
+						clearInterval(resend);
+						$("#sendsms-new").css("color", "#00CDB9");
+						btn.html("重获验证码");
+						isGetCode = true;
+					}
+				}, 1000);
+			}
+			mui("body").on("tap", "#go-login", function() {
+				mui.openWindow({
+					url: "../login.html",
+					id: "go-login",
+					createNew: true
+				})
+			})
+		</script>
+	</body>
+
+</html>

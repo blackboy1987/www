@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>我的电费包</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<!--标准mui.css-->
+	<link rel="stylesheet" href="../css/mui.min.css">
+
+	<!--App自定义的css-->
+	<link rel="stylesheet" href="../css/style.css">
+	<link rel="stylesheet" href="../css/hashbox.css">
+</head>
+<style type="text/css">
+	html {
+		background-color: #F5F5F5;
+	}
+
+	.mui-bar-nav~.mui-content {
+		padding-top: 64px;
+	}
+
+	.mui-navigate-right:after,
+	.mui-push-right:after {
+		content: '';
+	}
+
+	.myHashList .record-data .date {
+		float: left;
+		color: #969699;
+		font-size: 14px;
+	}
+
+	.change {
+		color: #FF7800;
+	}
+
+	.xian {
+		border-bottom: 1px solid #E5E5E5;
+		margin: 0 5px 0 2px;
+		width: 100%;
+	}
+
+	.status {
+		display: flex;
+		width: 100%;
+		margin-bottom: 10px;
+		justify-content: space-between;
+	}
+
+	.mui-table-view-chevron .mui-table-view-cell>a:not(.mui-btn) {
+		padding: 10px;
+	}
+
+	.record-data {
+		display: flex;
+		justify-content: space-between;
+	}
+
+
+	.buy-record {
+		margin-top: 20px;
+		margin-bottom: 10px;
+	}
+
+	.myHashList li img {
+		margin-top: 20px;
+	}
+	.mui-table-view li {
+		font-size: 15px;
+	}
+	.pad10{
+		padding: 0;
+		padding-top: 10px;
+	}
+	.m-clear{overflow: auto;}
+	.m-floatL{float:left;}
+	.m-floatR{float: right;color: #0068f7;font-size: 16px}
+	.mycheck {
+		width:18px;
+		height:18px;
+		position:relative;
+	}
+	.mycheck input[type=checkbox] {
+		visibility:hidden;
+	}
+	.mycheck label {
+		cursor:pointer;
+		position:absolute;
+		width:18px;
+		height:18px;
+		top:0;
+		left:0;
+		background:#fff;
+		border:2px solid #ccc;
+		-moz-border-radius:50%;
+		-webkit-border-radius:50%;
+		border-radius:50%;
+	}
+	.mycheck label:after {
+		opacity:0;
+		content:'';
+		position:absolute;
+		width:8px;
+		height:5px;
+		background:transparent;
+		top:2px;
+		left:2px;
+		border:2px solid #fff;
+		border-top:none;
+		border-right:none;
+		-webkit-transform:rotate(-45deg);
+		-moz-transform:rotate(-45deg);
+		-o-transform:rotate(-45deg);
+		-ms-transform:rotate(-45deg);
+		transform:rotate(-45deg);
+	}
+	.mycheck input[type=checkbox]:checked + label {
+		background:#1F75DA;
+		border:2px solid #1F75DA;
+	}
+	.mycheck input[type=checkbox]:checked + label:after {
+		opacity:1;
+		background:#1F75DA;
+	}
+	.m-f2{
+		top: 25px;
+		left: 25px;
+		position: absolute;
+		width: 50px;
+		height: 20px;
+		line-height: 20px;
+		font-size: 20px;
+		text-align: center;
+		color: #282828;
+		margin-left: 20px;
+	}
+	.mui-bar-nav.mui-bar .mui-icon {
+		padding-left: 0;
+		padding-right: 0;
+	}
+	header.other{border-bottom: 0;height: auto}
+	.m-f{font-size: 16px;color:#282828;}
+	.mr1{margin-right:5px;}
+	.m-li{font-size: 13px;color:#333;}
+	.m-time{color:#ADADAD;}
+	.m-bought{color:#FF7800;}
+	.m-inliB{display: inline-block;float: left}
+	.proDe{font-size: 12px;}
+	.footer-buy button, .main-button{background: #0068f7;width: 137px;height: 37px;    margin-top: 16px;}
+	.mui-bar-nav~.mui-content{padding-bottom: 76px;}
+	.mui-bar .mui-btn-link{position: absolute;right:20px;color:#000000;font-size: 15px;}
+	#itemmobile{background: #eee}
+	#itemmobile li{background: #fff;height: 95px}
+	.switchType{height: auto}
+	.mui-bar{padding-right: 0;padding-left: 0}
+	.typeEth{display: none;}
+	.mui-bar .mui-title{text-align: left}
+	.switchType div{
+		padding: 0 20px 0 20px !important;
+		line-height: 42px;
+		height: 42px;
+	}
+	.switchType div .active{
+		color: #0068f7;
+	}
+	.footer-buy {
+		height: 68px;
+		line-height: 68px;
+	}
+	.switchType div .mui-pull-right img{
+		width: 20px;
+		position: relative;
+		top: 4px;
+	}
+	#length{
+		width: 38px;
+		height: 18px;
+		border: 1px solid #a0a0a0;
+		border-radius: 27px;
+		position: relative;
+		top: 25%;
+		line-height: 18px;
+		text-align: center;
+		font-size: 13px;
+		color: #2475f8;
+	}
+	.mt1 {
+		margin-top: 8px!important;
+	}
+	.switchType>.box-border-bottom:after {
+		position: absolute;
+		bottom: -1px;
+	}
+	div.box-border-bottom:after {
+		position: absolute;
+		bottom: 0px;
+	}
+	.m-in-right>.m-clear{
+		height: 47px;
+		line-height: 47px;
+		color: #282828;
+	}
+	.mx-sm-1 {
+		padding-left: 16px!important;
+		padding-right: 16px!important;
+	}
+	.py-sm-1{
+		padding-top: 0 !important;
+	}
+</style>
+<body style="background: #fff">
+<header class="mui-bar mui-bar-nav other">
+	<div class="box-border-bottom" style="height: 50px;padding: 0 20px">
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		<h1 class="mui-title">可购买电费包的合约</h1>
+		<div id="m-record" class="mui-pull-right mui-btn-link">购电记录</div>
+	</div>
+	<div class="switchType">
+		<div class="typeBtc switchType box-border-bottom"><span class="mui-pull-left active" id="btc">BTC算力</span><span class="mui-pull-right" id="switchBut"><img src="../images/hashbox/slf-33.svg"></span></div>
+		<div class="typeEth box-border-bottom" id="selectType"><span class="mui-pull-left typeEth" id="eth">ETH算力</span><span id="length" class="mui-pull-right">-</span></div>
+	</div>
+</header>
+
+<div class="mui-content" id="index-html" style="background: #F5F5F5">
+	<div class="mui-control-content mui-active myHashbox">
+		<div class="mt20 pad10">
+			<div class="" id="itemmobileefresh">
+				<ul class="mui-table-view mui-table-view-chevron myHashList" id="itemmobile">
+
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="footer-buy">
+	<div class="mui-pull-left proDe mycheck" id="selectAll" style="width: 20%;height: 100%;padding:0">
+		<input class="chat-button-location-input selectAll" name="checkbox" type="checkbox" style="margin-left: 21px;margin-top: 20px;">
+		<label style="top:26px;left:26px" id="selectAll2"></label>
+		<div class="m-f2">全选</div>
+	</div>
+	<button class="mui-btn main-button" >购买电费包</button>
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/mui.min.js"></script>
+<script src="../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+	//初始化刷新组件
+	mui.init({
+		swipeBack: true,
+		pullRefresh: {
+			container: '#itemmobileefresh', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+			down: {
+				style: 'circle',
+				callback: pulldownRefresh
+			},
+		}
+	});
+	var coinType= 1
+	var coinTypeListLen;
+	var listData = []
+	var coinType2;
+	pullupRefresh()
+	function pullupRefresh() {
+		var _this = this;
+		Common.muipost("/user/electric/page", {
+			excision: 0,
+			page: 1,
+			coinType:coinType,
+			limit: 1000
+		}, function(data) {
+			if (data.date.list && data.date.list.length > 0) {
+				var content = "";
+				listData = data.date.list
+				mui.each(data.date.list, function(index, item) {
+					var thetime = item.expireDate;
+					var comeDate = item.comeDate;
+					var text = ''
+					if (comeDate) {
+						var d = new Date(Date.parse(thetime.replace(/-/g,"/")));
+						var t = new Date(Date.parse(comeDate.replace(/-/g,"/")));
+						var curDate = new Date();
+						curDate.setDate(curDate.getDate() + 1)
+						if (t > curDate) {
+							text = '电费包暂未生效'
+						} else {
+							if (d < curDate) {
+								text = '未购电费包'
+							} else {
+								var a1 = Date.parse(new Date(new Date()));
+								var a2 = Date.parse(new Date(d));
+								var day = parseInt((a2-a1)/ (1000 * 60 * 60 * 24));
+								text = '电费包剩余' + day + '天'
+							}
+						}
+					} else {
+						text = '未购电费包'
+					}
+					var ti = ''
+					if (item.expirationDate) {
+						ti = item.expirationDate.substr(0, 10)
+					}
+					if (item.coinType == 1 && item.coinType != 5 && item.saleType != 2){
+						electric ='电费 $' + item.electric +' THS/天'
+					}else if (item.saleType == 2){
+						electric = '电费 ' + item.rmbElectricPrice +'￥/天'
+					}else if (item.coinType == 5){
+						electric ='电费 $' + item.electric +' MHS/天'
+					}
+					content += '<li class="mx-sm-1 px-sm-1 m-li py-sm-1 mt1" electricDicountMd5Format="'+ item.electricDicountMd5Format +'" _id="'+ item.id +'" _time="' + item.expirationDate + '" style="padding-bottom: 0!important;"><div class="m-inliB m-in-right" style="width: 100%;"><div class="m-clear box-border-bottom"><div class="m-inliB" style="vertical-align: top;margin-top: 14px;margin-right: 5px"><div class="mycheck mr1"><input class="chat-button-location-input" name="checkbox" type="checkbox"><label _ids="'+ item.id +'" electricDicountMd5Format="'+ item.electricDicountMd5Format +'" _times="' + item.expirationDate + '"></label></div></div><span class="m-floatL m-f">'+ item.name + '</span><span class="m-floatR">X' + item.quantity + '份</span></div><div class="m-clear"><span class="m-floatL">电费 $' + item.electric + 'THS/天</span><span class="m-floatR m-bought">' + text + '</span></div></div></li>'
+				});
+				if ($(".m-li").length > 0) {
+					$("#itemmobile > li:last").after(content);
+					var widths = $(".m-li").innerWidth() - 50 + 'px'
+					// $('.m-in-right').css('width', widths)
+				} else {
+					$("#itemmobile").prepend(content);
+					var widths = $(".m-li").innerWidth() - 50 + 'px'
+					// $('.m-in-right').css('width', widths)
+				}
+			} else {
+			}
+		}, function(da) {
+			mui.toast(da.content);
+		});
+		var _this = this;
+		if (coinType == 1){
+			coinType2 = 5
+		}else {
+			coinType2 = 1
+		}
+		Common.muipost("/user/electric/page", {
+			excision: 0,
+			page: 1,
+			coinType:coinType2,
+			limit: 1000
+		}, function(data) {
+			if (data.date.list && data.date.list.length > 0) {
+				coinTypeListLen = data.date.list.length;
+				$('#length').text(coinTypeListLen)
+			}
+		})
+	}
+
+	function pulldownRefresh() {
+		var _this = this;
+		Common.muipost("/user/electric/page", {
+			excision: 0,
+			page: 1,
+			coinType: coinType,
+			limit: 1000
+		}, function(data) {
+			$("#itemmobile > li").remove();
+			if (data.date.list && data.date.list.length > 0) {
+				mui('#itemmobileefresh').pullRefresh().endPulldown();
+				var content = "";
+				listData = data.date.list
+				mui.each(data.date.list, function(index, item) {
+					var thetime = item.expireDate;
+					var comeDate = item.comeDate;
+					var text = ''
+					if (comeDate) {
+						var d = new Date(Date.parse(thetime.replace(/-/g,"/")));
+						var t = new Date(Date.parse(comeDate.replace(/-/g,"/")));
+						var curDate = new Date();
+						curDate.setDate(curDate.getDate() + 1)
+						if (t > curDate) {
+							text = '电费包暂未生效'
+						} else {
+							if (d < curDate) {
+								text = '未购电费包'
+							} else {
+								var a1 = Date.parse(new Date(new Date()));
+								var a2 = Date.parse(new Date(d));
+								var day = parseInt((a2-a1)/ (1000 * 60 * 60 * 24));
+								text = '电费包剩余' + day + '天'
+							}
+						}
+					} else {
+						text = '未购电费包'
+					}
+					var ti = ''
+					if (item.expirationDate) {
+						ti = item.expirationDate.substr(0, 10)
+					}
+					content += '<li class="mx-sm-1 px-sm-1 m-li py-sm-1 mt1" electricDicountMd5Format="'+ item.electricDicountMd5Format +'" _id="'+ item.id +'" _time="' + item.expirationDate + '" style="padding-bottom: 0!important;"><div class="m-inliB m-in-right" style="width: 100%"><div class="m-clear box-border-bottom"><div class="m-inliB" style="vertical-align: top;margin-top: 14px;margin-right: 5px"><div class="mycheck mr1"><input class="chat-button-location-input" name="checkbox" type="checkbox"><label electricDicountMd5Format="'+ item.electricDicountMd5Format +'" _ids="'+ item.id +'" _times="' + item.expirationDate + '"></label></div></div><span class="m-floatL m-f">'+ item.name + '</span><span class="m-floatR">X' + item.quantity + '份</span></div><div class="m-clear"><span class="m-floatL">电费 $' + item.electric + 'THS/天</span><span class="m-floatR m-bought">' + text + '</span></div></div></li>'
+				});
+				$("#itemmobile").html(content);
+				var widths = $(".m-li").innerWidth() - 50 + 'px'
+				// $('.m-in-right').css('width', widths)
+			}
+		}, function(da) {
+		});
+		Common.muipost("/user/electric/page", {
+			excision: 0,
+			page: 1,
+			coinType:coinType2,
+			limit: 1000
+		}, function(data) {
+			if (data.date.list && data.date.list.length > 0) {
+				coinTypeListLen = data.date.list.length;
+				$('#length').text(coinTypeListLen)
+			}
+		})
+	}
+	var arr = []
+	var timeArr = []
+	var electricDicountMd5Format = []
+	mui("#itemmobile").on("tap", "label", function(event) {
+		var cke = !$(this).prev().prop("checked")
+		$(this).prev().prop("checked", cke)
+		if (cke) {
+			arr.push($(this).attr('_ids'))
+			timeArr.push($(this).attr('_times'))
+			electricDicountMd5Format.push($(this).attr('electricDicountMd5Format'))
+		} else {
+			arr.splice($.inArray($(this).attr('_ids'),arr),1);
+			timeArr.splice($.inArray($(this).attr('_times'),timeArr),1);
+			electricDicountMd5Format.splice($.inArray($(this).attr('electricDicountMd5Format'),arr),1);
+		}
+		if (arr.length < listData.length) {
+			$("#selectAll").find('.chat-button-location-input').prop("checked", false)
+		} else {
+			$("#selectAll").find('.chat-button-location-input').prop("checked", true)
+		}
+		event.stopPropagation();
+	})
+	mui("body").on("tap", ".m-li", function() {
+		var cke = !$(this).find('.chat-button-location-input').prop("checked")
+		$(this).find('.chat-button-location-input').prop("checked", cke)
+		if (cke) {
+			arr.push($(this).attr('_id'))
+			timeArr.push($(this).attr('_time'))
+			electricDicountMd5Format.push($(this).attr('electricDicountMd5Format'))
+		} else {
+			arr.splice($.inArray($(this).attr('_id'),arr),1);
+			timeArr.splice($.inArray($(this).attr('time'),arr),1);
+			electricDicountMd5Format.splice($.inArray($(this).attr('electricDicountMd5Format'),arr),1);
+		}
+		if (arr.length < listData.length) {
+			$("#selectAll").find('.chat-button-location-input').prop("checked", false)
+		} else {
+			$("#selectAll").find('.chat-button-location-input').prop("checked", true)
+		}
+	})
+	$(".index-html").css({"padding-top":'42px',})
+
+	function mainPaddingTop(){
+		if($("#selectType").css('display') == 'none'){
+			$("#index-html").css('padding-top','70px')
+		}else {
+			$("#index-html").css('padding-top','114px')
+		}
+	}
+	$("#switchBut").click(function () {
+		electricDicountMd5Format.length = 0;
+		$(".typeEth").toggle(0, function () {
+		})
+		if ($('#switchBut>img').attr("src") == "../images/hashbox/slf-34.svg" && $(".typeEth").css("display")=="none") {
+			$('#switchBut>img').attr("src", "../images/hashbox/slf-33.svg");
+		} else {
+			$('#switchBut>img').attr("src", "../images/hashbox/slf-34.svg");
+		}
+		mainPaddingTop()
+	})
+
+	$("#selectType").click(function () {
+		if (coinType) {
+			switch (coinType) {
+				case 1:
+					$("#btc").text("ETH算力")
+					$("#eth").text("BTC算力")
+					coinType = 5;
+					$("#itemmobile > li").remove();
+					pullupRefresh()
+					$(".typeEth").css({"display":"none",})
+					$('#switchBut>img').attr("src", "../images/hashbox/slf-33.svg");
+					arr = []
+					$('#selectAll').find('.chat-button-location-input').prop("checked", false)
+					break;
+				case 5:
+					$("#btc").text("BTC算力")
+					$("#eth").text("ETH算力")
+					coinType = 1;
+					$("#itemmobile > li").remove();
+					pullupRefresh()
+					$(".typeEth").css({"display":"none",})
+					$('#switchBut>img').attr("src", "../images/hashbox/slf-33.svg");
+					arr =[]
+					$('#selectAll').find('.chat-button-location-input').prop("checked", false)
+					break;
+				default:
+					break;
+			}
+
+		}
+		mainPaddingTop()
+	})
+
+	$("#selectAll").click(function(){
+		var cke = !$(this).find('.chat-button-location-input').prop("checked")
+		$(this).find('.chat-button-location-input').prop("checked", cke)
+		$("#itemmobile").find('.chat-button-location-input').prop("checked", cke)
+		if (cke) {
+			mui.each(listData, function(index, item) {
+				arr.push(item.id)
+				timeArr.push(item.expirationDate)
+				electricDicountMd5Format.push(item.electricDicountMd5Format)
+			})
+		} else {
+			arr.length = 0
+			timeArr.length = 0
+			electricDicountMd5Format.length = 0
+		}
+	})
+	$(".selectAll").click(function(){
+		var cke = !$(this).find('.chat-button-location-input').prop("checked")
+		$(this).find('.chat-button-location-input').prop("checked", cke)
+		$("#itemmobile").find('.chat-button-location-input').prop("checked", cke)
+		if (cke) {
+			mui.each(listData, function(index, item) {
+				arr.push(item.id)
+				timeArr.push(item.expirationDate)
+			})
+		} else {
+			arr.length = 0
+			timeArr.length = 0
+		}
+	})
+	$(".main-button").click(function () {
+		if (arr.length < 1) {
+			mui.toast('请选择合约');
+			return
+		}
+		if (electricDicountMd5Format) {
+			let b = 0
+			for (var i = 0; i < electricDicountMd5Format.length; i++) {
+				if (electricDicountMd5Format[i] === electricDicountMd5Format[0]) {
+					b++
+				}else {
+					mui.toast('含有不同的产品类型，不支持全选');
+					return
+				}
+			}
+		}
+		var mB = false
+		mui.each(timeArr, function(index, el){
+			var thetime = el;
+			if (thetime) {
+				var curDate = new Date();
+				d = new Date(Date.parse(thetime.replace(/-/g,"/")));
+				var a1 = Date.parse(new Date(curDate));
+				var a2 = Date.parse(new Date(d));
+				var day = parseInt((a2-a1)/ (1000 * 60 * 60 * 24));
+				if (d < 30) {
+					mB = true
+				}
+
+			}
+		})
+		// if (mB) {
+		// 	mui.toast('所选合约到期时间少于30天');
+		// 	return
+		// }
+		mui.openWindow({
+			url: 'settle.html',
+			id: 'settle.html',
+			extras: {
+				arr: arr.join(','),
+				Md5Format: electricDicountMd5Format
+			}
+		});
+		electricDicountMd5Format.length = 0
+	})
+	$("#m-record").click(function(){
+		mui.openWindow({
+			url: './buyRecord.html',
+			id: './buyRecord.html'
+		});
+	})
+	window.addEventListener('payRefresh', function(e) {
+		$("#selectAll").find('.chat-button-location-input').prop("checked", false)
+		arr.length = 0
+		pulldownRefresh()
+	})
+</script>
+</body>
+</html>

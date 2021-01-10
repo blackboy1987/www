@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>忘记资金密码</title>
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/style.css" rel="stylesheet" />
+		<link href="../css/hashbox.css" rel="stylesheet" />
+		<style>
+			.login-content{ top: 40px;}
+			.mui-input-group:before{
+				position:static;
+			}
+			.mui-input-group:after{
+				position:static;
+			}
+			.mui-btn-block {
+				padding: 8px 0;
+			}
+			.mui-bar-nav~.mui-content{padding-top: 10px;}
+			
+			.achieve {padding-top: 30px;}
+			#yzm {padding-right: 95px;}
+			#update-from{padding:0 15px;}
+			.up-ps {font-size: 13px;padding:30px 15px;margin: 0;background:#eee;}
+			.mui-input-group .mui-input-row:after{left:0;}
+			.mui-input-row label{font-size: 15px;color:#333333;}
+			.mui-content-padded{margin-left:0;margin-right:0;}
+	</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">找回资金密码</h1>
+		</header>
+		<div class="mui-content login-content update-password">
+			<div class="up-ps py-sm-2">资金密码请不要与登录密码或其他网站密码一致，由此产生的账号被盗，本站概不负责。</div>
+			<form id='update-from' class="mui-input-group">
+				<div class="mui-input-row yzm">
+					<label for="yzm" class="pl0">验证码</label>
+					<input id='yzm' type="number" class="mui-input" maxlength="8" placeholder="请输入短信验证码" name="code">
+					<a class="achieve" id="sendsms" href="javascript: sendSms();" style="font-size: 15px;">获取验证码</a>
+				</div>
+				<div class="mui-input-row">
+						<label for="password" class="pl0">新资金密码</label>
+					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入新的资金密码" name="pass">
+				</div>
+				<div class="mui-input-row">
+						<label for="repassword" class="pl0">确认新密码</label>
+					<input id='repassword' type="password" class="mui-input-clear mui-input" placeholder="请确认新的资金密码" name="sourPass">
+				</div>
+			</form>
+			<div class="mui-content-padded px-sm-2">
+				<button id='forgetCapitalCode' type="button" class="mui-btn mui-btn-block mui-btn-primary m-btn-ra">确定修改</button>
+			</div>
+		</div>
+		
+		<script type='text/javascript' src='../js/jquery-1.11.1.min.js'></script>
+		<script src="../js/mui.min.js"></script>
+		<script type='text/javascript' src='../js/common/common.js'></script>
+		<link rel="stylesheet" href="../js/common/mui.loading.css" />
+		<script type="text/javascript" src="../js/common/mui.loading.js"></script>
+		<script>
+			var form = $("#update-from");
+			document.getElementById('forgetCapitalCode').addEventListener('tap', function() {
+				// 请求url
+				var url = "/app/user/safe/forget_pass";
+				var params = form.serializeJson();
+				if (Common.isNull(params.code)) {
+					mui.toast("请输入验证码");
+					return false;
+				}
+				if (Common.isNull(params.pass)) {
+					mui.toast("请输入新资金密码");
+					return false;
+				}
+				if (Common.isCash(params.pass)) {
+					mui.toast("请输入资金密码，6位数字组合");
+					return false;
+				}
+				if (Common.isEqual(params.pass, params.sourPass)) {
+					mui.toast("两次密码输入不一致");
+					return false;
+				}
+				mui.showLoading("验证码获取中..", "body");
+				Common.muipost(url, params, function(data) {
+					mui.toast("资金密码重置成功");
+					setTimeout(function() {
+						mui.back();
+					}, 1800);
+				}, function(data) {
+					mui.toast(data.content);
+				});
+			});
+
+			var isGetCode = true;
+			//发送验证码
+			function sendSms() {
+				if (isGetCode) {
+					isGetCode = false;
+					var checkurl = "/common/code/phone/forget_money_pass";
+					mui.showLoading("验证码获取中..", "body");
+					mui.ajax(basePath + checkurl, {
+						data: {},
+						dataType: 'json', //服务器返回json格式数据
+						type: 'POST',
+						timeout: 10000, //超时时间设置为10秒；
+						success: function(data) {
+							mui.hideLoading();
+							if (data.type == 200) {
+								$("#sendsms").css("color", "#F20B0B");
+								reget(60);
+							} else {
+								// 500 warn
+								isGetCode = true;
+								mui.alert(data.content);
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							//异常处理；
+							mui.hideLoading();
+							isGetCode = true;
+							mui.toast('网络异常，无法访问' + xhr.status);
+						}
+					});
+				}
+			}
+
+			function reget(count) {
+				var mobj = $('input[name="phone"]');
+				var btn = $("#sendsms");
+				var count = count;
+				btn.html("60s后重发");
+				var resend = setInterval(function() {
+					count--;
+					if (count > 0) {
+						btn.css('pointer-events','none')
+						btn.html(count + "s后重发");
+					} else {
+						btn.css('pointer-events','unset')
+						clearInterval(resend);
+						$("#sendsms").css("color", "#00CDB9");
+						btn.html("重获验证码");
+						isGetCode = true;
+					}
+				}, 1000);
+			}
+		</script>
+	</body>
+</html>

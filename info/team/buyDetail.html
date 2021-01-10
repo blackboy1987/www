@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>我的算力</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../../css/style.css">
+		<link rel="stylesheet" href="../../css/hashbox.css?v=1">
+
+	</head>
+	<body style="background: #fff">
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="userName">--</h1>
+		</header>
+
+		<div class="mui-content" id="index-html" style="background: #fff">
+			<div class="mui-control-content mui-active myHashbox">
+				<div class="pad10">
+					<h2 class="default-h2">购买记录</h2>
+					<div class="">
+						<ul class="mui-table-view mui-table-view-chevron myHashList" id="detailed">
+							<!--
+							<li class="mui-table-view-cell box-sd mt12">
+								<a class="" href="javascript:void(0)">
+									<img src="images/hashbox/icon_01.png" width="45px" height="45px" />
+									<div class="buy-record">
+										<div class="record-name">
+											比特币算力合约2019-002期
+										</div>
+										<div class="record-data" style="height: 10px;"></div>
+										<div class="record-data">
+											90 HBT <span class="date" style="margin-right: -50px;">2019-02-27</span>
+										</div>
+									</div>
+								</a>
+							</li>-->
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+
+		<script>
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+			var userId;
+			mui.plusReady(function() {
+				var current = plus.webview.currentWebview();
+				userId = current.userId;
+				$("#userName").text(current.name);
+
+			});
+
+			mui.init({
+				swipeBack: true,
+				pullRefresh: {
+					container: '#index-html', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+					up: {
+						height: 50, //可选.默认50.触发上拉加载拖动距离
+						auto: true, //可选,默认false.自动上拉加载一次
+						contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+						contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+						callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					},
+					down: {
+						style: 'circle',
+						callback: pulldownRefresh
+					}
+				}
+			});
+
+
+			function pulldownRefresh() {
+				excision = 0;
+				page = 1;
+				var url = "/app/user/v2/order/page";
+				Common.muipost(url, {
+					excision: excision,
+					page: page,
+					parsentUserId: userId
+				}, function(data) {
+					if (data.date.list && data.date.list.length > 0) {
+						var content = "";
+						mui.each(data.date.list, function(index, item) {
+							var tmpText = '<a class="">' +
+								'<img src="' + basePath + item.productIcon +
+								'" width="45px" height="45px" onerror="this.src=\'../../images/hashbox/product.png\'" />' +
+								'<div class="buy-record">' +
+								'<div class="record-name">' +
+								'' + item.productName + '' +
+								'</div>' +
+								'<div class="record-data" style="height: 10px;"></div>' +
+								'<div class="record-data">' +
+								'' + Common.moneyFormat(item.price) + ' USDT <span class="date" style="margin-right: -50px;">' + item.createDate
+								.substr(0, 10) +
+								'</span>' +
+								'</div>' +
+								'</div>' +
+								'</a>'
+							content += '<li class="mui-table-view-cell box-sd mt10 mui_order" _id="' + item.id + '">' +
+								tmpText +
+								'</li>';
+
+						});
+						$("#detailed").html(content);
+
+						excision = data.date.excision;
+						page++;
+					} else {
+
+					}
+				}, function(data) {
+					mui.toast(data.content);
+				});
+
+				mui('#index-html').pullRefresh().endPulldownToRefresh(true);
+				mui('#index-html').pullRefresh().refresh(true);
+			}
+
+			var excision = 0;
+			var page = 1;
+
+			function pullupRefresh() {
+				var _this = this;
+				var url = "/app/user/v2/order/page";
+				Common.muipost(url, {
+					excision: excision,
+					page: page,
+					parsentUserId: userId
+				}, function(data) {
+					if (data.date.list && data.date.list.length > 0) {
+						var content = "";
+						mui.each(data.date.list, function(index, item) {
+							var tmpText = '<a class="">' +
+								'<img src="' + basePath + item.productIcon +
+								'" width="45px" height="45px"  onerror="this.src=\'../../images/hashbox/product.png\'" />' +
+								'<div class="buy-record">' +
+								'<div class="record-name">' +
+								'' + item.productName + '' +
+								'</div>' +
+								'<div class="record-data" style="height: 10px;"></div>' +
+								'<div class="record-data">' +
+								'' + Common.moneyFormat(item.price) + ' USDT <span class="date" style="margin-right: -50px;">' + item.createDate
+								.substr(0, 10) +
+								'</span>' +
+								'</div>' +
+								'</div>' +
+								'</a>'
+							content += '<li class="mui-table-view-cell box-sd mt10 mui_order" _id="' + item.id + '" _isEth = "'+ item.coinType +'">' +
+								tmpText +
+								'</li>';
+						});
+
+						if ($("#detailed > .mui_order").length > 0) {
+							$("#detailed > .mui_order:last").after(content);
+						} else {
+							$("#detailed").prepend(content);
+						}
+
+						if (data.date.list.length < 10) {
+							_this.endPullupToRefresh(true);
+						} else {
+							_this.endPullupToRefresh(false);
+						}
+
+						excision = data.date.excision;
+						page++;
+					} else {
+						_this.endPullupToRefresh(true);
+					}
+				}, function(data) {
+					console.log(JSON.stringify(data));
+					_this.endPullupToRefresh(true);
+				});
+			}
+			//详情页面跳转
+			mui("body").on("tap", "li.mui_order", function() {
+				var _id = $(this).attr("_id");
+				var _isEth = $(this).attr("_isEth") == '5' ? true : false;
+				mui.openWindow({
+					url: '/index/myHashDetails.html',
+					id: '/index/myHashDetails.html',
+					extras: {
+						isETH : _isEth,
+						orderId: _id
+					}
+				});
+			});
+		</script>
+
+	</body>
+</html>

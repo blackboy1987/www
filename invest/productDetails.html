@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>合约产品</title>
+		<meta name="viewport" id="WebViewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../css/style.css">
+		<link rel="stylesheet" href="../css/hashbox.css">
+		<link href="../css/mui.picker.css" rel="stylesheet" />
+        <link href="../css/mui.poppicker.css" rel="stylesheet" />
+		<style>
+			.box-sd{position: relative; top: -30px;}
+			#choose{height: 60px; background-color: #fff;}
+			.m-push-right:after{color:#4d4d4d;}
+			.mui-poppicker-header .mui-btn{background:#eee;border: #eee;color: #333333;font-size: 15px;}
+			.mui-btn,.footer-buy button,.mui-btn.mui-disabled{background: #4167ed;opacity: 1;}
+			.shouyi-name{display: flex;}
+			.shouyi.proDetails .shouyi-name div.mui-col-xs-4:last-child::after{display: none;}
+			.shouyi.proDetails{position: relative;background-color:#fdf3e5;}
+			.product-details-info{position: absolute;top: 60px;left: 0;width: 100%;padding-bottom: 68px;}
+			#title{color: white;font-size: 16px;margin-bottom: 24px;}
+			.shouyi.proDetails .shouyi-name {
+				height: 64px;
+				padding: 0;
+			}
+			.shouyi-name div {
+				text-align: left !important;
+				font-size: 0;
+			}
+			.m10 {
+				margin:  0 10px 10px;
+			}
+			.shouyi-name img {
+				width: 17px;
+				margin-right: 5px;
+				vertical-align: text-bottom;
+			}
+			/* .shouyi-name div span {
+				margin: 0;
+			} */
+			.shouyi-name .collocation {
+				width: 40%;
+				font-size: 14px;
+				padding-top: 23px;
+				padding-right: 20px;
+				text-align: right !important;
+			}
+			.shouyi-name .electric-charge {
+				width: 60%;
+				font-size: 14px;
+				padding-left: 23px;
+				padding-top: 23px;
+			}
+			.shouyi-name .electric-charge:after {
+				background-color: #e1decf;
+			}
+			#electric, #manage {
+				margin-left: 16px;
+				color: #004eff;
+			}
+			#detail-info {
+				margin-top: 13px;
+			}
+			#detail-info li {padding: 0 8px; color: #282828;}
+			#muiClass {
+				background-color: #fbfbfb;
+			}
+			#muiClass div {
+				margin: 0 8px;
+				position: relative;
+			}
+			#muiClass a {
+				display: inline-block;
+				color: #004eff;
+				font-size: 14px;
+				vertical-align: -webkit-baseline-middle;
+			}
+			#buy-num {
+				background: #fff;
+			}
+			#buy-num>div,
+			#choose>div {
+				margin: 0 8px;
+				color: #282828;
+				position: relative;
+			}
+			#choose {
+				position: relative;
+			}
+			#choose>div>span {margin: 0;vertical-align: -webkit-baseline-middle;}
+			.work-time .mui-navigate-right:after,
+			.mui-push-right:after {
+				color: #004eff;
+			}
+			.ff7800 {
+				color: #ff7800;
+			}
+			.footer-buy {
+				height: 68px;
+				line-height: 68px;
+				border: none;
+			}
+			.footer-buy button {
+				width: 137px;
+				height: 36px;
+				margin: 0;
+				position: absolute;
+				right: 20px;
+				top: 50%;
+				transform: translateY(-50%);
+				border-radius: 18px;
+			}
+			.proDe {
+				padding-left: 24px;
+				color: #282828;
+			}
+			.proDe span {
+				color: #ff7800;
+			}
+			.buy-num span {
+				font-size: 15px;
+				margin-top: 3px;
+				display: inline-block;
+			}
+			.mui-action-back {color: white !important;}
+			/*css滚动条公告*/
+			.LED {height: 18px;background-color:  #fdf3e5;box-sizing: border-box;display: flex;align-items: center;overflow: hidden;white-space: nowrap;margin-left: 6px}
+			.dd_start, .dd_end {color: #ff7800;display: inline;font-size: 15px;font-weight: normal;}
+			.tryBtn{padding:10px 28px;vertical-align:bottom;postion:relative;font-weight: bold;}
+			.tryImg{margin-right:0.25rem;vertical-align:bottom;width:25px;height:25px;position: relative;top: -2px;}
+			.ml1{margin-left: 0}
+			.mui-slider .mui-slider-group .mui-slider-item>a:not(.mui-control-item){height: 117px}
+			.mui-table-view-cell .m-mui-li .m-media .m-btc-li{background-color: #fdf3e5;font-size:18px;padding: 20px 15px;position: relative;}
+			#item-btc >.m-btc-li{background-color: #fdf3e5;font-size:18px;padding: 0px 15px;margin: 10px;padding-bottom: 0px;position: relative;}
+			#item-eth >.m-btc-li{background-color: #fdf3e5;font-size:18px;padding: 0px 15px;margin: 10px;padding-bottom: 0px;position: relative;}
+			.ml1.m-wrap-title.m-size18{padding:8px 28px;vertical-align:bottom;position: relative;font-weight: bold;height: 37px}
+			#inform-close {
+				display: inline-block;
+				margin: 0 15px;
+			}
+			#inform-close img {
+				width: 16px;
+				height: 100%;
+			}
+			#types,
+			.collocation span:nth-child(2) {
+				display: inline-block;
+			}
+
+			.Loading {
+				position: fixed;
+				top: 0;
+				bottom: 0;
+				right: 0;
+				left: 0;
+				background: #fff url("../images/loader.gif") no-repeat center;
+				z-index: 9999;
+			}
+		</style>
+	</head>
+	<body style="background: #f7f7f7" id="pullrefresh">
+	<div class="Loading"></div>
+		<div class="mui-content" id="index-html" style="background: #f7f7f7;">
+			<div class="mui-control-content mui-active shouyi proDetails">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:white;position:absolute;top:17px;left:10px;font-size:25px"></a>
+				<img src="../images/hashbox/banner_tz.png" width="100%" height="143px" />
+				<!-- 添加通知轮播功能 -->
+				<div id="notification-bar" class="container" style="display: flex; font-size: 0.75rem;text-align: left;height: 25px;padding-left: 18px;padding-bottom: 5px;background-color: #fdf3e5;overflow: hidden;">
+					<img class="notice" src="../images/icon_inform.svg" style="vertical-align: middle;width: 16px;height:100%" />
+					<div class= "textCon" style="overflow: hidden;">
+							<div class="LED" id="leng">
+									<div class="dd_start" id="text"></div>
+									<div class="dd_end"></div>
+							</div>
+					</div>
+					<a id="inform-close">
+						<img src="../images/icon_inform_close.svg" alt="">
+					</a>
+				</div>
+				<div class="product-details-info">
+					<div class="m10">
+						<div class="prod-data" style="background: url('../images/hashbox/67182b.jpg')no-repeat center/cover;height: 116px">
+							<div id="title"></div>
+							<div class="line-one" id="price">--</div>
+							<div class="line-two" id="money"></div>
+						</div>
+						<div class="shouyi-name">
+							<div class="electric-charge box-border-right">
+								<img src="../images/electric_charge.svg" alt=""><span id='types'>电费 THS/天</span><span id="electric">--</span>
+							</div>
+							<div class="collocation">
+								<img src="../images/collocation.svg" alt=""><span>管理费</span><span id="manage">--</span>
+							</div>
+							<!-- <div class="mui-col-xs-4" id="m-stock">
+								<p>库存</p>
+								<p id="stock">--</p>
+							</div> -->
+						</div>
+					</div>
+					<div class="mx-sm-1 work-time" id="detail-info">
+						<ul class="mui-table-view px-sm-2">
+							<li class="box-border-bottom py-sm-2 mui-disabled">
+								<span class="">算力</span>
+								<span class="mui-pull-right ff7800" id="invest">--</span>
+							</li>
+							<li class="box-border-bottom py-sm-2 mui-disabled" style="display: none">
+								<span class="">管理费</span>
+								<span class="mui-pull-right ff7800" id="manage-2">--</span>
+							</li>
+							<li class="box-border-bottom py-sm-2 mui-disabled">
+								<span>产品周期</span>
+								<span class="mui-pull-right ff7800" id="validity">--</span>
+							</li>
+							<li class="box-border-bottom py-sm-2 mui-disabled">
+								<span>预计每日产出</span>
+								<span class="mui-pull-right ff7800" id="profit">--</span>
+							</li>
+<!--							<li class="box-border-bottom py-sm-2 mui-disabled" id="packageTime" style="display: none">-->
+<!--								<span>封装周期</span>-->
+<!--								<span class="mui-pull-right ff7800" id="package">&#45;&#45;</span>-->
+<!--							</li>-->
+						</ul>
+						<div id="muiClass" class="box-border-top py-sm-2 px-sm-2 mui-disabled">
+							<div>
+								<a class="mui-navigate-right" id="productContract">查看产品详情</span></a>
+							</div>
+						</div>
+					</div>
+					<div class="m10 py-sm-2 px-sm-2 mui-clearfix buy-num" id="buy-num">
+						<div>
+							<span class="mt10">购买数量</span>
+							<div class="mui-numbox mui-pull-right" data-numbox-min="1">
+								<button class="mui-btn mui-btn-numbox-minus" type="button"><span class="mui-icon mui-icon-minus"></span></button>
+								<div class="box-border-bottom" style="display: inline-block;height: 100%;">
+									<input id="quantity" class="mui-input-numbox" type="number" pattern="\d*" value="1" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+								</div>
+								<button class="mui-btn mui-btn-numbox-plus" type="button"><span class="mui-icon mui-icon-plus"></span></button>
+							</div>
+						</div>
+					</div>
+					
+					<div class="m10 py-sm-2 px-sm-2 mui-clearfix buy-num mui-hidden" id="choose">
+						<div>
+							<span>购电周期</span>
+							<div class="mui-pull-right" data-numbox-min="1">
+								<span class="mr2" id="m-num"></span>
+								<span class="mui-push-right m-push-right"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="footer-buy box-border-top">
+			<div class="mui-pull-left proDe">总计：<span id="product-price"></span></div>
+			<button class="mui-btn main-button" onclick="create()">立即买入</button>
+		</div>
+
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/mui.lazyload.js"></script>
+		<script src="../js/mui.lazyload.img.js"></script>
+		<script src="../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="../js/common/mui.loading.css">
+		<script type="text/javascript" src="../js/common/mui.loading.js"></script>
+		<script src="../js/mui.picker.js"></script>
+		<script src="../js/mui.poppicker.js"></script>
+		<script>
+			var productId = null;
+			var gdzq = false;
+			var limit = 0;
+			var stock = 0;
+			var newsId = 0;
+			var productType = 0;
+			var day = 0;
+			var electric = 0;
+			var mHidden = false;
+			var mShow = false;
+			var isstock = false; //是否显示有库存
+			var isDhzq = false;  //是否从兑换专区进入订单支付页面
+			var hbtDiscount = 0; // hbt赠送数量
+			var hbtDiscountType = 1; // HBT赠送方式 1-按比例赠送 2-按份数赠送
+			var saleType = 1; //售卖类型 1-按算力份数 2-整机
+			var rmbPrice = 0; //人民币产品价格
+			var rmbElectricPrice = 0; //人民币电费价格
+			var discountPrice;   //计算后折扣后单价
+			var coinType;
+			var saleType;
+			var discount;
+			var num;
+			var invest;
+			var electricDiscount = null; //电费包折扣
+			var torm = '';
+			var types = '';
+			var stockDesc = '';
+			var errMsg = '';
+
+			mui.plusReady(function() {
+				var current = plus.webview.currentWebview();
+				gdzq = current.gdzq;
+				productId = current.productId;
+				mHidden = current.mHidden || false;
+				mShow = current.mShow;
+				isstock = current.isstock;
+				isDhzq = current.isDhzq;
+				coinType = current.coinType;	//币种类型
+				saleType = current.saleType;		//是否整机
+
+				//判断获得单位
+				coinType == 1 || coinType == 6 ? torm = 'T' : torm = 'M'
+
+				if(coinType == 1 && saleType == 1){
+					mui.types = '电费 THS/天'
+				}else if(coinType == 5 && saleType == 1){
+					mui.types = '电费 MHS/天'
+				}else {
+					mui.types = '电费 MHS/台/天'
+				}
+				// 修改背景
+				if(coinType == 5){		//ETH
+					$('.prod-data').css('background','url(\'../images/hashbox/bg_product_shop.png\') no-repeat center/cover')
+				}else if (coinType == 1){			//BTC
+					$('.prod-data').css('background','url(\'../images/hashbox/353abtc.png\') no-repeat center/cover')
+				}else {					//FIL
+					$('.prod-data').css('background','url(\'../images/hashbox/FIL84125.png\') no-repeat center/cover')
+				}
+					//整机
+				if (saleType == 2) {
+					// $('#text').text('提醒：ETH整机联挖产品支持支付宝、CNY、USDT三种方式订购，咨询请联系工作人员！')
+					// ScrollImgLeft();
+					$('#index-html .proDetails>img').attr('src', '../images/hashbox/bg_product_shop1.png');
+					$('.product-details-info').css({top: '175px'});
+				}
+				//FIL
+				if (coinType == 6) {
+					$('.shouyi-name').remove()
+					$('li:contains(管理费)').css('display','block')
+					$("span:contains(产品周期)").parent().remove()
+					$('#index-html .proDetails>img').attr('src', '../images/hashbox/82528.jpg');
+					$('#choose').remove()
+					$('#li-give-hbt').remove()
+					// $('#text').text('提醒：FIL产品支持支付宝、CNY、USDT三种方式订购，咨询请联系工作人员！')
+					ScrollImgLeft();
+					// $('.product-details-info').css({top: '175px'});
+				}
+				load();
+			});
+
+
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+
+			// 数据change事件
+			var productTmp;
+			$(document).on('change', "#quantity", function() {
+				if (productTmp == null || productTmp == undefined) {
+					return;
+				} else {
+					// electric = 0
+					num = $("#quantity").val();
+					// 修改价格等显示
+					var elPrice = 0
+					let price = saleType == 1 && coinType != 6 ? productTmp.price : productTmp.rmbPrice;
+					if (day && day != '400') {
+						electric = (saleType == 1 ? electric : rmbElectricPrice)
+						elPrice = Number(Common.moneyFormat(Number(day) * electric *  Number(num)  * invest * discount));
+					}
+					price = Common.accMul(price, num) + elPrice
+
+					if (saleType == 1 && (productType == 2 || productType == 4)) {
+						$("#product-price").html(Common.moneyFormat(price) + " 元</span>");
+					} else if (saleType == 2 || coinType == 6) {
+						$("#product-price").html(Common.moneyFormat(price) + " ¥</span>");
+					} else {
+						$("#product-price").html(Common.moneyFormat(price) + " USDT</span>");
+					}
+				}
+			});
+
+			function create() {
+				if (errMsg && errMsg != undefined && errMsg != null) {
+					mui.alert(errMsg);
+					return false;
+				}
+				if (day == '400') {
+					mui.toast('所选电费包需联系客服才能结算');
+					return
+				}
+				if (productId == 0) {
+					return;
+				} else {
+					// 获取数量
+					var quantity = $("#quantity").val();
+					if (quantity < limit) {
+						mui.alert(limit + "个产品起售，请选择产品数量")
+						return;
+					} else if (quantity > stock) {
+						mui.alert("产品库存数量不足")
+						return;
+					} else {
+						var url = "/app/user/order/create";
+						mui.showLoading("正在生成订单...", "body");
+						Common.muipost(url, {
+							'productId': productId,
+							'quantity': quantity,
+							'day': day
+						}, function(data) {
+							// 打开支付页面
+							mui.openWindow({
+								url: 'order/orderDetails.html',
+								id: 'order/orderDetails.html',
+								extras: {
+									orderId: data.date.id,
+									day: day,
+									productType: productType,
+									mHidden: mHidden,
+									isDhzq : isDhzq,
+									discount : discount
+								}
+							});
+						}, function(data) {
+							// mui.alert("网络异常，无法访问");
+						});
+					}
+				}
+			}
+			function showLevel () {
+				var picker = new mui.PopPicker({
+					layer: 1,
+					buttons: ['取消', '确定']
+				});
+				var newArr = [];
+				for (var i = 0; i < electricDiscount.length; i++) { //循环
+					newArr.push({
+								value: electricDiscount[i].day,
+								text: electricDiscount[i].day + '天',
+							});
+				}
+				newArr.unshift({
+							value: '0',
+							text: '不购买电费包'
+						});
+				newArr.push({
+					value: '400',
+					text: '超出360天请联系您的专属客服'
+				})
+				picker.setData(newArr)
+
+                picker.pickers[0].setSelectedIndex(0);
+				// $(".mui-poppicker-btn-ok").before("<buttom class='mui-btn'>请选择</buttom>")
+                picker.show(function(selectItems) {
+                    var text1 = selectItems[0].text;
+					$("#m-num").text(text1)
+					day = selectItems[0].value
+					if (productTmp == null || productTmp == undefined) {
+						return;
+					} else {
+						var num = $("#quantity").val();
+						// 修改价格等显示
+						var elPrice = 0;
+						let price = saleType == 1 ? productTmp.price : productTmp.rmbPrice;
+						for (var i = 0; i < electricDiscount.length; i++) {
+							if (day == electricDiscount[i].day){
+								discount = electricDiscount[i].discount
+							}else if (day == '0'){
+								discount = 1
+							}
+						}
+						if (day && day != '400') {
+							electric = (saleType == 1 ? electric : rmbElectricPrice);
+							elPrice = Number(Number(day) * electric *  Number(num)  * invest * discount);
+						}
+						discountPrice = Common.accMul(price, num) + elPrice
+						if (saleType == 1 && (productType == 2 || productType == 4)) {
+							$("#product-price").html(Common.moneyFormat(discountPrice) + " 元</span>");
+						} else if (saleType == 2 || coinType == 6) {
+							$("#product-price").html(Common.moneyFormat(discountPrice) + " ¥</span>");
+						} else {
+							$("#product-price").html(Common.moneyFormat(discountPrice) + " USDT</span>");
+						}
+					}
+                });
+			}
+			$('#choose').click(function(){
+				showLevel()
+			})
+			//产品详情	
+			$("#productContract").click(function() {
+				mui.openWindow({
+					url: 'contract/contract.html',
+					id: 'contract/contract.html',
+					extras: {
+						newsId: newsId
+					}
+				});
+			});
+
+
+			function load() {
+				Common.muipost("/app/user/v2/product/detail", {
+					id: productId
+				}, function(data) {
+					stockDesc = data.date.stockDesc
+					errMsg = data.date.errMsg || '';
+					errMsg = errMsg ? errMsg.trim() : '';
+					productTmp = data.date
+					productType = data.date.type;
+					saleType = data.date.saleType || 1; //售卖类型 1-按算力份数 2-整机
+					rmbPrice = data.date.rmbPrice || 0; //人民币产品价格
+					rmbElectricPrice = data.date.rmbElectricPrice || 0; //人民币电费价格
+					if (saleType == 1){
+						invest = data.date.invest;
+					}else {
+						invest = 1
+					}
+					// 起购数量（可修改）
+					var defaultBuyNumber = data.date.defaultBuyNumber;
+					limit = data.date.limit;
+					hbtDiscountType = data.date.hbtDiscountType;
+					// 修改赠送hbt数量显示
+					if (hbtDiscountType === 2) {
+						$('#give-hbt').text((num * hbtDiscount) + ' HBT');
+					}
+					// 清除hbt赠送量
+					$('#li-give-hbt').remove();
+					if (defaultBuyNumber < limit) defaultBuyNumber = limit;
+					// HBT赠送方式 1-按比例赠送 2-按份数赠送
+					if (hbtDiscountType === 2) {
+						hbtDiscount = data.date.hbtDiscount;
+						var giveHbtText = '<li id="li-give-hbt" class="box-border-bottom py-sm-2 mui-disabled"><span>HBT赠送总量</span><span class="mui-pull-right ff7800" id="give-hbt">';
+						giveHbtText += hbtDiscount * defaultBuyNumber;
+						giveHbtText += ' HBT';
+						giveHbtText += '</span></li>';
+						$('#detail-info li:last-child').after(giveHbtText);
+					} else {
+						// $('#detail-info li:last-child').removeClass('box-border-bottom');
+					}
+					if (saleType == 1 && (productType == 2 || productType == 4)) {
+						$("#price").html(Common.moneyFormat(data.date.price) + "<span> 元</span>");
+					} else if (saleType == 1 && coinType != 6) {
+						$("#price").html(Common.moneyFormat(data.date.price) + "<span> USDT");
+						$("#money").html("≈ " + Common.moneyFormat(data.date.money) + '¥');
+					} else {
+						$("#money").html("≈ " + Common.moneyFormat(data.date.price) + "<span> USDT</span>");
+						$("#price").html(Common.moneyFormat(rmbPrice) + '<span>¥</span>');
+					}
+					$("#manage").text(data.date.manage + "%");
+					$("#manage-2").text(data.date.manage + "%");
+					$("#title").text(data.date.name);
+					if (saleType == 1 && (data.date.electric == null || data.date.electric == "")) {
+						$("#electric").text("--");
+					} else if (saleType == 1) {
+						electric = data.date.electric
+						$("#electric").text("$ " + data.date.electric);
+					} else {
+						$("#electric").text(rmbElectricPrice + '¥');
+					}
+					$("#quantity").val(defaultBuyNumber);
+					var elPrice = 0
+					if (day && day != '400') {
+						elPrice = Number(Common.moneyFormat(Number(day) * electric * defaultBuyNumber));
+					}
+					var price = Common.accMul(data.date.price, defaultBuyNumber) + elPrice
+					if (saleType == 1 && (data.date.type == 2 || data.date.type == 4)) {
+						$("#product-price").text(Common.moneyFormat(price) + " 元");
+					} else if (saleType == 1 && coinType!= 6) {
+						$("#product-price").text(Common.moneyFormat(price) + " USDT");
+					} else {
+						price = Common.accMul(rmbPrice, defaultBuyNumber) + elPrice
+						$("#product-price").text(Common.moneyFormat(price) + " ¥");
+					}
+					productId = data.date.id;
+					stock = data.date.stock;
+					newsId = data.date.newsId;
+					if (data.date.exchangeProductStatus == true || data.date.newsId == null || data.date.newsId == 0 || data.date.coinType == 5 && data.date.saleType == 1) {
+						// $("#muiClass").addClass("mui-hidden");
+						$("#muiClass a").removeClass("mui-navigate-right");
+					}else {
+						$("#choose").removeClass("mui-hidden");
+						if (electricDiscount && typeof electricDiscount==="object" && electricDiscount.length > 0){
+							$("#choose").removeClass("mui-hidden");
+						}
+					}
+					$("#types").text(mui.types);
+					$("#invest").text(data.date.invest + " "+torm);
+					var validity = "有效期";
+
+					if (data.date.validity != null && data.date.validity != "") {
+						var temp = JSON.parse(data.date.validity);
+						if (temp[0] > 0) {
+							validity += temp[0] + "年";
+						}
+						if (temp[1] > 0) {
+							validity += temp[1] + "月";
+						}
+						if (temp[2] > 0) {
+							validity += temp[2] + "天";
+						}
+						if (temp[0] == 0 && temp[1] == 0 && temp[2] == 0 || temp[0] >= 40 || data.date.saleType == 2) {
+							validity = "永久有效";
+						}
+						$("#validity").text(validity);
+					}
+					// 是否显示库存
+					if (data.date.isStock) {
+						$("#product-stock").parent("li").remove();
+						let tmpl = '<li class="box-border-bottom py-sm-2 mui-disabled">';
+						tmpl += '<span>库存</span>';
+						tmpl += '<span id="product-stock" class="mui-pull-right ff7800">';
+						tmpl += stockDesc ? stockDesc : data.date.stock;
+						tmpl += '</span>';
+						tmpl += '</li>';
+						$("#detail-info ul").append(tmpl);
+					}
+					var types= ''
+					if(data.date.coinType == 1){
+						types='BTC'
+					}else if(data.date.coinType == 5){
+						types='ETH'
+					}else if(data.date.coinType == 6){
+						types='FIL'
+					}
+					if(isDhzq){
+						$("#choose").remove()
+					}
+					$("#profit").text(Common.moneyFormatByDecimals(Common.accMul(data.date.invest, data.date.profit), 8) +" "+types);
+					if (data.date.encapsulationDay){
+						$("#packageTime").remove();
+						$('#profit').parent().after('<li class="py-sm-2 mui-disabled" id="packageTime" style="display: none">\n' +
+								'<span>封装周期</span>\n' +
+								'<span class="mui-pull-right ff7800" id="package">--</span>\n' +
+								'</li>')
+						$('#packageTime').css('display','block');
+						$("#package").text(data.date.encapsulationDay + '天');
+					}
+					if (data.date.coinType == 6 && data.date.encapsulationDay > 0){
+						$('#package').parent().removeClass('box-border-bottom')
+					}
+					if ($('#muiClass').text().indexOf('mui.mui-hidden') != -1 || data.date.encapsulationDay == 0){
+						$('#detail-info li:last-child').removeClass('box-border-bottom');
+					}
+
+					// saleType;
+					$('#text').text(data.date.broadcast)
+					ScrollImgLeft();
+				})
+				//获取电费包折扣
+				var apiUrl = '/user/electric/discount?productId='
+				Common.muiget(apiUrl + productId, {}, function (data) {
+					if (data.type == 200) {
+						electricDiscount = data.date
+						if (electricDiscount && typeof electricDiscount==="object" && electricDiscount.length <= 0){
+							$("#choose").remove()
+						}
+					}
+				})
+			}
+			window.addEventListener('refresh', function(e) {
+				//在父页面中添加监听事件，刷新页面
+				//订单详情
+				load();
+				$("#m-num").text('')
+				day = 0
+			});
+				function ScrollImgLeft() {
+					//调整消息之间间距，保持一个屏幕间距
+					var o = document.getElementById("leng");
+					var w = o.clientWidth||o.offsetWidth;
+					var sum =w/2;
+					$('.dd_start,.dd_end').css({"padding-left":sum+'px',"padding-right":sum+'px'})
+
+					const speed = 30;
+					var MyMar = null;
+					var scroll_begin = $(".dd_start").get(0);
+					var scroll_end = $(".dd_end").get(0);
+					var scroll_div = $(".LED").get(0);
+					scroll_end.innerHTML = scroll_begin.innerHTML;
+					// 运动方式
+					function Marquee() {
+							// 用dd_end的宽度
+							if (scroll_end.offsetWidth - scroll_div.scrollLeft <= 0) {
+									scroll_div.scrollLeft -= scroll_begin.offsetWidth;
+							} else {
+									scroll_div.scrollLeft ++;
+							}
+					}
+					MyMar = setInterval(Marquee, speed);
+					scroll_div.onmouseover = function () {
+							// clearInterval(MyMar);
+					}
+					scroll_div.onmouseout = function () {
+							// MyMar = setInterval(Marquee, speed);
+					}
+				}
+				ScrollImgLeft();
+				// 关闭轮播通知
+				document.getElementById('inform-close').addEventListener('tap', function(e){
+					$('#notification-bar').remove();
+					$('.shouyi.proDetails').css('backgroundColor','#f7f7f7');
+					$('.product-details-info').css('top','147px');
+				});
+				// 按照电费包天数获取折扣
+				;function getElectricToDay (day = 0, electricDiscount) {
+					let electricObj = {};
+					let discount = 0
+					if (electricDiscount == null || day == 0 || !Object.keys(electricDiscount).length) {
+						return discount;
+					}
+					try {
+						electricDiscount.filter(function (item, index) {
+							if (day == item.day) {
+								discount = item.discount;
+								return false;
+							}
+						})
+					} catch (e) {
+						return discount;
+					}
+					return discount;
+				}
+		</script>
+
+	</body>
+</html>

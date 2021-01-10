@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Access-Control-Allow-Origin" content="*">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<title>登陆</title>
+	<link href="css/mui.min.css" rel="stylesheet" />
+	<link href="css/style.css" rel="stylesheet" />
+	<link href="css/hashbox.css" rel="stylesheet" />
+	<link href="css/mui.picker.css" rel="stylesheet" />
+	<link href="css/mui.poppicker.css" rel="stylesheet" />
+	<link href="js/common/mui.loading.css" rel="stylesheet" />
+	<style type="text/css">
+		html,body{height: 100%;font-size: 16px;}
+		#particles{height: 100%;background: url(images/register_login/bj-01.png) no-repeat center/cover;position: relative;overflow: hidden;}
+		.container{width: 85%;overflow: hidden;position: absolute;top: 40%;left: 50%;transform: translateX(-50%);}
+		.container .mui-input-group {background-color: transparent;}
+		.container .mui-input-group:after,.container .mui-input-group:before{display: none;}
+		.container .mui-input-group .mui-input-row {height: 43px; background-color: #fff;border-radius: 22px;}
+		.container .mui-input-group .mui-input-row:after {display: none !important;}
+		.container .mui-input-group .mui-input-row:first-child {margin-bottom: 25px;width: 100%;}
+		.container .input-mobile label,
+		.container .input-pwd label {padding: 0; width: 52px;height: 100%;}
+		.container .input-mobile label {background: url(images/register_login/mobile.svg) no-repeat 24px,center;background-size: 16px;}
+		.container .input-pwd label {background: url(images/register_login/pwd.svg) no-repeat 24px,center;background-size: 16px;}
+		.container .mui-input-row a {font-size: 15px; color: #0560f5;}
+		.container .mui-input-row a span {border-bottom: 1px solid;}
+		.container .mui-input-row label~input {height: 100%;padding-left: 0 !important;;float: unset;-webkit-text-fill-color: #999999}
+		.container .mui-input-row:last-child label~input {width: calc(100% - 140px);}
+		.mui-input-row .mui-input-clear~.mui-icon-clear {top: 12px;}
+		.mui-input-row:last-child .mui-input-clear~.mui-icon-clear {right: 80px;}
+		.mui-content-padded {margin-left: 0;margin-right: 0;}
+		#login {width: 100%;height: 48px;border: none;border-radius: 24px;background-color: #ffd200;font-size: 16px;}
+		.footer {width: 100%;position: absolute;bottom: 35px;text-align: center;}
+		.footer span,
+		.footer a {font-size: 15px;}
+		.footer span {color: #fff;}
+		.footer a {color: #ffd200;}
+	</style>
+</head>
+<body>
+	<div id="particles">
+	<div class="container">
+		<form class="mui-input-group">
+			<div class="mui-input-row input-mobile">
+				<label></label>
+				<input id="phone" type="number" name="phone" class="mui-input-clear" pattern="\d*" maxlength="11" placeholder="请输入手机号码">
+			</div>
+			<div class="mui-input-row input-pwd">
+				<label></label>
+				<input id='password' type="password" name="password" class="mui-input-clear" placeholder="密码" maxlength="16">
+				<a href="javascript::void(0);" id="forgetPassword"><span>忘记密码</span>？</a>
+			</div>
+		</form>
+		<div class="mui-content-padded">
+			<button id='login' onclick="loginSub()" type="button">登 录</button>
+		</div>
+	</div>
+		<div class="footer">
+			<span>没有账号？</span><a id="go-to-register" href="javascript::void(0);">立即注册>></a>
+		</div>
+	<div id="yzm" class="mui-popup-in meui-mask mui-hidden" style="z-index:99999;">
+		<div class="cons" style="height:118px">
+			<div class="mui-popup-inner">
+				<div class="mui-popup-text" style="margin:5px 0;text-align: center;border-bottom: 1px solid #E5E5E5;padding-bottom: 12px;">
+					短信验证
+				</div>
+				<p>常用登陆设备已更换</p><p>需验证手机后，方可继续登陆</p>
+				<div style="border: 1px solid rgba(0,0,0,.2);margin: 0 auto;width: 90%;height: 42px;">
+					<input id='yzmip' type="number" pattern="\d*" name="phonecode" class="mui-input-clear mui-input" style="float: left;width: 60%;margin-bottom: 0;border:none;" placeholder="短信验证码" maxlength="6">
+					<a type="button" class="fc2c9 fs15" style="line-height: 42px;" id="sendsms" onclick="sendSms()">获取验证码</a>
+				</div>
+				
+			</div>
+			<div class="mui-popup-buttons">
+				<span onclick="nos()" class="mui-popup-button" style="color: #333333;">取消</span>
+				<span id="confirm" style="color: #1F75DA;" class="mui-popup-button mui-popup-button-bold" onclick="sms()">确认</span>
+			</div>
+		</div>
+	</div>
+	</div>
+	<script type='text/javascript' src='js/jquery-1.11.1.min.js'></script>
+	<script type='text/javascript' src="js/mui.min.js"></script>
+	<script type='text/javascript' src='js/common/common.js'></script>
+	<script type="text/javascript" src="js/common/mui.loading.js"></script>
+	<script type="text/javascript">
+		var version = 0;
+		var umengParams = "";
+		var uuid = ''
+		var model = ''
+		var s_version = ''
+		var s_uuid = ''
+		// var winHeight = $(window).height();
+		// $('body').height(winHeight);
+		$(window).resize(function(){
+			if ($(this).height() < 500){
+				var winHeight = $(window).height()
+				$('body').height(winHeight)
+				$('.footer').hide();
+			} else {
+				$('body').height('100%')
+				$('.footer').show()
+			}
+		})
+		mui.plusReady(function() {
+			getDeviceInfo()
+			s_version = plus.storage.getItem('version')
+			s_uuid = plus.storage.getItem('uuid')
+			mui.getJSON("manifest.json", null, function(data) {
+				version = data.version.code;
+				try {
+					var umeng = data.plus.distribute.plugins.statics.umeng;
+					if (mui.os.ios) {
+						umengParams = umeng.channelid_ios;
+					} else {
+						umengParams = umeng.channelid_android;
+					}
+				} catch (err) {}
+			});
+			// if (uuid) {
+				// 自动登录
+				var url = "/app/auth/login";
+				//检查激活状态
+				var loginUser = plus.storage.getItem("loginUser");
+				if (!Common.isNull(loginUser)) {
+					var jsonObject = JSON.parse(loginUser);
+					$("#phone").val(jsonObject.username);
+					$("#password").val(jsonObject.password);
+					var newparams = {
+						phone: jsonObject.username,
+						password: jsonObject.password,
+						umeng: umengParams,
+						uuid: uuid,
+						mobile: model
+					};
+					mui.showLoading("自动登录中..", "body");
+					!s_version && plus.storage.setItem('version', JSON.stringify(version))
+					!s_uuid && plus.storage.setItem('uuid', JSON.stringify(uuid))
+					Common.muipost(url, newparams, function(data) {
+						//已激活        
+						location.href = "main.html?v=" + version;	
+						plus.storage.setItem("popover", '1');
+					}, function(data) {
+						$("#yzm").removeClass("mui-hidden")
+						// mui.toast(data.content);
+					});
+				}
+			// } else {
+			// 	plus.runtime.quit();
+			// }
+		});
+		function sendSms() {
+			var checkurl = "/common/obtain/phone/code";
+			mui.showLoading("短信发送中", "body");
+			var phone = $("#phone").val()
+			Common.muipost(checkurl, {tel: phone}, function (data) {
+				$("#sendsms").css("color", "#F20B0B");
+				mui.hideLoading();
+				reget(60);
+			}, function (data) {
+				mui.hideLoading();
+				mui.alert(data.content);
+			})
+		}
+		function reget(count) {
+			var btn = $("#sendsms");
+			var count = count;
+			btn.html("60s后重发");
+			var resend = setInterval(function() {
+				count--;
+				if (count > 0) {
+					btn.css('pointer-events','none')
+					btn.html(count + "s后重发");
+				} else {
+					btn.css('pointer-events','unset')
+					clearInterval(resend);
+					$("#sendsms").css("color", "#00CDB9");
+					btn.html("重获验证码");
+				}
+			}, 1000);
+		}
+		function nos () {
+			$("#yzm").addClass("mui-hidden")
+		}
+		function sms () {
+			var phone = $("#phone").val()
+			var phonecode = $("#yzmip").val()
+			if (Common.isNull(phonecode)) {
+				mui.toast("短信验证码不能为空");
+				return false;
+			}
+			Common.muipost("/common/verifier/phone/code", {phone: phone, phonecode: phonecode}, function (data) {
+				mui.hideLoading();
+				$("#yzm").addClass("mui-hidden");
+				unusual(phonecode);
+			}, function (data) {
+				mui.alert(data.content);
+				$("#yzm").addClass("mui-hidden")
+				mui.hideLoading();
+			})
+		}
+		// 获取uuid
+		function getDeviceInfo(){
+			var device = plus.device
+			model = device.vendor + ' ' + device.model
+			if (mui.os.ios) {
+				uuid = device.uuid
+			} else {
+				var mainActivity = plus.android.runtimeMainActivity();  
+				var Settings = plus.android.importClass("android.provider.Settings");
+				uuid = Settings.Secure.getString(mainActivity.getContentResolver(),Settings.Secure.ANDROID_ID)
+			}
+		}
+		//异常
+		function unusual (index) {
+			var url = '/app/userBind/add';
+			var params = {
+				code: index,
+				phone: $("#phone").val(),
+				uuid: uuid,
+				mobile: model
+			}
+			Common.muipost(url, params, function(data) {
+				loginSub()
+			}, function (data) {mui.toast(data.content);})
+		}
+		// 手动登录
+		var form = $("#login-form");
+		function loginSub() {
+			// 请求url
+			var url = "/app/auth/login";
+			var params = {
+				phone: $("#phone").val(),
+				password: $("#password").val(),
+				umeng: umengParams,
+				uuid: uuid,
+				mobile: model
+			};
+			if (Common.isNull(params.phone)) {
+				mui.toast("请输入手机号码");
+				return false;
+			}
+			if (Common.isNull(params.password)) {
+				mui.toast("请输入密码");
+				return false;
+			}
+			// if (uuid) {
+				mui.showLoading("登录中..", "div");
+				Common.muipost(url, params, function(data) {
+					//本地存储
+					var cookie = data.date;
+					cookie.username = params.phone;
+					cookie.password = params.password;
+					plus.storage.setItem("loginUser", JSON.stringify(cookie));
+					plus.storage.setItem("popover", '1');
+					!s_version && plus.storage.setItem('version', JSON.stringify(version))
+					!s_uuid && plus.storage.setItem('uuid', JSON.stringify(uuid))
+					location.href = "main.html?v=" + version;
+				}, function(data) {
+					// 第一次新设备登录校验
+					if (data.type == 500) {
+						$("#yzm").removeClass("mui-hidden");
+						return false
+					}
+					mui.toast(data.content);
+				});
+			// } else {
+			// 	plus.runtime.quit();
+			// }
+		}
+		;(function() {
+			mui("body").on("tap", "#forgetPassword", function() {
+				mui.openWindow({
+					url: "auth/forget.html",
+					id: "forgetPassword",
+					extras: {
+						source: "forgetPassword"
+					},
+					createNew: true
+				})
+			});
+			mui("body").on("tap", "#go-to-register", function() {
+				mui.openWindow({
+					url: "auth/register.html",
+					id: "register",
+					createNew: true
+				})
+			})
+		})();
+	</script>
+</body>
+</html>

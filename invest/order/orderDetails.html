@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../../css/style.css">
+		<link rel="stylesheet" href="../../css/hashbox.css">
+		<style>
+
+			.myHashbox .mui-table-view:before,.myHashbox .mui-table-view-cell:after{ background-color: #f2f2f2!important;}
+			.mui-table-view-cell{ padding: 11px;}
+			.mui-table-view-cell:after{ left: 0;}
+			.payTitle{ border-bottom: 1px solid #ccc; padding: 5%}
+			.pay-word{ padding-top: 5%;color: #666}
+			.passwordInput{ margin: 5%; width: 90% !important; font-size: 30px; text-align: center; letter-spacing: 10px;background-color: #f5f5f5!important;border: none!important;	}
+			.payBtn button{ border-radius: 20px; width: 80%; color: #fff;border: none;}
+			.mui-bar-nav~.mui-content{padding-top:34px;}
+			#passDiv{width: 0px;height: 0px;background: red;position: fixed;top: 65%!important;left: 50%;}
+			/*移除底部或顶部三角,需要在删除此代码*/
+			.mui-popover .mui-popover-arrow:after {width: 0px;}
+			.mui-bar-nav.mui-bar .mui-icon{margin-left: 0}
+			.mui-bar .mui-title{width: 80px}
+			.fc2c9s{color:#999;font-size: 13px;}
+			.mui-table-view-cell{width: 95%;margin: 0 auto;border-bottom: 1px solid #e9e9e9}
+			.hashDetails img{margin: 0;}
+			#m-name{margin-left: 10px;font-size: 17.5px;color:#2E2E31;}
+			#m-num{font-size: 13px;color:#979797;}
+			.mui-table-view-cell>a:not(.mui-btn){color:#2E2E31;font-size: 15px;}
+			.e2e{color:#2E2E31;font-size: 15px;}
+			.mui-input-row label{line-height: unset;width: unset;}
+			.mr1{margin-right: 10px;float: left;border-radius: 50%;}
+			.mui-active .mui-table-view-cell{border-top: none;background: unset;}
+			.mui-table-view-radio .mui-table-view-cell.mui-selected .mui-navigate-right:after{border: 1px solid #1F75DA;border-radius: 50%;background: #1F75DA;color: #fff;font-size: 20px;}
+			.fc2c9{color:#1F75DA!important;}
+			.mui-table-view-cell a{line-height: 30px;}
+			.mui-push-right:after{font-size: 20px;color:#919194;}
+			.mui-push-right{margin-right: 15px;color:#333333;font-size: 13px;}
+			.mui-table-view-cell>a:not(.mui-btn).mui-active{background: #fff;}
+			.mui-btn,.footer-buy button,.mui-btn.mui-disabled{background: #1F75DA;opacity: 1;}
+			#total{color: #ff7800}
+			.buy-record{height: 76px;background: #ffffff;}
+			#status{color: #ff625e}
+			#orderSn{color: #282828!important;}
+			.p1{padding: 0 0 0 0 !important}
+			.mt20{margin-top: 8px !important;margin-bottom: 0;}
+			.mt10{margin-top: 8px !important;}
+			.footer-buy{height: 68.5px;line-height:68.5px}
+			.footer-buy button{width: 137.5px;background: #0068f7;bottom:-10px;height: 36px}
+			.od-h2{padding: 0 15px 0 15px;height: 41px;line-height: 41px}
+			.hidden{display: none}
+			.record-name{padding-top: 16px;padding-left: 5px}
+			.record-data{padding-top: 2px;padding-left: 5px}
+			.mui-table-view-cell:after{content: none}
+			.mui-input-group:before{content: none}
+			.mui-popup-inner{border-radius: 7px 7px 0 0}
+			.mui-popup-button:first-child{border-radius: 0 0 0 7px;}
+			.mui-popup-button:last-child{border-radius: 0 0 7px;}
+			.px1{padding-left: 0px !important;}
+			.mui-table-view:after{display: none;}
+			.mui-input-group:after{display: none;}
+			.mui-table-view:before{display: none}
+			.mui-table-view-cell:after{display: none}
+			#m-favorable{border-bottom: 0}
+			.orderCode{border-bottom: 0}
+		</style>
+	</head>
+	<body style="background: #f5f5f5" id="pullrefresh">
+		<div id="pay-before" class="">
+			<header class="mui-bar mui-bar-nav other">
+				<a style="line-height: 50px" class="mui-action-back mui-pull-left"><img src="../../images/hashbox/slf-47.svg" style="width: 20px"></a>
+				<h1 class="mui-title">订单详情</h1>
+			</header>
+
+			<div class="mui-content" id="index-html" style="background: #f5f5f5">
+				<div class="mui-control-content mui-active myHashbox">
+					<div class="m10 mt20">
+						<div class="myHashList hashDetails fff p1 m-btn-ra">
+							<div class="buy-record">
+								<div class="record-name" id="productName">
+									<span id="m-name"></span><span style="float: right;padding-right: 10px" id="m-num"></span>
+								</div>
+								<div class="record-data fc9">
+<!--									<span class="fc2c9s" id="price" style="margin-left: 10px;">&#45;&#45;</span>-->
+								<span style="margin-left: 10px;">应付金额：<span id="total" style="padding-right: 10px"></span></span>
+								</div>
+								<!-- <div class="d-num mui-clearfix" id="quantity">--</span></div> -->
+							</div>
+							<ul class="mui-table-view mt10">
+								<li class="mui-table-view-cell" style="padding-left: 5px">
+									<span style="color: #888888;font-size: 17px;line-height: 30px">订单信息<span class="mui-pull-right e2e" id="more"><span class="mui-pull-right e2e">
+										<img src="../../images/hashbox/slf-33.svg" id="slf_33" style="width: 20px"></span></span>
+									</span>
+								</li>
+								<li class="mui-table-view-cell box-border-bottom">
+									<a>订单状态<span class="mui-pull-right e2e" id="status"></span></a>
+								</li>
+								<li class="mui-table-view-cell orderCode">
+									<a>订单编号<span class="mui-pull-right fc2c9" id="orderSn">--</span></a>
+								</li>
+								<li class="mui-table-view-cell hidden box-border-bottom">
+									<a>下单时间<span class="mui-pull-right fc2c9" id="createDate" style="color: #282828!important">--</span></a>
+								</li>
+								<li class="mui-table-view-cell hidden box-border-bottom">
+									<a>封装周期<span class="mui-pull-right fc2c9" id="package" style="color: #282828!important">--</span></a>
+								</li>
+								<li class="mui-table-view-cell hidden box-border-bottom">
+									<a>购买数量<span class="mui-pull-right fc2c9" id="quantity_" style="color: #ff7800!important">--</span></a>
+								</li>
+								<li class="mui-table-view-cell hidden box-border-bottom">
+									<a>产品周期<span class="mui-pull-right fc2c9" id="validity" style="color: #282828!important">--</span></a>
+								</li>
+								<li class="mui-table-view-cell hidden box-border-bottom">
+									<a>电费<span class="mui-pull-right fc2c9" id="productElectric" style="color: #282828!important">--</span></a>
+								</li>
+								<li class="mui-table-view-cell hidden box-border-bottom">
+									<a>管理费<span class="mui-pull-right fc2c9" id="productManage" style="color: #282828!important">--</span></a>
+								</li>
+								<li class="mui-table-view-cell hidden" id="m-invest">
+									<a>购买电费包<span class="mui-pull-right e2e" id="invest" style="color: #ff7800;">--</span></a>
+								</li>
+								<li class="mui-table-view-cell hidden" style="border-bottom: 0">
+									<a>购买算力<span class="mui-pull-right e2e" id="sumInvest" style="color: #ff7800;">--</span></a>
+								</li>
+							</ul>
+						</div>
+
+					</div>
+					<div class="m10 mt10 pay-choose mui-input-row " id='isDhzq'>
+						<ul class="mui-table-view px1 m-btn-ra">
+							<li class="mui-table-view-cell" id="m-favorable">
+								<a class="mui-disabled">使用优惠券<span class="mui-pull-right mui-push-right" id="m-type"></span></a>
+							</li>
+						</ul>
+					</div>
+					<div class="m10 mt10 pay-choose mui-input-row p1 m-btn-ra" style="background: #fff;">
+						<h2 class="od-h2">支付方式选择</h2>
+						<div style="width: 95%;height: 1px;margin: 0 auto;border-top: 1px solid #e9e9e9"></div>
+						<form class="mui-input-group mt10" style="margin-top: 0 !important;">
+							<ul class="mui-table-view mui-table-view-radio" id="m-pay">
+							</ul>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<div class="footer-buy" id="footer">
+				<div class="mui-pull-left proDe" id="order-info">--</div>
+				<button class="mui-btn main-button mui-disabled" id="pay-content">去支付</button>
+			</div>
+		</div>
+		<div id="subs" class="mui-popup-in meui-mask mui-hidden" style="z-index:99999;">
+			<div class="cons">
+			<div class="mui-popup-inner">
+				<div class="mui-popup-text" style="margin-left:-15px;text-align: center;border-bottom: 1px solid #E5E5E5;padding-bottom: 12px;width: 300px">请输入资金密码</div>
+				<div style="margin-top: 15px;font-size:15px;" id="buy_amount"></div>
+				<input class="passwordInput" type="password" maxlength="6" />
+			</div>
+			<div class="mui-popup-buttons" style="background: #ffffff">
+				<span onclick="nos()" class="mui-popup-button" style="color: #333333;">取消</span>
+				<span id="pay_now" style="color: #0068f7;" class="mui-popup-button mui-popup-button-bold">确认支付</span>
+			</div>
+			</div>
+		</div>
+
+		<div id="pay-result" class="mui-hidden">
+			<header class="mui-bar mui-bar-nav other">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title" id="pay-info">支付成功</h1>
+			</header>
+
+			<div class="mui-content pay-content" style="background: #fff; padding-top: 39px;">
+				<div class="pays success">
+					<img src="../../images/hashbox/success.png" width="55px" style="margin-top: -5px;" />
+					<div class="ps-word">
+						<h1 style="color: #20d959;" id="pay-success">支付成功</h1>
+					</div>
+				</div>
+				<div class="pays fail mui-hidden">
+					<img src="../../images/hashbox/fail.png" width="55px" style="margin-top: -5px;" />
+					<div class="ps-word">
+						<h1 style="color: #d9d9d9;" id="pay-fail">支付失败</h1>
+					</div>
+				</div>
+				<div class="ps-ul m10">
+					<div class="box-sd ">
+						<ul class="mui-table-view ">
+							<li class="mui-table-view-cell">
+								<a>订单编号<span class="mui-pull-right fc2c9" id="pay-order-sn">--</span></a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a>订单金额<span class="mui-pull-right fc2c9" id="pay-order-amount">--</span></a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a>订单算力<span class="mui-pull-right fc2c9" id="pay-order-invest">--</span></a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+		<link href="../../js/common/mui.loading.css" rel="stylesheet" />
+		<script type="text/javascript" src="../../js/common/mui.loading.js"></script>
+		<script>
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+
+			$("#more").click(function () {
+				if ($("#slf_33").attr("src").indexOf("slf-33") != -1) {
+					$("#slf_33").attr('src', '../../images/hashbox/slf-34.svg');
+					$(".hidden").toggle()
+					$(".footer-buy").css("position", "static")
+					$(".orderCode").css("border-bottom", "1px solid #e9e9e9")
+
+				} else {
+					$("#slf_33").attr('src', '../../images/hashbox/slf-33.svg');
+					$(".hidden").toggle()
+					$(".footer-buy").css("position", "fixed")
+					$(".orderCode").css("border-bottom", "0")
+				}
+
+			})
+			var lx = 0;
+			var orderId = 0;
+			//订单价格 默认 USDT
+			var amount = 0;
+			var exchangeRate = 0;
+			var hbtExchangeRate = 0;
+			var payType = 0;
+			var productType = 0;
+			var total = 0
+			var quantity = 0
+			var	Quantity = 0	//购买数量
+			var usdtElectric =0 	//电费包价格
+			var rmbElectric =0 	//电费包价格
+			var day = 0
+			var couponOrder = ''
+			var state = 0
+			var dete = ''
+			var mHidden = ''
+			var phone = '';
+			var isDhzq = false;
+			var discount = 1;		//电费包折扣价
+			var saleType = 1; // 订单类型 1-普通产品 2-整机产品
+			var rmbPrice = 0; // 订单总价
+			var price = 0;
+			var payDataType = 2;
+			var isPayNow = false; // 正在支付
+			var options = {};
+			mui.plusReady(function() {
+				var current = plus.webview.currentWebview();
+				var loginUser = plus.storage.getItem("loginUser");
+				phone = JSON.parse(loginUser).username
+				orderId = current.orderId;
+				if (current.day){
+					day = current.day
+				}
+				recordId = current.recordId
+				dete = current.dete
+				mHidden = current.mHidden
+				isDhzq = current.isDhzq
+				if (current.discount){
+					discount = current.discount
+				}
+				if (mHidden) {
+					$("#mui-htb").addClass("mui-hidden")
+				}
+				if (current.productType == 5) {
+					$("#mui-htb").addClass("mui-hidden")
+				}
+				if (day > 0) {
+					$("#mui-htb").addClass("mui-hidden")
+				} else {
+					// $("#m-invest").addClass("mui-hidden")
+				}
+				load();
+				$("#invest").text((day) + "天");
+				$("#m-type").html('<span>不使用优惠劵</span>')
+				if (recordId) {
+					$("#m-favorable").addClass("mui-hidden")
+				}
+				if (dete) {
+					$("#mui-htb").addClass("mui-hidden")
+					$("#m-invest").addClass("mui-hidden")
+					// $("#m-yue").removeClass("mui-hidden")
+					$("#m-favorable").addClass("mui-disabled")
+					$("#m-type").html('<span>暂不支持使用优惠劵</span>')
+				} else {
+					// $("#m-yue").addClass("mui-hidden")
+				}
+			});
+
+			var list = document.querySelector('.mui-table-view.mui-table-view-radio');
+			list.addEventListener('selected',function(e){
+				payType = payDataType = $(e.detail.el).find('a').attr('value')
+				if(payType==0){
+					$("#pay-content").attr("disabled",true);
+				}else{
+					$("#pay-content").attr("disabled",false);
+				}
+				$(".passwordInput").val("");
+				options.type = payType;
+				getTotal(options, function(data) {
+					//USDT
+					if (state == 9.5){
+						if (payType == 1) {
+							$("#allAmount").text(data.date + " USDT");
+							$("#buy_amount").text(data.date + " USDT");
+						} else if (payType == 2 || payType == 11) {
+							$("#allAmount, #buy_amount").text(data.date + " HBT");
+						}else {
+							if (saleType == 2) {
+								$("#allAmount, #buy_amount").text(data.date + " 元");
+							} else {
+								$("#allAmount").text(data.date + " 元");
+							}
+						}
+					} else {
+						if (payType == 1) {
+							$("#allAmount, #buy_amount").text(data.date + " USDT");
+						} else if (payType == 2 || payType == 11 || productType == 2 || productType == 4) {
+							$("#allAmount, #buy_amount").text(data.date + " HBT");
+						}  else {
+							$("#allAmount, #buy_amount").text(data.date + " 元");
+						}
+					}
+				});
+			});
+			function nos () {
+				$("#yzmip").val("");
+				$(".passwordInput").val("");
+				$("#subs").addClass("mui-hidden")
+				$("#yzm").addClass("mui-hidden")
+			}
+			//优惠
+			$("#m-favorable").click(function(){
+				if ($("#m-favorable").hasClass("mui-disabled")) return
+				mui.openWindow({
+					url: './reel.html',
+					id: './reel.html',
+					extras:{
+						quantity: quantity
+					}
+				});
+			})
+			var pays = {}
+			var orderData = ''
+			function plusReady(){
+				plus.payment.getChannels(function(channels){
+					for(var i in channels){
+						var channel=channels[i]
+						pays[channel.id]=channel
+					}
+				}, function(e){
+					alert("获取支付通道失败："+e.message)
+				});
+
+			}
+			document.addEventListener('plusready',plusReady,false);
+			// 支付
+			function pay(id){
+				plus.payment.request(pays[id], orderData, function(result){
+					// back()
+					// 检查是否完成支付
+					$("#pay-before").addClass("mui-hidden");
+					mui.showLoading("支付确认中..", "div");
+					Common.muipost("/app/user/v2/order/inspectState", {
+						orderId: orderId
+					}, function(data) {
+						console.log(JSON.stringify(data))
+						// mui.toast(data.content);
+						var priceDW = " USDT";
+						if (data.date.productType == 2 || data.date.productType == 4) {
+							// 人民币
+							priceDW = " 元";
+						}
+						$("#pay-order-sn").text(data.date.sn);
+						$("#pay-order-amount").text(Common.moneyFormat(data.date.amount) + priceDW);
+						$("#pay-order-invest").text((data.date.invest * data.date.quantity) + lx);
+						// 支付成功
+						$("#pay-info").text(data.content);
+						$("#pay-success").text(data.content);
+						$(".fail").addClass("mui-hidden");
+						$(".success").removeClass("mui-hidden");
+						// 显示支付结果
+						$("#pay-result").removeClass("mui-hidden");
+					}, function(data) {
+						var priceDW = " USDT";
+						if (data.date.productType == 2 || data.date.productType == 4) {
+							// 人民币
+							priceDW = " 元";
+						}
+						$("#pay-order-sn").text(data.date.sn);
+						$("#pay-order-amount").text(Common.moneyFormat(data.date.amount) + priceDW);
+						// if(data.date.coinType == '1'){
+						// 	torm='T'
+						// }else if(data.date.coinType == '5'){
+						// 	torm='份'
+						// }
+						$("#pay-order-invest").text((data.date.invest * data.date.quantity) + lx);
+						// 支付中或者支付异常
+						$("#pay-info").text(data.content);
+						$("#pay-fail").text(data.content);
+						$(".success").addClass("mui-hidden");
+						$(".fail").removeClass("mui-hidden");
+						// 显示支付结果
+						$("#pay-result").removeClass("mui-hidden");
+					});
+				}, function(e){
+					console.log(JSON.stringify(e))
+					mui.toast('支付失败：'+ e.code)
+					if(e.code === -100){
+						mui.back();
+					}
+				})
+			}
+			//立即购买
+			$("#pay-content").click(function() {
+				// 判断是否可以购买
+				if ($("#pay-content").hasClass("mui-disabled")) {
+
+					return false;
+				}
+
+				else {
+					if (payType < 3 || payType == 10) {
+						var info = "/app/user/info/index";
+						mui.showLoading("支付中..", "div");
+						Common.muipost(info, null, function(data) {
+							//已设置资金密码
+							if (!data.date.addPass) {
+
+									$("#subs").removeClass("mui-hidden")
+							} else {
+								mui.toast("请先设置资金密码");
+							}
+						}, function(data) {
+							consoe.log('进入了这个地方1')
+							mui.toast(data.content);
+						});
+					} else if (payType == 6) {
+						payTy = 4;
+						mui.openWindow({
+							url: '../pay/c2c.html',
+							id: '../pay/c2c.html',
+							extras: {
+								orderId: orderId,
+								payType: payTy,
+								coupon: couponOrder
+							}
+						});
+					} else if (payType == 7) {
+						payTy = 2;
+						mui.openWindow({
+							url: '../pay/yinsheng_pay.html',
+							id: '../pay/yinsheng_pay.html',
+							extras: {
+								orderId: orderId,
+								payType: payTy,
+							}
+						});
+					} else if (payType == 8) {
+						payTy = 1;
+						mui.openWindow({
+							url: '../pay/shuzu_pay.html',
+							id: '../pay/shuzu_pay.html',
+							extras: {
+								orderId: orderId,
+								payType: payTy,
+							}
+						});
+					} else if (payType == 5) {
+						Common.muipost("/app/user/v2/order/payment", {
+							orderId: orderId,
+							payType: payType,
+							coupon: couponOrder
+						}, function(data) {
+							orderData = data.date
+							pay('alipay')
+						})
+					}else {
+						var payTy = 1;
+						if (payType == 3) {
+							// 微信支付
+							payTy = 2;
+						} else if (payType == 4) {
+							// 支付宝支付
+							payTy = 1;
+						} else if (payType == 5) {
+							// 银联支付
+							payTy = 3;
+						} else if (payType == 6) {
+							//bit支付
+							payTy = 4;
+						} else if (payType == 9) {
+							// 银联支付二维码支付
+							payTy = 9;
+						} else {
+							mui.toast("系统异常，支付类型错误");
+							return false;
+						}
+						mui.showLoading("支付中..", "div");
+						console.log('z支付中')
+						Common.muipost("/app/user/v2/order/payment", {
+							orderId: orderId,
+							payType: payTy,
+							coupon: couponOrder
+						}, function(data) {
+							console.log('进入4 ')
+							console.log(JSON.stringify(data))
+
+							if (payTy == 1) {
+								//支付宝
+								mui.openWindow({
+									url: '../pay/alipay.html',
+									id: '../pay/alipay.html',
+									extras: {
+										orderPay: data.date
+									}
+								});
+							} else if (payTy == 2) {
+								//微信
+								mui.openWindow({
+									url: '../pay/wechat.html',
+									id: '../pay/wechat.html',
+									extras: {
+										orderPay: data.date
+									}
+								});
+							} else if (payTy == 9) {
+								// 银联二维码
+								mui.openWindow({
+									url: '../pay/yl.html',
+									id: '../pay/yl.html',
+									extras: {
+										orderPay: data.date
+									}
+								});
+							} else if (payTy == 4) {
+								console.log('进入4')
+								mui.openWindow({
+									url: data.date.memo,
+									id: data.date.memo,
+									extras: {
+										orderPay: data.date
+									}
+								});
+							}
+						}, function(data) {
+							console.log(data)
+							mui.toast(data.content);
+						});
+					}
+				}
+			});
+
+			//立即支付
+			$("#pay_now").click(function() {
+				if (isPayNow) {
+					return false;
+				}
+				isPayNow = true
+				//支付货币类型
+				var coinType = 2;
+				//密码
+				var pass = $(".passwordInput").val();
+				if (payType == 2) {
+					//hbt支付
+					coinType = 4;
+				} else if (payType == 10 || payType == 0) {
+					//rmb或勾选默认支付
+					coinType = 3;
+				} else if (payType == 1) {
+					//usdt支付
+					coinType = 2;
+				}
+				mui.showLoading("支付中..", "#subs");
+				Common.muipost("/app/user/v2/order/pay", {
+					orderId: orderId,
+					coinType: coinType,
+					pass: pass,
+					coupon: couponOrder
+				}, function(data) {
+					mui.hideLoading();
+					$(".passwordInput").val("");
+					$("#subs").addClass("mui-hidden")
+					mui.toast("支付成功");
+					setTimeout(function() {
+						isPayNow = false
+						mui.back();
+					}, 1000)
+				}, function(data) {
+					isPayNow = false
+					mui.toast(data.content);
+					mui.hideLoading();
+				});
+			});
+
+			//页面初始化数据
+			function load() {
+				if(isDhzq){
+					$("#isDhzq").remove();
+				}
+				if(payType==0){
+					$("#pay-content").attr("disabled",true);
+				}else{
+					$("#pay-content").attr("disabled",false);
+				}
+
+				//字典
+				Common.muipost("/app/user/v2/order/rule", {}, function(data) {
+					exchangeRate = options.exchangeRate = data.date.exchangeRate;
+					hbtExchangeRate = options.hbtExchangeRate = data.date.hbtExchangeRate;
+					//订单详情
+					mui.showLoading("数据加载中..", "div");
+					Common.muipost("/app/user/order/detail", {
+						orderId: orderId
+					}, function(data) {
+						saleType = data.date.saleType;
+						coinType = data.date.coinType;
+						rmbPrice = data.date.rmbPrice;
+						rmbElectric = data.date.rmbElectricPrice;
+						electric = data.date.productElectric;
+						price  = data.date.price;
+						productType = data.date.productType;
+						productId = data.date.productId;
+						Quantity = data.date.quantity;
+						new Promise(function(resolve, reject){
+							Common.muipost("/common/payData", {
+								productId: productId
+							}, function(res) {
+								var mcontent = ''
+								//屏蔽兑换产品优惠券
+								if (res && res.date && res.date.length == 1 && res.date[0].name == 'H'){
+									$('#m-favorable').remove()
+								}
+								mui.each(res.date, function(index, item) {
+									if (mHidden) {
+										if (item.type == 10) {
+											// 默认支付
+											mcontent += '<li class="mui-table-view-cell mui-selected p0 " id="m-yue1"><label class="m-set-size m-f-lable"><img class="mr1" src="../../images/hashbox/'+ item.name +'.png" width="30px"><a value="10" class="mui-navigate-right pl0 m-set-size">' + item.remark +'支付</a></label></li>'
+												$("#pay-content").attr("disabled",false);
+										} else {
+											// mui.toast('请选择支付方式')
+											mcontent += '<li class="mui-table-view-cell p0" id="m-yue2"><label class="m-set-size m-f-lable"><img class="mr1" src="../../images/hashbox/'+ item.name +'.png" width="30px"><a value="'+ item.type +'" class="mui-navigate-right pl0 m-set-size">' + item.remark +'支付</a></label></li>'
+										}
+									} else {
+										if (item.type == 10) {
+											// 默认支付
+											$("#pay-content").attr("disabled",false);
+											mcontent += '<li class="mui-table-view-cell  mui-selected p0 id="m-yue3"><label class="m-set-size m-f-lable"><img class="mr1" src="../../images/hashbox/'+ item.name +'.svg" width="30px"><a value="10" class="mui-navigate-right pl0 m-set-size">' + item.remark +'支付</a></label></li>'
+										} else if (item.type == 2) {
+											if (day > 0) {
+												mcontent += ''
+											} else {
+												mcontent += '<li class="mui-table-view-cell p0 id="m-yue4"><label class="m-set-size m-f-lable"><img class="mr1" src="../../images/hashbox/'+ item.name +'.svg" width="30px"><a value="'+ item.type +'" class="mui-navigate-right pl0 m-set-size">' + item.remark +'支付</a></label></li>'
+											}
+										} else {
+											mcontent += '<li class="mui-table-view-cell p0 id="m-yue5"><label class="m-set-size m-f-lable"><img class="mr1" src="../../images/hashbox/'+ item.name +'.svg" width="30px"><a value="'+ item.type +'" class="mui-navigate-right pl0 m-set-size">' + item.remark +'支付</a></label></li>'
+										}
+									}
+								})
+								$("#m-pay").html(mcontent);
+								//小屏幕配适
+								var scrollTop = $(this).scrollTop();
+								var scrollHeight = $(document).height();
+								var windowHeight = $(this).height();
+								var bodyHeight = $('body').height();
+
+								if(windowHeight - bodyHeight <= 80){
+									$("#footer").css("position","static");
+								}
+								resolve();
+							}, function(e){
+								mui.toast(e.content);
+							});
+						}).then(function(){
+							mui.hideLoading();
+							payDataType = $("#m-pay .mui-selected a").attr("value");
+							var torm=''
+							if(data.date.coinType == 1){
+								$("a:contains(封装周期)").parent().remove()
+								torm='份';
+								lx='T';
+							}else if(data.date.coinType == 5){
+								$("a:contains(封装周期)").parent().remove()
+								torm='份'
+								lx='M';
+							}else if(data.date.coinType == 6){
+								torm='份'
+								lx='T';
+								$('#m-favorable').remove()
+								$("a:contains(电费)").parent().remove()
+								$("a:contains(产品周期)").parent().remove()
+							}
+							var priceDW = " USDT";
+							var unit = "USDT"
+							quantity = data.date.amount - data.date.electricMoney
+							if (productType == 2 || productType == 4) {
+								// 人民币
+								priceDW = " 元/T";
+								unit = " 元";
+								$(".pay-money").addClass("mui-hidden");
+							} else if (productType == 3 || productType == 5) {
+								// 电费包，丰水期, HBT支付隐藏
+								$(".pay-money-hbt").addClass("mui-hidden");
+							} else {
+								// USDT
+								$(".pay-money").removeClass("mui-hidden");
+							}
+							var validity = "有效期";
+							if (data.date.productValidity != null && data.date.productValidity != "") {
+								var temp = JSON.parse(data.date.productValidity);
+								if (temp[0] > 0) {
+									validity = temp[0] + "年";
+								}
+								if (temp[1] > 0) {
+									validity = temp[1] + "月";
+								}
+								if (temp[2] > 0) {
+									validity = temp[2] + "天";
+								}
+								if (temp[0] == 0 && temp[1] == 0 && temp[2] == 0 || temp[0] >= 40 || data.date.saleType == 2) {
+									validity = "永久有效";
+								}
+								$("#validity").text(validity);
+								if (data.date.encapsulationDay < 1 || data.date.encapsulationDay == null){
+										$("a:contains(封装周期)").parent().remove()
+								}
+								$("#package").text(data.date.encapsulationDay + '天');     //封装周期
+							}
+							$("#m-name").text(data.date.productName)
+							$("#productElectric").text(data.date.saleType == 1 ?  data.date.coinType == 5 ? '$'+'\t' + data.date.productElectric +'/MHS/天' : '$'+'\t' + data.date.productElectric +'/THS/天' : '￥'+'\t' + data.date.rmbElectricPrice +'/台/天')
+							$("#productManage").text(data.date.productManage +'%')
+							$("#sumInvest").text(data.date.invest * data.date.quantity + lx)
+							$("#m-num").text('x' + data.date.quantity)
+							$("#quantity_").text(data.date.quantity + torm)
+							// $("#total").text( coinType == 6 || saleType == 2 ? Common.moneyFormat(data.date.rmbPrice) + '￥' + " ≈ " + data.date.amount + "$" : Common.moneyFormat(data.date.amount) + unit + " ≈ " + data.date.rmbPrice + "￥")
+							$("#total").text(Common.moneyFormat(data.date.amount) + unit + " ≈ " + Common.moneyFormat(data.date.rmbPrice) + "￥");
+							$("#productIcon").attr("src", basePath + data.date.productIcon);
+							$("#price").text(Common.moneyFormat(price) + priceDW);
+							$("#quantity").text(Common.moneyFormat(data.date.amount) + unit);
+							$("#orderSn").text(data.date.sn);
+							$("#createDate").text(data.date.createDate);
+							options.orderPrice = data.date.amount;
+							options.orderRmbPrice = rmbPrice;
+							options.electricPrice = data.date.electricMoney;
+							options.saleType = saleType;
+							options.productType = productType;
+							options.type = payDataType;
+							getTotal(options, function (data) {
+								if (saleType == 1 && coinType != 6) {
+									if (payDataType == 2) {
+										$("#order-info").html('合计：<span style="color:#ff7800;" id="allAmount">' + data.date + ' HBT</span>');
+										$("#buy_amount").text(data.date +' HBT');
+									} else {
+										$("#order-info").html('合计：<span style="color:#ff7800;" id="allAmount">' + data.date + ' 元</span>');
+										$("#buy_amount").text(data.date +' 元');
+									}
+								} else {
+									$("#order-info").html('合计：<span style="color:#ff7800;" id="allAmount">' + data.date + ' 元</span>');
+									$("#buy_amount").text(data.date +' 元');
+								}
+							});
+							amount = data.date.amount;
+							if (data.date.state == 0) {
+								$(".radioItem").removeClass("mui-disabled");
+								$("#pay-content").removeClass("mui-disabled");
+								$("#pay-content").html("去支付");
+								$("#status").text("已创建");
+								$("#status").css({"color":"green"});
+							} else {
+								$(".radioItem").addClass("mui-disabled");
+								$("#pay-content").addClass("mui-disabled");
+								if (data.date.state == 2) {
+									$("#pay-content").html("已支付");
+									$("#status").text("已支付");
+								}else if (data.date.state == 1){
+									$(".radioItem").removeClass("mui-disabled");
+									$("#pay-content").removeClass("mui-disabled");
+									$("#pay-content").html("去支付");
+									$("#status").text("待支付");
+								} else if (data.date.state == 3) {
+									$("#pay-content").html("已完成");
+									$("#status").text("已完成");
+								} else if (data.date.state == 4) {
+									$("#pay-content").html("已取消");
+									$("#status").text("已取消");
+								} else if (data.date.state == 5) {
+									$("#pay-content").html("退款中");
+									$("#status").text("退款中");
+								} else if (data.date.state == 6) {
+									$("#pay-content").html("已退款");
+									$("#status").text("已退款");
+								} else {
+									$("#pay-content").html("已取消");
+									$("#status").text("已取消");
+								}
+							}
+
+							if (productType == 2 || productType == 4) {
+								// $("#pay-wechat").attr("checked", "checked");
+								$("#pay-wechat").click();
+							}
+						}).catch()
+						//$(".pay-money").addClass("mui-hidden");
+					});
+				});
+
+			}
+
+			window.addEventListener('refresh', function(e) {
+				// 在父页面中添加监听事件，刷新页面
+				// load();
+				// 检查是否完成支付
+				$("#pay-before").addClass("mui-hidden");
+				mui.showLoading("支付确认中..", "div");
+				Common.muipost("/app/user/v2/order/inspectState", {
+					orderId: orderId
+				}, function(data) {
+					// mui.toast(data.content);
+					var priceDW = " USDT";
+					if (data.date.productType == 2 || data.date.productType == 4) {
+						// 人民币
+						priceDW = " 元";
+					}
+					$("#pay-order-sn").text(data.date.sn);
+					$("#pay-order-amount").text(Common.moneyFormat(data.date.amount) + priceDW);
+					$("#pay-order-invest").text((data.date.invest * data.date.quantity) + lx);
+					// 支付成功
+					$("#pay-info").text(data.content);
+					$("#pay-success").text(data.content);
+					$(".fail").addClass("mui-hidden");
+					$(".success").removeClass("mui-hidden");
+					// 显示支付结果
+					$("#pay-result").removeClass("mui-hidden");
+				}, function(data) {
+					var priceDW = " USDT";
+					if (data.date.productType == 2 || data.date.productType == 4) {
+						// 人民币
+						priceDW = " 元";
+					}
+					$("#pay-order-sn").text(data.date.sn);
+					$("#pay-order-amount").text(Common.moneyFormat(data.date.amount) + priceDW);
+					$("#pay-order-invest").text((data.date.invest * data.date.quantity) + lx);
+					// 支付中或者支付异常
+					$("#pay-info").text(data.content);
+					$("#pay-fail").text(data.content);
+					$(".success").addClass("mui-hidden");
+					$(".fail").removeClass("mui-hidden");
+					// 显示支付结果
+					$("#pay-result").removeClass("mui-hidden");
+				});
+			});
+
+			window.addEventListener("changeCoupen", function(e) {
+				var prizeName = e.detail.prizeName ? e.detail.prizeName : '不使用优惠劵'
+				$("#m-type").html('<span>' + prizeName + '</span>');
+				payType = payDataType = $("#m-pay li.mui-selected").find("a").attr("value");
+				couponOrder = e.detail.coupon
+				state = e.detail.state
+				options.coupon = couponOrder
+				options.type = payType;
+				getTotal(options, function(data) {
+					if (state == 9.5){
+						if (payType == 1) {
+							// USDT
+							$("#allAmount").text(data.date + " USDT");
+							$("#buy_amount").text(data.date + " USDT");
+						} else if (payType == 2 || payType == 11) {
+							// 兑换产品
+							$("#allAmount").text(data.date + " HBT");
+							$("#buy_amount").text(data.date + " HBT");
+						} else {
+							//人民币支付
+							if (saleType == 1) {
+								$("#allAmount, #buy_amount").text(data.date + " 元");
+							} else {
+								$("#allAmount, #buy_amount").text(data.date + " 元");
+							}
+						}
+					} else {
+						if (payType == 1) {
+							$("#allAmount").text(data.date + " USDT");
+							$("#buy_amount").text(data.date + " USDT");
+						} else if (payType == 2 || payType == 11) {
+							$("#allAmount, #buy_amount").text(data.date);
+						} else {
+							if (saleType == 1 && coinType != 6) {
+								$("#allAmount, #buy_amount").text(data.date + " 元");
+							} else {
+								$("#allAmount, #buy_amount").text(data.date + " 元");
+							}
+						}
+					}
+				});
+			});
+			mui.init({
+				beforeback: function() {
+					//获得父页面的webview
+					var list = plus.webview.currentWebview().opener();
+					//触发父页面的自定义事件(refresh),从而进行刷新
+					mui.fire(list, 'refresh');
+					//返回true,继续页面关闭逻辑
+					return true;
+				}
+			});
+
+			$("#close-alert").click(function() {
+				$("#subs").addClass("mui-hidden")
+				$(".passwordInput").val("");
+			});
+			/**
+			* 获取订单金额
+			* @param orderPrice 订单usdt金额
+			* @param orderRmbPrice  订单rmb金额
+			* @param electricPrice 订单电费金额
+			* @param saleType 产品售卖类型（1-普通 2-整机）
+			* @param productType 产品类型（1-普通 5-期货 8-短期）
+			* @param type 支付类型（2-usdt 3-cny 4-hbt 101-支付宝）
+			* @param coupon 优惠券id（可选）
+			* @param callBack 回调参数
+			*/
+			function getTotal(options, callBack = function() {}) {
+				options.orderPrice = options.orderPrice || 0;
+				options.orderRmbPrice = options.orderRmbPrice || 0;
+				options.electricPrice = options.electricPrice || 0;
+				options.saleType = options.saleType || 0;
+				options.productType = options.productType || 0;
+				options.type = options.type || 0;
+				switch(options.type) {
+					case '1': //usdt
+						options.type = 2;
+						break;
+					case '2':	//hbt
+						options.type = 4;	//usdt
+						break;
+					case '4':	//支付宝
+						options.type = 101;	//usdt
+						break;
+					case '5':	//支付宝2
+						options.type = 101;	//usdt
+						break;
+					case '10':	//cny
+						options.type = 3;	//usdt
+						break;
+					default:
+						options.type = 3;
+				}
+				options.coupon = options.coupon || 0;
+				!options.coupon && delete options.coupon;
+				options.exchangeRate = options.exchangeRate || 0;
+				options.hbtExchangeRate = options.hbtExchangeRate || 0;
+				let url = "/app/user/v2/order/payPriceCompute";
+				Common.muipost(url, options, function(data) {
+					callBack(data);
+				},function(){
+					mui.back();
+				});
+			}
+		</script>
+
+	</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>抽奖记录</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../css/style.css">
+		<link rel="stylesheet" href="../css/hashbox.css">
+    </head>
+    <style>
+        /* .m-flex{display:flex;} */
+        .m-flex div{display: inline-block;}
+        .m-nav{color: #2E2E31;font-size: 15px;}
+        .m-time{font-size: 13px;color:#969699;}
+        .m-status{line-height: 60px;font-size:15px;float: right;}
+        .m-success{color:#FF7800;}
+        .m-init{color:#999999;}
+    </style>
+	<body style="background: #eee" id="pullrefresh">
+        <header class="mui-bar mui-bar-nav other">
+            <div class="c2c-address mui-pull-left mui-action-back"><span class="mui-icon mui-icon-back"></span></div>
+            <h1 class="mui-title" style="font-size: 18px;">抽奖记录</h1>
+        </header>
+        <div style="padding-top: 44px;">
+            <div id="itemmobileefresh">
+                <ul class="mui-table-view mui-table-view-chevron myHashList" id="itemmobile">
+                    
+                </ul>
+            </div>
+        </div>
+    </body>
+    <script src="../js/mui.min.js"></script>
+    <script src="../js/jquery.min.js"></script>
+	<script type='text/javascript' src='../js/common/common.js'></script>
+	<link rel="stylesheet" href="../js/common/mui.loading.css"/>
+    <script type="text/javascript" src="../js/common/mui.loading.js"></script>
+    <script>
+        var userId
+        mui.plusReady(function() {
+            userId = JSON.parse(plus.storage.getItem("loginUser")).id
+        })
+        mui.init({
+            swipeBack: true,
+            pullRefresh: {
+                container: '#itemmobileefresh', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+                up: {
+                    height: 50, //可选.默认50.触发上拉加载拖动距离
+                    auto: true, //可选,默认false.自动上拉加载一次
+                    contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+                    contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+                    callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+                },
+                down: {
+                    style: 'circle',
+                    callback: pulldownRefresh
+                },
+            }
+        });
+
+        var excision = 0;
+        var page = 1;
+        // pullupRefresh()
+        function pullupRefresh() {
+            var _this = this;
+            Common.muipost("/app/prize/coupon", {
+                excision: excision,
+                page: page,
+                userId: userId
+            }, function(data) {
+                if (data.date.list && data.date.list.length > 0) {
+                    var content = "";
+                    mui.each(data.date.list, function(index, item) {
+                        var text = ''
+                        if (item.prizeType != 6) {
+                            if (item.expireDate) {
+                                var thetime = item.expireDate;
+                                var d = new Date(Date.parse(thetime.replace(/-/g,"/")));
+                                var curDate = new Date();
+                                if (d < curDate) {
+                                    text = '<div class="m-status mui-text-right m-init">已过期</div>'
+                                } else {
+                                    if (item.isAccount) {
+                                        text = '<div class="m-status mui-text-right m-success">已到账</div>'
+                                    } else {
+                                        text = '<div class="m-status mui-text-right m-success">待到账</div>'
+                                    }
+                                }
+                            } else {
+                                if (item.isAccount) {
+                                    text = '<div class="m-status mui-text-right m-success">已到账</div>'
+                                } else {
+                                    text = '<div class="m-status mui-text-right m-success">待到账</div>'
+                                }
+                            }
+                        }
+                        content += '<li class="mx-sm-2 m-li py-sm-1 toDetails"><div class="m-flex"><div class="m-title"><p class="m-nav">' + item.prizeName + '</p><p class="m-time">' + item.createDate + '</p></div>' + text + '</div></li>';
+                    });
+                    if ($(".toDetails").length > 0) {
+                        $("#itemmobile > li:last").after(content);
+                    } else {
+                        $("#itemmobile").prepend(content);
+                    }
+                    _this.endPullupToRefresh(data.date.totalPage <= data.date.page);
+                    page++;
+                } else {
+                    _this.endPullupToRefresh(true);
+                }
+            }, function(da) {
+                mui.toast(data.content);
+                mui('#itemmobileefresh').pullRefresh().endPulldownToRefresh(true);
+                mui('#itemmobileefresh').pullRefresh().refresh(true);
+            });
+            mui('#itemmobileefresh').pullRefresh().endPulldownToRefresh(true);
+            mui('#itemmobileefresh').pullRefresh().refresh(true);
+        }
+
+        function pulldownRefresh() {
+            excision = 0;
+            page = 1;
+            var _this = this;
+            Common.muipost("/app/prize/coupon", {
+                excision: excision,
+                page: page,
+                userId: userId
+            }, function(data) {
+                $("#itemmobile > li").remove();
+                if (data.date.list && data.date.list.length > 0) {
+                    var content = ''
+                    mui.each(data.date.list, function(index, item) {
+                        var text = ''
+                        if (item.prizeType != 6) {
+                            if (item.expireDate) {
+                                var thetime = item.expireDate;
+                                var d = new Date(Date.parse(thetime.replace(/-/g,"/")));
+                                var curDate = new Date();
+                                if (d < curDate) {
+                                    text = '<div class="m-status mui-text-right m-init">已过期</div>'
+                                } else {
+                                    if (item.isAccount) {
+                                        text = '<div class="m-status mui-text-right m-success">已到账</div>'
+                                    } else {
+                                        text = '<div class="m-status mui-text-right m-success">待到账</div>'
+                                    }
+                                }
+                            } else {
+                                if (item.isAccount) {
+                                    text = '<div class="m-status mui-text-right m-success">已到账</div>'
+                                } else {
+                                    text = '<div class="m-status mui-text-right m-success">待到账</div>'
+                                }
+                            }
+                        }
+                        content += '<li class="mx-sm-2 m-li py-sm-1 toDetails"><div class="m-flex"><div class="m-title"><p class="m-nav">' + item.prizeName + '</p><p class="m-time">' + item.createDate + '</p></div>' + text + '</div></li>';
+                        $("#itemmobile").html(content);
+                        excision = data.date.excision;
+                        page++;
+                    })
+                }
+            }, function(da) {
+                mui('#itemmobileefresh').pullRefresh().endPulldownToRefresh(true);
+                mui('#itemmobileefresh').pullRefresh().refresh(true);
+            });
+            mui('#itemmobileefresh').pullRefresh().endPulldownToRefresh(true);
+            mui('#itemmobileefresh').pullRefresh().refresh(true);
+        }
+    </script>
+</html>

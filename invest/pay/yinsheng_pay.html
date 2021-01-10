@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>KUPAY</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../../css/style.css">
+		<link rel="stylesheet" href="../../css/hashbox.css">
+		<style>
+			.login-content{ z-index: 2222;width: 100%;}
+			.mui-bar{
+				position: none;
+			}
+			
+		</style>
+	</head>
+	<body  style="width: 100%; height: 100%;">
+		<div id="">		
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="teamName">银盛支付</h1>
+		</header>
+		</div>
+		<!-- <div style="background:rgba(255,243,236,1);width: 100%; height:6.25rem;"class="mui-content">
+			<span style="margin-left: 1.875rem;line-height: 50px;color: #FC6910;">请填写邮箱地址用于接收订单信息</span>
+		</div> -->
+		<!-- <div style="padding:10px;">
+			<form class="mui-input-group" style="border:0.3125rem;">
+				<div class="mui-input-row">
+					<label  class="od-h2" >邮箱地址</label>
+				<input id="email" type="text" class="mui-input-clear od-h2 " placeholder="请输入邮箱地址" value="">
+				</div>
+			</form>
+		</div> -->
+		<div style="width: 100%; height: 100%;">		
+		<div style="margin-top: 55px;" class="box-sd m10  pad10 pay-choose">
+			<h2 class="od-h2">支付通道选择:</h2>
+			<form class="mui-input-group mt10" id="payVal">
+				<div class="mui-input-row mui-radio mui-left pay-money">
+					<label>支付宝支付</label>
+					<input name="radio1" type="radio" checked class="radioItem" value="1">
+				</div>
+				<!-- <div class="mui-input-row mui-radio mui-left pay-money pay-money-hbt">
+					<label>微信支付</label>
+					<input name="radio1" type="radio" class="radioItem" value="2">
+				</div> -->
+				<div class="mui-input-row mui-radio mui-left pay-money pay-money-hbt">
+					<label>银联支付</label>
+					<input name="radio1" type="radio" class="radioItem" value="3">
+				</div>
+			</form>
+		</div>
+		</div>
+		<div class="pad10">
+			<div style="margin-top: 10px;" >
+				<button style=" border-radius:1.25rem;height: 2.5rem; line-height: 0.625rem" id="pay-content" type="button" class="mui-btn mui-btn-block mui-btn-primary" >立即支付</button>
+			</div>
+		</div>
+					
+		
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/jquery.min.js"></script>
+	<script src="../../js/common/common.js"></script>
+	<script src="../../js/qrcode.min.js" type="text/javascript" charset="utf-8"></script>
+	<link href="../../js/common/mui.loading.css" rel="stylesheet" />
+	<script type="text/javascript" src="../../js/common/mui.loading.js"></script>
+
+
+
+	<script>
+		var orderId = 0;
+		mui.plusReady(function() {
+			var current = plus.webview.currentWebview();
+			orderId = current.orderId;
+			payTy=current.payType;	
+				console.log("*********************************payTy:***"+payTy)
+			
+		});	
+		
+		$("#pay-content").click(function() {
+		var	payVal = $("input[name='radio1']:checked").val();
+			// 判断是否可以购买
+			if ($("#pay-content").hasClass("mui-disabled")) {
+				return false;
+			}else{
+					var payTy = 1;
+					if (payVal == 1) {
+						// 支付宝支付
+						payTy = 1;
+					} else if (payVal == 2) {
+						// 微信支付
+						payTy = 2;
+					}else {
+						mui.toast("系统异常，支付类型错误");
+						return false;
+					}
+					mui.showLoading("支付中..", "div");
+					Common.muipost("/app/user/v2/order/payment", {
+						orderId: orderId,
+						payType: payTy,
+						type: payVal
+					}, function(data) {
+						if (payTy == 1) {
+							//支付宝	
+							mui.openWindow({
+								url: '../pay/alipay.html',
+								id: '../pay/alipay.html',
+								extras: {
+									orderPay: data.date
+								}
+							});
+						} else if (payTy == 2) {
+							//微信
+							mui.openWindow({
+								url: '../pay/wechat.html',
+								id: '../pay/wechat.html',
+								extras: {
+									orderPay: data.date
+								}
+							});
+						}
+					}, function(data) {
+						mui.toast(data.content);
+					});
+				
+			}
+		});
+		
+		// var orderId = 0;
+		// mui.plusReady(function() {
+		// 	var current = plus.webview.currentWebview();
+		// 	orderId = current.orderId;
+		// 	payTy=current.payType;
+		// 	
+		// 	
+		// });
+		// function next(){
+		// 	var payVal= $("input[name='radio1']:checked").val();
+		// 	mui.showLoading("正在加载..","div");
+		// 	Common.muipost("/app/user/v2/order/payment", {
+		// 		orderId: orderId,
+		// 		payType: payTy
+		// 	}, function(data) {
+		// 		mui.openWindow({
+		// 			url: data.date.memo,
+		// 			id: data.date.memo,
+		// 			extras: {
+		// 				orderPay: data.date
+		// 			}
+		// 		});
+		// 	}, function(data) {
+		// 		mui.toast(data.content);
+		// 	});		
+		// 	
+		// }
+		
+		//完成支付
+		$("#over").click(function() {
+			mui.back();
+		})
+		mui.init({
+			beforeback: function() {
+				//获得父页面的webview
+				var list = plus.webview.currentWebview().opener();
+				//触发父页面的自定义事件(refresh),从而进行刷新
+				mui.fire(list, 'refresh');
+				//返回true,继续页面关闭逻辑
+				return true;
+			}
+		});
+	</script>
+</html>

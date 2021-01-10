@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>首页</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" href="../css/swiper.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../css/style.css">
+		<link rel="stylesheet" href="../css/hashbox.css">
+		<style>
+			
+						
+			.yun-news .mui-table-view-cell a p{
+				left:95px;
+			}
+			.yun-news, #index-html #tabbar{margin-top:0;}
+			.mui-table-view-cell:after{height: 0;}
+			.mui-bar .mui-title{right:100px;left:100px;}
+			.m-right{float:right;line-height: 44px;z-index: 9999;width: 80px;font-size: 17px;}
+		</style>
+	</head>
+	<body style="background: #fff" id="pullrefresh">
+        <header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="teamName">消息</h1>
+			<span class="m-right" id="haveread">全部已读</span>
+		</header>
+		<div class="mui-content" id="index-html" style="background: #fff">
+			<!-- 消息 -->
+			<div id="tabbar" class="mui-control-content mui-active">
+				<div class="mui-control-content" style="display: block;">
+					<div class="yun-news" id="news-refresh">
+						<ul class="mui-table-view" id="news-content" />
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/mui.lazyload.js"></script>
+		<script src="../js/mui.lazyload.img.js"></script>
+		<script src="../js/common/common.js"></script>
+		<script src="../js/index/index.js"></script>
+		<script>
+			mui.init({
+				swipeBack: true,
+				pullRefresh: {
+					container: '#news-refresh', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+					up: {
+						height: 50, //可选.默认50.触发上拉加载拖动距
+						auto: true, //可选,默认false.自动上拉加载一次
+						contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+						contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+						callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					},
+					down: {
+						style: 'circle',
+						callback: pulldownRefresh
+					}
+				},
+				beforeback: function() {　　　　
+					var list = plus.webview.currentWebview().opener();　　　　
+					//refresh是A页面自定义事件
+					mui.fire(list, 'backIndex');
+					//返回true,继续页面关闭逻辑
+					return true;
+			}
+			});
+			// 消息
+			$("#haveread").click(function () {
+				mui.confirm("确认全部已读？", "", ["确定", "取消"], function(e) {
+					if (e.index == 0) {
+						Common.muipost("/app/common/oneKeyRead", {}, function (data) {
+							if (data.type === 200) {
+								pulldownRefresh()
+							}
+						}, function(data) {
+							mui.toast(data.content);
+						})
+					}
+				})
+
+			});
+			window.addEventListener('back', function(e){//执行刷新
+				pulldownRefresh()
+            });
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			var value = []
+			function pulldownRefresh() {
+				var _this = this;
+				// 咨询
+				var url = '/app/common/news-pages';
+				Common.muipost(url, {
+					'page': 1,
+					userId: id,
+					excision: excision
+				}, function(data) {
+					if (data.date.records && data.date.records.length > 0) {
+						var html = "";
+						var message = ""
+						mui.each(data.date.records, function(index, item) {
+							value.push(item)
+							var createDate = "";
+							if (item.createDate != null && item.createDate != "") {
+								createDate = item.createDate.substr(0, 10)
+							}
+							if (item.isRead != 1) {
+								message = '<div style="position: absolute;width: 8px;height: 8px;border-radius: 50%;background: red;left: 60px;"></div>'
+							} else {
+								message = ""
+							} 
+							html += '<li class="mui-table-view-cell mui-media m_media" style="border-bottom:1px solid #eee;width: 100%; " dataId="' + item.id + '" linkUrl="' + item.linkUrl +'" title="' + item.title + '">' +
+								'<a href="javascript:void(0);">' +
+								'<img width="40" class="mui-media-object mui-pull-left" src="'+ item.thumb +
+								'" onerror="this.src=\'images/hashbox/product.png\'" style="border-radius: 50%;width: 60px;height: 60px;font-size: 7px;">' + message +
+								'<div class="mui-media-body" style="margin-top: 8px;"><span style="width:70%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;font-size:14px">' + item.title +
+								'</span><span style="float: right;font-size: 12px;color: #b3b3b3;">' + createDate + '</span></div>' +
+								'<p style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;left:78px;bottom:15px;width: 100%;padding-right: 78px;">' + item.digest + '</p>' +
+								'</a>' +
+								'</li>';
+						});
+						$('#news-content').html(html);
+						mui('#news-refresh').pullRefresh().endPulldownToRefresh(false);
+						mui('#news-refresh').pullRefresh().refresh(false);
+					}
+				})
+			}
+			var id
+			mui.plusReady(function() {
+				id = JSON.parse(plus.storage.getItem("loginUser")).id
+			})
+			var page = 1;
+			var excision = 0;
+			function pullupRefresh() {
+				var _this = this;
+				// 咨询
+				var url = '/app/common/news-pages';
+				Common.muipost(url, {
+					'page': page,
+					userId: id,
+					excision: excision
+				}, function(data) {
+					if (data.date.records && data.date.records.length > 0) {
+						var html = "";
+						var message = ""
+						mui.each(data.date.records, function(index, item) {
+							value.push(item)
+							var createDate = "";
+							if (item.createDate != null && item.createDate != "") {
+								createDate = item.createDate.substr(0, 10)
+							}
+							if (item.isRead != 1) {
+								message = '<div style="position: absolute;width: 8px;height: 8px;border-radius: 50%;background: red;left: 60px;"></div>'
+							} else {
+								message = ""
+							}
+							html += '<li class="mui-table-view-cell mui-media m_media" style="border-bottom:1px solid #eee;width: 100%;" dataId="' + item.id + '" linkUrl="' + item.linkUrl +'" title="' + item.title + '">' +
+								'<a href="javascript:void(0);">' +
+								'<img width="40" class="mui-media-object mui-pull-left" src="'+ item.thumb +
+								'" onerror="this.src=\'images/hashbox/product.png\'" style="border-radius: 50%;width: 60px;height: 60px;">' + message +
+								'<div class="mui-media-body fonts" style="margin-top: 8px;"><span class="mui-pull-left" style="width:70%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;font-size:14px">' + item.title +
+								'</span><span class="mui-pull-right" style="float: right;font-size: 12px;color: #b3b3b3;">' + createDate + '</span></div>' +
+								'<p style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;left:78px;bottom:15px;width: 100%;padding-right: 78px;">' + item.digest + '</p>' +
+								'</a>' +
+								'</li>';
+
+
+						});
+						$(".yun-news").removeClass("mui-hidden");
+						if ($('#news-content > .mui-media').length > 0) {
+							$('#news-content > .mui-media:last').after(html);
+						} else {
+							$('#news-content').prepend(html);
+						}
+						let totaPage = Math.ceil(data.date.totalPage / 5)
+						if (totaPage > data.date.page) {
+							page++;
+						}
+						_this.endPullupToRefresh(totaPage <= data.date.page);
+					} else {
+						_this.endPullupToRefresh(true);
+					}
+				}, function(da) {
+					_this.endPullupToRefresh(true);
+				}, 1);
+				mui("body").on("tap", "li.m_media", function() {
+					var url = '/app/common/news-read';
+					let _this = this
+					Common.muipost(url, {userId: id, id: $(_this).attr("dataId")}, function(data) {
+						mui.each(value, function(index, item) {
+							if (item.id == $(_this).attr("dataId")) {
+								item.isRead = 1
+							}
+						})
+						mui.openWindow({
+							url: '../link/link.html',
+							id: '../link/link.html',
+							extras: {
+								linkUrl: $(_this).attr("linkUrl"),
+								title: $(_this).attr("title")
+							}
+						});
+						// location.reload();
+
+					}, function (err) {
+						
+					}, 1)
+				});
+			}
+		</script>
+
+	</body>
+</html>

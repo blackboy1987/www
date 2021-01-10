@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport"
+					content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>收款账户</title>
+		<link href="../../css/mui.min.css"
+					rel="stylesheet" />
+		<link href="../../css/mui.picker.css"
+					rel="stylesheet" />
+		<link href="../../css/mui.poppicker.css"
+					rel="stylesheet" />
+		<link href="../../css/style.css"
+					rel="stylesheet" />
+		<link href="../../css/hashbox.css"
+					rel="stylesheet" />
+		<style>
+			body {
+				background: #fff;
+			}
+
+			.login-content {
+				position: relative;
+				padding: 0 1rem
+					/* 16/16 */
+				;
+			}
+
+			.mui-input-group:before {
+				position: static;
+			}
+
+			.mui-input-group:after {
+				position: static;
+			}
+
+			.mui-btn-block {
+				padding: 8px 0;
+			}
+
+			.mui-btn-block {
+				margin-bottom: 20px;
+			}
+
+			.mui-bar-nav~.mui-content {
+				padding-top: 10px;
+			}
+
+			.up-ps {
+				color: #6a94f9;
+				font-size: 13px;
+				line-height: 1.8rem;
+				background: #e8effe;
+				padding: 0
+			}
+
+			.mui-input-row label {
+				color: #333333;
+			}
+
+			.achieve {
+				top: 18px;
+			}
+
+			.mui-input-group .mui-input-row:after {
+				left: 0;
+			}
+
+			.update-password form .mui-input-row {
+				height: 100%;
+				padding: 0 7px;
+				border-bottom: 1px solid #eee;
+			}
+
+			.mui-input-group .mui-input-row:after {
+				background-color: #ffffff;
+			}
+
+			.mui-input-row label {
+				color: #7A7A7A;
+			}
+
+			.mui-input-row label {
+				font-size: 15px;
+				color: #333333;
+			}
+
+			.mui-input-row .mui-input-clear~.mui-icon-clear {
+				top: 20px;
+				padding: 0;
+			}
+
+			.mui-input-row img {
+				position: absolute;
+				right: 0px;
+				top: 18px;
+			}
+
+			.mui-backdrop {
+				z-index: 9998 !important;
+			}
+
+			.mui-poppicker {
+				z-index: 9999 !important;
+			}
+
+			.mui-poppicker-header .mui-btn {
+				background: #eee;
+				border: #eee;
+				color: #333333;
+				font-size: 15px;
+			}
+
+			.mui-poppicker-header {
+				text-align: center;
+			}
+
+			#area {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+
+			.mui-title {
+				text-align: left;
+			}
+
+			header.other {
+				border-bottom: none;
+			}
+
+			.set-acc {
+				width: 50%;
+				height: 100%;
+				text-align: center;
+			}
+
+			.pay-acc {
+				height: 33px;
+				margin: 10px 0;
+				line-height: 33px;
+			}
+
+			/* .box-border-bottom .mui-active{
+				border-bottom: 3px solid #0068f7;
+				color: #0068f7;
+			} */
+			.box-border-bottom .mui-active {
+				position: relative;
+				color: #0068f7;
+			}
+
+			.box-border-bottom .mui-active::after {
+				content: '';
+				position: absolute;
+				bottom: -1px;
+				left: 0;
+				height: 3px !important;
+				width: 200%;
+				transform: scale(.5);
+				transform-origin: left top;
+				background-color: #0068f7;
+			}
+
+			#update-from {
+				padding: 0 !important;
+			}
+
+			.mui-content-padded {
+				margin: 0;
+				margin-top: 1.25rem
+					/* 20/16 */
+				;
+			}
+
+			#btn {
+				border-radius: 25px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav other box-border-bottom"
+						style="height: 50px;width: 100%">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">设置收款账户</h1>
+		</header>
+		<div class="mui-content login-content update-password pt0"
+				 style="height: 100%;">
+			<div class="box-border-bottom"
+					 style="width: 100%;height: 53px">
+				<div id="bank"
+						 class="set-acc mui-pull-left mui-active">
+					<div class="pay-acc box-border-right"><span>银行卡账户</span></div>
+				</div>
+				<div id="alipay"
+						 class="set-acc mui-pull-right">
+					<div class="pay-acc"><span>支付宝账户</span></div>
+				</div>
+			</div>
+			<!--银行卡表单-->
+			<form id='update-from'
+						class="mui-input-group pl2">
+				<div class="mui-input-row py1">
+					<label for="userName"
+								 class="pl0">持卡人</label>
+					<input type="text"
+								 id="accountUser"
+								 value=""
+								 class="mui-input"
+								 readonly >
+				</div>
+				<div class="mui-input-row py1">
+					<label for="bankCard"
+								 class="pl0">银行卡号</label>
+					<input type="number"
+								 id="bankCard"
+								 class="mui-input-clear mui-input"
+								 placeholder="请输入您的银行卡号"
+								 name="bankCard"
+								 maxlength="20">
+				</div>
+				<div class="mui-input-row py1">
+					<label for="theirBank"
+								 class="pl0">所属银行</label>
+					<input type="text"
+								 id="theirBank"
+								 class="mui-input-clear mui-input"
+								 placeholder="请输入所属银行"
+								 name="theirBank">
+				</div>
+				<div class="mui-input-row py1">
+					<label for="area"
+								 class="pl0">所属支行名</label>
+					<input type="text"
+								 id="area"
+								 class="mui-input m-btn-input"
+								 placeholder="请输入银行支行名"
+								 name="area">
+					<!-- <img src="../../images/yjt.png" alt="" width="25"> -->
+				</div>
+				<div class="py1" style="color: rgb(221, 81, 69);font-size: 14px; margin-bottom: 0 !important; padding-bottom: 0 !important;">
+					<span>* 该交易仅支持储蓄卡</span>
+				</div>
+			</form>
+			<!--支付宝表单-->
+			<form id='pay-from'
+						class="mui-input-group pl2"
+						style="display: none">
+				<div class="mui-input-row py1">
+					<label for="userName"
+								 class="pl0">姓名</label>
+					<input type="text"
+								 id="AlipayaccountUser"
+								 value=""
+								 class="mui-input"
+								 readonly
+								 placeholder="请输入支付宝姓名">
+				</div>
+				<div class="mui-input-row py1">
+					<label for="bankCard"
+								 class="pl0">支付宝账户</label>
+					<input type="text"
+								 id="alipayAcc"
+								 class="mui-input-clear mui-input"
+								 placeholder="请输入支付宝账户"
+								 name="bankCard"
+								 maxlength="32">
+				</div>
+			</form>
+			<div class="mui-content-padded">
+				<button id='btn'
+								type="button"
+								class="mui-btn mui-btn-block mui-btn-primary m-btn-ra">确认</button>
+			</div>
+		</div>
+		</div>
+		<div id="info"
+				 class="up-ps px-sm-1 py-sm-2 m0">请准确填写您的收款银行卡号、开户行和开户行所在地等信息，否则可能导致平台结算不成功。</div>
+		<script type='text/javascript'
+						src='../../js/jquery-1.11.1.min.js'></script>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.picker.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script type="text/javascript"
+						src="../../js/city.data-3.js"></script>
+		<script type='text/javascript'
+						src='../../js/common/common.js'></script>
+		<link rel="stylesheet"
+					href="../../js/common/mui.loading.css" />
+		<script type="text/javascript"
+						src="../../js/common/mui.loading.js"></script>
+		<script>
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+			var picker = new mui.PopPicker();
+			var userName = ''
+			var userId = ''
+			function showLevel() {
+				var picker = new mui.PopPicker({
+					layer: 2,
+					buttons: ['取消', '确定']
+				});
+				picker.setData(cityData3);
+				picker.pickers[0].setSelectedIndex(0);
+				picker.pickers[1].setSelectedIndex(2);
+				$(".mui-poppicker-btn-ok").before("<buttom class='mui-btn'>请选择</buttom>")
+				picker.show(function (selectItems) {
+					var text1 = selectItems[0].text;
+					var text2 = selectItems[1].text;
+					$(".m-btn-input").val(text1 + text2)
+				});
+			}
+			function disabled() {
+				$("#area").attr("disabled", "disabled");
+				$("#theirBank").attr("disabled", "disabled");
+				$("#bankCard").attr("disabled", "disabled");
+				$(".mui-content-padded").addClass("mui-hidden")
+			}
+			// 初始化传值
+			mui.plusReady(function () {
+				var current = plus.webview.currentWebview();
+				userName = current.name;
+				userId = JSON.parse(plus.storage.getItem("loginUser")).id
+				$("#accountUser,#AlipayaccountUser").attr("value", userName);
+				userBtn()
+			})
+			function userBtn() {
+				Common.muipost("/receipt/receipt_v2", { userId: userId }, function (data) {
+					if (data.date) {
+						data.date.forEach((item, index) => {
+							if (item.type == 1) {
+								$("#area").val(item.area);
+								$("#bankCard").val(item.bankCard);
+								$("#theirBank").val(item.theirBank);
+							} else {
+								$("#alipayAcc").val(item.bankCard);
+							}
+							$("#btn").text("修改")
+						});
+					}
+				}, function () { })
+			}
+			// $('.m-btn-input').click(function(){
+			//     showLevel()
+			// })
+			$("#alipay").click(function () {
+				$("#bank").removeClass("mui-active");
+				$("#alipay").addClass("mui-active");
+
+				$("#pay-from").css('display', 'block')
+				$("#update-from").css('display', 'none')
+				$("#info").text("请准确填写您的支付宝账号, 支付宝姓名, 否则可能导致平台结算不成功")
+			})
+
+			$("#bank").click(function () {
+				$("#alipay").removeClass("mui-active");
+				$("#bank").addClass("mui-active");
+
+				$("#pay-from").css('display', 'none')
+				$("#update-from").css('display', 'block')
+				$("#info").text("请准确填写您的收款银行卡号、开户行和开户行所在地等信息，否则可能导致平台结算不成功")
+			})
+
+
+			$("#btn").click(function () {
+				// 初始化数据
+				var params = {};
+				if ($('#bank.mui-active').length == 1) {
+					params = $("#update-from").serializeJson();
+					params.type = 1;
+					if (Common.isNull(params.bankCard)) {
+						mui.toast("请输入您的银行卡号");
+						return false;
+					}
+					if (Common.isCard(params.bankCard)) {
+						mui.toast("请输入正确银行卡号");
+						return false;
+					}
+					if (Common.isNull(params.theirBank)) {
+						mui.toast("请输入所属银行");
+						return false;
+					}
+					if (Common.isNull(params.area)) {
+						mui.toast("请选择开户行所在地");
+						return false;
+					}
+				} else {
+					params = $("#pay-from").serializeJson();
+					params.type = 2;
+					params.theirBank = '';
+					params.area = '';
+					if (Common.isNull(params.bankCard)) {
+						mui.toast("请输入您的支付宝账户");
+						return false;
+					}
+					if (Common.isPhoneAvailable(params.bankCard) && Common.isEmail(params.bankCard)) {
+						mui.toast("请输入正确支付宝账户");
+						return false;
+					}
+				}
+				mui.showLoading()
+				Common.muipost("/receipt/create_v2", Object.assign(params), function (data) {
+					mui.hideLoading();
+					mui.toast("操作成功");
+					// disabled()
+				}, function () { })
+			})
+		</script>
+	</body>
+
+</html>

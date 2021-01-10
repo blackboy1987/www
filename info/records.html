@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>邀请返佣记录</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+
+		<style type="text/css">
+			body {
+				position: relative;
+			}
+			.mui-bar-nav{
+			background-color: #ffffff;
+			box-shadow: none;
+		}
+			.mui-slider {
+				margin-top: -10px;
+			}
+
+			.mui-bar-nav.mui-bar .mui-icon {
+				color: #919194;
+			}
+
+			.lists {
+				border-bottom: 1px solid #E5E5E5;
+
+			}
+
+			.father {
+				margin: 0 auto;
+				width: 88%;
+			}
+
+			.flex {
+				display: flex;
+				flex-direction: column;
+				height: 50px;
+				justify-content: space-around;
+			}
+
+			.list2 {
+				display: flex;
+				justify-content: space-between;
+				padding: 13px 0px;
+				box-sizing: border-box;
+			}
+
+			.titles {
+				background: url(../images/fanyongbg.png) no-repeat;
+				background-size: 100% 100%;
+				margin-top: 45px;
+				height: 180px;
+			}
+
+			.names {
+				font-size: 24px;
+				margin: 0;
+				margin-right: 10px;
+			}
+
+			.gps {
+				background-color: #ffffff;
+				width: 92%;
+				border-radius: 10px;
+				position: absolute;
+				top: 125px;
+				left: 0;
+				right: 0;
+				margin: 0 auto;
+				display: flex;
+				align-items: center;
+				flex-direction: column;
+				box-shadow: 0px 0px 20px 0px rgba(44, 54, 86, 0.18);
+			}
+			.bottom_parent{
+				height:380px;
+				overflow: hidden;
+			}
+			.father{
+				overflow: scroll;
+				height:100%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav other">
+			<a id="goBack" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" style="font-size: 20px;" id="teamName">我的返佣</h1>
+		</header>
+		<div>
+			<div class="titles">
+				<div style="padding-top: 40px;margin-left: 20px;">
+					<div style="display: flex;align-items: center;">
+						<div class="names" style="font-weight: 400;color: #ffffff;"></div>
+						<div style="background-color: rgba(255,255,255,.1); box-sizing: border-box; padding: 0 5px; width: 100px;height: 26px; border-radius: 50px;display: flex;align-items: center;justify-content: space-around;">
+							<img style="width: 20px;" class="copys" id="myIcon"/>
+							<span class="dengji" style="font-size: 14px;color: #ffffff;line-height: 25px;margin-top: 3px;"></span>
+						</div>
+					</div>
+					<div style="display: flex;align-items: center;margin-top: 10px;">
+						<span style="font-size: 15px;color: #ffffff;opacity:0.8;margin-right: 8px;">邀请码 </span>
+						<span class="extendCode" id="inventCode" style="font-size: 15px;color: #ffffff;opacity:0.8;margin-right: 5px;"></span>
+						<a onclick="copy_fun()"><img style="width: 25px;opacity:0.8;" src="../images/yaoqingma.png" /></a>
+					</div>
+				</div>
+			</div>   
+		</div>
+		<div class="gps">
+			<div style="margin-top:12px;margin-bottom: 10px; display: flex;flex-direction: column;align-items: center;">
+				<!-- <div class="yuer" style="font-size: 30px;color: #333333;"></div>
+				<div style="margin: 14px 0;color: #333333;">余额（元）</div>
+				<div class="tixian" style="text-align: center;height: 30px; width: 90px; border-radius: 50px;background-color: #1F75DA;"><span
+					 style="opacity:0.9;color: #FFFFFF; line-height:30px;font-size: 16px;">申请提现</span></div>
+				<div style="margin: 15px 0;color: #999999;font-size: 15px;">工作日上午9:00至下午4:00可申请提现</div> -->
+				<div style="display: flex;width: 100%;">
+					<div style="margin-right: 20px; width: 150px;height: 80px;align-items: center;display: flex;flex-direction: column;justify-content: space-around;">
+						<div class="toDay"  style="color: #333333;font-size: 28px;"></div>
+						<div style="color:rgba(51,51,51,1);font-size: 15px;margin-top: -10px;">今日返佣（元）</div>
+					</div>
+					<div style="width: 1px;background-color: #E5E5E5; height: 40px;margin-top: 20px;"></div>
+					<div style="margin-left: 20px; width: 150px;height: 80px;align-items: center;display: flex;flex-direction: column;justify-content: space-around;">
+						<div class="total" style="color: #333333;font-size: 28px;"></div>
+						<div style="color:rgba(51,51,51,1);font-size: 15px;margin-top: -10px;">累计返佣（元）</div>
+					</div>
+				</div>
+				<div id="zichan" style="color: #1F75DA;font-size:15px;margin-bottom: 20px;">查看账户余额</div>
+			</div>
+
+		</div>
+
+		<div style="width: 100%; z-index: 1110; margin-top: 110px;background-color: #F6F6F6;height: 50px;line-height: 50px;">
+			<span style="margin-left: 28px;font-size: 18px;">返佣明细</span>
+		</div>
+		<div class="bottom_parent">
+			<div class="father" id="father">
+				
+			</div>
+		</div>
+
+
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/mui.js"></script>
+		<script src="../js/common/common.js"></script>
+
+		<script>
+			var userId = '';
+			var userName="";
+			var page = 1;
+			var limit = 10;
+			mui.plusReady(function() {
+				userId = JSON.parse(plus.storage.getItem("loginUser")).id;
+				userName = JSON.parse(plus.storage.getItem("loginUser")).userName;
+				$(".names").html(userName);
+				//获取当前等级名字
+				var s2_2=localStorage.getItem("names");
+				var p2_2=JSON.parse(s2_2);
+				$(".dengji").html(p2_2);
+				//获取当前等级图标
+				var aa=localStorage.getItem("imgs");
+				var bb=JSON.parse(aa);
+				$("#myIcon").attr('src',basePath + bb);
+				getRecords();
+			});
+			
+			function dataInit(res){
+				var htmlContent = "";
+				for (var i = 0; i <res.date.list.length; i++) {
+					htmlContent += '<div id="lists" class="lists"> ' +
+						'		<div id="list2" class="list2"> ' +
+						'			<div class="flex"> ' +
+						'				<span style="color: #2E2E31;"><span>'+res.date.list[i].userName+'</span>  购买算力<span>'+res.date.list[i].invest+'T</span></span> ' +
+						'				<span style="font-size:15px;color: #969699;margin-top: 10px;">' + res.date.list[i].createDate +
+						'</span> ' +
+						'			</div> ' +
+						'			<div class="flex"> ' +
+						'				<span style="color: #FF7800;">+' + res.date.list[i].commission + '元</span> ' +
+						'			</div> ' +
+						'		</div> ' +
+						'	</div> ';
+				}
+				return htmlContent;
+			}
+			window.addEventListener("changeList", function(e) {
+				getRecords();
+			})		
+			function getRecords() {
+				var userData = {};
+				var htmlContent = "";
+				Common.muipost("/app/userCommission/listData",{
+					userId: userId,
+					page:page,
+					limit:limit
+				}, function(res) {
+					userData = res.date;
+					htmlContent = dataInit(res);
+					$('#father').html(htmlContent);
+					$('.yuer').html(userData.money);
+					$('.toDay').html(userData.toDay);
+					$('.total').html(userData.total);
+					$('.extendCode').html(res.date.extendCode);
+					var mons=userData.money;
+					var s2=JSON.stringify(mons);
+					localStorage.setItem("mons",s2);
+					return htmlContent;
+				}, function(s) {
+
+				});
+				
+				return htmlContent;
+			}
+
+			function pulldownRefresh() {
+				page = 1; 
+				var _this = this;
+				var url = "/app/userCommission/listData";
+				Common.muipost(url, {
+					userId: userId,
+					page: page,
+					limit: limit,
+				}, function(res) {
+					if (res.date.list && res.date.list.length > 0) {
+						var htmlContent = dataInit(res);
+						$('#father').html(htmlContent);
+					}
+				}, function(data) {
+					mui('.bottom_parent').pullRefresh().endPulldownToRefresh(true);
+					mui('.bottom_parent').pullRefresh().refresh(true);
+				});
+				mui('.bottom_parent').pullRefresh().endPulldownToRefresh(true);
+				mui('.bottom_parent').pullRefresh().refresh(true);
+				
+			}
+			
+			function pullupRefresh() {
+				page++;
+				var url = "/app/userCommission/listData";
+				var _this = this;
+				Common.muipost(url, {
+					userId: userId, 
+					page: page,
+					limit: limit,
+				}, function(res) {
+					if (res.date.list && res.date.list.length > 0) {
+						var htmlContent = dataInit(res);
+						$("#father").html($("#father").html() + htmlContent);
+						_this.endPullupToRefresh(false);
+					} else {
+						_this.endPullupToRefresh(true);
+					}
+					
+				}, function(data) {
+			
+				});
+			}
+			
+			
+			mui.init({
+				pullRefresh: {
+					container: ".bottom_parent", //下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+					down: { 
+						style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+						color: '#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+						height: '50px', //可选,默认50px.下拉刷新控件的高度,
+						range: '100px', //可选 默认100px,控件可下拉拖拽的范围
+						offset: '0px', //可选 默认0px,下拉刷新控件的起始位置
+						auto: true, //可选,默认false.首次加载自动上拉刷新一次
+						callback: pulldownRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					},
+					up: {
+						height: 50, //可选.默认50.触发上拉加载拖动距离
+						auto: true, //可选,默认false.自动上拉加载一次
+						contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+						contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+						callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					}
+				}
+			});      
+			
+			//  复制方法
+		function copy_fun() { //参数copy是要复制的文本内容
+			mui.plusReady(function() {
+				var copy = $("#inventCode").text();
+				//判断是安卓还是ios
+				if (mui.os.ios) {
+					//ios
+					var UIPasteboard = plus.ios.importClass("UIPasteboard");
+					var generalPasteboard = UIPasteboard.generalPasteboard();
+					//设置/获取文本内容:
+					generalPasteboard.plusCallMethod({
+						setValue: copy,
+						forPasteboardType: "public.utf8-plain-text"
+					});
+					generalPasteboard.plusCallMethod({
+						valueForPasteboardType: "public.utf8-plain-text"
+					});
+					mui.toast("复制成功");
+				} else {
+					//安卓
+					var context = plus.android.importClass("android.content.Context");
+					var main = plus.android.runtimeMainActivity();
+					var clip = main.getSystemService(context.CLIPBOARD_SERVICE);
+					plus.android.invoke(clip, "setText", copy);
+					mui.toast("复制成功");
+				}
+			});
+		}
+		$("#zichan").click(function(){
+			mui.openWindow({ 
+				url: './assets.html',
+				id: './assets.html',
+				extras:{
+					backs:'aaaa'
+				}
+			});
+		})
+			$(".tixian").click(function() {
+				mui.openWindow({
+					url: './tixian.html',
+					id: './tixian.html',
+					
+				});
+			});
+		</script>
+	</body>
+</html>

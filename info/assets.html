@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html style="background-color: #F7F7F7;">
+
+	<head>
+		<meta charset="utf-8">
+		<title>资产</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../css/style.css">
+		<link rel="stylesheet" href="../css/hashbox.css">
+		<style>
+			.pay-tb.mui-slider .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active{border:none;opacity: 1;}
+			.pay-tb .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active{color:#fff;font-size: 16px;}
+			.pay-tb .mui-segmented-control .mui-control-item{color:#fff;font-size: 15px;opacity: .5;}
+			.zc-qk div, .zc-qk span{line-height: 30px;text-align: right;}
+			.zc-qk div{color:#333;font-size: 15px;}
+			.zc-qk span{color: #C7C8CB;font-size: 13px;}
+			.zc-qk{display: inline-block;float: right; right: 0; position: absolute}
+			/* float: right;margin-right: 30px; */
+			.p1{padding: 0.9375rem !important}
+			.cont{background: url(../images/zc-banner.svg);background-size: cover;background-repeat: no-repeat;background-position: bottom;width: 100%;object-fit: cover;border-radius: 0.9375rem;position: relative;box-shadow: 0px 5px 5px #c8cdf0;background-color: #436df3;margin-bottom: 10px;}
+			.one{display: flex;align-items: flex-start;flex-direction: column;justify-content: space-around;width: 80%;}
+			.c00{color: #000000;font-size: 18px;}
+			.m-btn-ra:last-child:after{height: 1px;}
+			.mm{color: #2E2E31;font-size: 18px;}
+			.mui-icon-arrowright:before{color:#919194;}
+			.pay-tb-all{margin: 0;}
+			.zichan{position: absolute;height: 1.125rem;line-height: 1.125rem;width:128px;right: 0rem;top:1.25rem;display: flex;background-color: white;color: #4163ef;font-size: 0.6875rem;border-top-left-radius: 0.5625rem;border-bottom-left-radius: 0.5625rem;}
+			#moneyContainer{background-color: #F7F7F7;}
+		</style>
+	</head>
+	<body>
+		<div class="mui-bar mui-bar-nav other" style="background-color:white;">
+			<a id="goBack" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" style="font-size: 20px;text-align: left; left: 16px;">资产</h1>
+			<div id="tixian_info" class="mui-pull-right mui-btn-link record" style="color: #000000;font-size: 16px;position: absolute;right: 16px;">提币明细</div>
+
+		</div>
+		<div class="mui-content" style="height: auto;width: 100%;position:relative; padding-left: 15px; padding-right: 15px;display: flex;justify-content: space-around;background-color: #F7F7F7;">
+			<!-- background: url(../images/zc-banner.svg) no-repeat;object-fit: cover; -->
+			<div class="cont">
+				<div class="bgcs" style="width: 100%;display: inline-block;justify-content: space-around">
+				<div class="one" style="width: 100%; padding-left: 0.9375rem; padding-top: 1.25rem;">
+					<span style="color: #FFFFFF;font-size:0.875rem;white-space: nowrap;">总资产（RMB）</span>
+					<span style="color: #FFFFFF;font-size:1.875rem;padding-top: 0.3rem;" id="totalMoney"></span>
+				</div>
+
+				<div id="shouyi" class="one" style="margin-top: 1.25rem;padding-bottom: 1.25rem;padding-left: 0.9375rem;">
+					<span style="color: #FFFFFF;font-size:0.875rem;white-space: nowrap;">总收益（RMB）</span>
+					<span style="color: #FFFFFF;padding-top: 0.3rem;font-size:1.25rem;" id="totalEarnings"></span>
+				
+				</div>
+				</div>
+				
+				<div class="zichan" ><img style="margin-left: 10px; margin-right: 5px;" width="12px" src="../images/coin/slf-safe.svg" /> 资产正在保护中 </div>
+			</div>
+			
+			
+			
+		</div>
+		<div>
+			<div class="mui-slider-group pay-tb-all" id="pullrefresh" style="border-top-left-radius: 5px;border-top-right-radius: 5px;"></div>
+				<div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
+					<ul id="moneyContainer" class="p1" style="margin-top: 0px;" />
+				</div>
+			</div>
+		</div>
+		</div>
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script src="../js/jquery.min.js"></script>
+	<script src="../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		
+		function pulldownRefresh() {
+			setTimeout(function() {
+				reload();
+				loadList();
+			}, 1500);
+		}
+		
+		mui.ready(function() {
+			loadList();
+		}); 
+		
+		function loadList() {
+			Common.muipost("/app/user/money/list", {}, function(data) {
+				var li = "";
+				$("#totalMoney").html(Common.moneyFormat('≈ '+data.date.totalMoney) + '<span style="font-size:15px"></span>')
+				$("#totalEarnings").html(Common.moneyFormat('≈ '+data.date.totalEarnings) + '<span style="font-size:15px"></span>')
+				if (data.date.list && data.date.list.length > 0) {
+					data.date.list.splice(1,0,data.date.list.pop())
+					mui.each(data.date.list, function(index, item) {
+						var img = "../images/acount/" + item.name + ".png";
+						var aStart = "";
+						var money = "";
+						var rightIcon = "";
+						var values = "";
+						// 添加颜色色值的控制
+						var color = "#F7F7F7";
+						if (item.name == "CNY") {
+							aStart = "<a _href=\"tixian.html\"  _assetType=\"" + item.assetType + "\"  _name=\"" + item.name +
+								"\" class=\"mui-clearfix clickable\" style=\"display: flex;position: relative; width: 100%\">";
+							money = Common.moneyFormat(item.money);
+							rightIcon = "mui-icon-arrowright";
+							values = "";
+							color = "#fbf2f3";
+						}  else if (item.name == "BTC") {
+							aStart = "<a _href=\"assets/invest.html\"  price=\"" + item.price + "\"  _assetType=\"" + item.assetType +
+								"\"  _name=\"" + item.name +
+								"\" class=\"mui-clearfix clickable\" style=\"display: flex;position: relative; width: 100%\">";
+							money = Common.moneyFormatByDecimals(item.money, 8);
+							rightIcon = "mui-icon-arrowright";
+							color = "#f9f1eb";
+							values = "<div style=\"margin-top: -5px;margin-bottom:10px\"><span style=\"color: #787880;\">≈ " + item.price + "元</span>" + "</div>";
+
+						} else if (item.name == "USDT") {
+							aStart = "<a  _href=\"assets/invest.html\"  price=\"" + item.price + "\"  _assetType=\"" + item.assetType +
+								"\"  _name=\"" + item.name +
+								"\" class=\"mui-clearfix clickable\" style=\"display: flex;position: relative; width: 100%\">";
+							money = Common.moneyFormat(item.money);
+							rightIcon = "mui-icon-arrowright";
+							color = "#e8f7f2";
+							values = "<div style=\"margin-top: -5px;margin-bottom:10px\"><span style=\"color: #787880;\">≈ " + item.price + "</span>" + "</div>";
+
+						} else if (item.name == "ETH") {
+							aStart = "<a  _href=\"assets/invest.html\"  price=\"" + item.price + "\"  _assetType=\"" + item.assetType +
+								"\"  _name=\"" + item.name +
+								"\" class=\"mui-clearfix clickable \" style=\"display: flex;position: relative; width: 100%\">";
+							money = Common.moneyFormatByDecimals(item.money,8);
+							rightIcon = "mui-icon-arrowright";							
+							color = "#f3f0fb";
+							values = "<div style=\"margin-top: -5px;margin-bottom:10px\"><span style=\"color: #787880;\">≈ " + item.price + "</span>" + "</div>";
+						} else if (item.name == "FIL") {
+							aStart = "<a  _href=\"assets/invest.html\"  price=\"" + item.price + "\"  _assetType=\"" + item.assetType +
+								"\"  _name=\"" + item.name +
+								"\" class=\"mui-clearfix clickable \" style=\"display: flex;position: relative; width: 100%\">";
+							money = Common.moneyFormatByDecimals(item.money,8);
+							rightIcon = "mui-icon-arrowright";							
+							color = "#f3f0fb";
+							values = "<div style=\"margin-top: -5px;margin-bottom:10px\"><span style=\"color: #787880;\">≈ " + item.price + "</span>" + "</div>";
+						} else {
+							aStart = "<a price=\"" + item.price + "\"  _assetType=\"" + item.assetType +
+								"\"  _name=\"" + item.name +
+								"\" class=\"mui-clearfix clickable\" style=\"display: flex;position: relative; width: 100%\">";
+							money = Common.moneyFormat(item.money);
+							rightIcon = "mui-icon-arrowright";
+							color = "#ecf3fa";
+							values = "<div style=\"margin-top: -5px;margin-bottom:10px\"><span style=\"color: #787880;\">≈ " + item.price + "</span>" + "</div>";
+						}
+
+						var aEnd = "</a>";
+						if(item.name == 'CNY'){
+								values="";
+							}else{
+								values="<div style=\"margin-top: -5px;margin-bottom:10px\"><span style=\"color: #787880;\">≈ " + item.price + "元</span>" + "</div>";
+
+							}
+						li += "<li class=\"mui-clearfix m-btn-ra p1\" style='vertical-align:middle;margin-bottom: 10px;display:block;height:74px;background-color:" + color + " ' id=\"" + item.name.toLowerCase() +
+							"\">" +
+							aStart +
+							"<img src=\"" + img + "\" width=\"40px\" height='40px' st.yle='\\'>" +
+							"<div style=\"top: 10px;position: absolute;left:50px;\"> <span class='mm'>" + item.name + "</span>" +
+							"</div>" +
+							"<div class=\"zc-qk\">" +
+							"<div class=\"cny_style\" style=\"margin-top: -5px;color:#333333\">" + money + ' '+ item.name +"</div>" +
+							values +
+							"</div>" +
+							// "<div class=\"zc-dj m0\" style=\"position: absolute;right: 0px;top: 10px;\">" +
+							// "<span class=\"mui-icon " + rightIcon + "\"></span>" +
+							// "</div>" +
+							aEnd +
+							"</li>";
+					});
+				}
+				$("#moneyContainer").html(li);
+			}, function(data2) {});
+		}
+
+		mui.plusReady(function() {
+			var self = plus.webview.currentWebview();
+			var backs = self.backs;
+			if(!backs){
+				$("#goBack").hide();
+			}
+
+		});
+
+		mui("body").on("tap", "a.clickable", function() {
+			if ($(this).hasClass("mui-icon-arrowright")) {
+				return false;
+			}
+			var _href = $(this).attr("_href");
+			var _assetType = $(this).attr("_assetType");
+			var _name = $(this).attr("_name");
+			var _price = $(this).attr("price");
+			var webview = mui.openWindow({
+				url: _href,
+				id: _href,
+				extras: {
+					assetType: _assetType,
+					name: _name,
+					price: _price,
+				}
+			});
+		});
+
+		window.addEventListener('refresh', function(e) {
+			//在父页面中添加监听事件，刷新页面
+			loadList();
+		});
+
+		var excision = 0;
+		var page = 1;
+
+		function reload() {
+			Common.muipost("/app/user/money/list", {}, function(data) {
+				$("#moneyContainer").html('');
+				var li = "";
+				if (data.date.list && data.date.list.length > 0) {
+					data.date.list.splice(1,0,data.date.list.pop())
+					mui.each(data.date.list, function(index, item) {
+						var img = "../images/acount/" + item.name + ".png";
+						var aStart = "";
+						var money = "";
+						var rightIcon = "";
+						var values = "";
+						// 添加颜色色值的控制
+						var color = "#F7F7F7";
+						if (item.name == "CNY") {
+							aStart = "<a _href=\"tixian.html\"  _assetType=\"" + item.assetType + "\"  _name=\"" + item.name +
+								"\" class=\"mui-clearfix clickable\" style=\"display: block;position: relative; width: 100%\">";
+							money = Common.moneyFormat(item.money);
+							rightIcon = "mui-icon-arrowright";
+							values = "";
+							
+							color = "#fbf2f3";
+						} else if (item.name == "BTC") {
+							aStart = "<a _href=\"assets/invest.html\"  price=\"" + item.price + "\"  _assetType=\"" + item.assetType +
+								"\"  _name=\"" + item.name +
+								"\" class=\"mui-clearfix clickable\" style=\"display: block;position: relative; width: 100%\">";
+							money = Common.moneyFormatByDecimals(item.money, 8);
+							rightIcon = "mui-icon-arrowright";
+							
+							color = "#f9f1eb";
+							values = "<div style=\"margin-top: -5px;margin-bottom:10px\"><span style=\"color: #787880;\">≈ " + item.price + "元</span>" + "</div>";
+						} else if (item.name == "USDT") {
+							aStart = "<a  _href=\"assets/invest.html\"  price=\"" + item.price + "\"  _assetType=\"" + item.assetType +
+								"\"  _name=\"" + item.name +
+								"\" class=\"mui-clearfix clickable\" style=\"display: block;position: relative; width: 100%\">";
+							money = Common.moneyFormat(item.money);
+							rightIcon = "mui-icon-arrowright";
+							color = "#e8f7f2";
+							values = "<div style=\"margin-top: -5px;margin-bottom:10px\"><span style=\"color: #787880;\">≈ " + item.price + "元</span>" + "</div>";
+						}else if (item.name == "ETH") {
+							aStart = "<a  _href=\"assets/invest.html\"  price=\"" + item.price + "\"  _assetType=\"" + item.assetType +
+								"\"  _name=\"" + item.name +
+								"\" class=\"mui-clearfix clickable\" style=\"display: block;position: relative; width: 100%\">";
+							money = Common.moneyFormatByDecimals(item.money,8);
+							rightIcon = "mui-icon-arrowright";
+							color = "#f3f0fb";
+							values = "<div style=\"margin-top: -5px;margin-bottom:10px\"><span style=\"color: #787880;\">≈ " + item.price + "元</span>" + "</div>";
+						} else if (item.name == "FIL") {
+							aStart = "<a  _href=\"assets/invest.html\"  price=\"" + item.price + "\"  _assetType=\"" + item.assetType +
+								"\"  _name=\"" + item.name +
+								"\" class=\"mui-clearfix clickable \" style=\"display: flex;position: relative; width: 100%\">";
+							money = Common.moneyFormatByDecimals(item.money,8);
+							rightIcon = "mui-icon-arrowright";							
+							color = "#f3f0fb";
+							values = "<div style=\"margin-top: -5px;margin-bottom:10px\"><span style=\"color: #787880;\">≈ " + item.price + "</span>" + "</div>";
+						} else {
+							aStart = "<a  _href=\"hbt_info.html\"  price=\"" + item.price + "\"  _assetType=\"" + item.assetType +
+								"\"  _name=\"" + item.name +
+								"\" class=\"mui-clearfix clickable\" style=\"display: block;position: relative;\">";
+							aStart = "<a  price=\"" + item.price + "\"  _assetType=\"" + item.assetType +
+								"\"  _name=\"" + item.name +
+								"\" class=\"mui-clearfix clickable\" style=\"display: block;position: relative; width: 100%\">";
+							money = Common.moneyFormat(item.money);
+							rightIcon = "mui-icon-arrowright";
+							color = "#ecf3fa";
+							values = "<div style=\"margin-top: -5px;margin-bottom:10px\"><span style=\"color: #787880;\">≈ " + item.price + "元</span>" + "</div>";
+						}
+
+						var aEnd = "</a>";
+						if(item.name == 'CNY'){
+								values="";
+							}else{
+								values="<div style=\"margin-top: -5px;margin-bottom:10px\"><span style=\"color: #787880;\">≈ " + item.price + "元</span>" + "</div>";
+
+							}
+							// m-btn-ra 隐藏下划线样式
+							"+color+"
+						li += "<li class=\"mui-clearfix m-btn-ra p1\" style='display:block;margin-bottom: 10px;height:74px;background-color:" + color + " ' id=\"" + item.name.toLowerCase() +
+							"\">" +
+							aStart +
+							"<img src=\"" + img + "\" width=\"40px\" height='40px' style=''>" +
+							"<div style=\"top: 10px;position: absolute;left:50px;\"> <span class='mm'>" + item.name + "</span>" +
+							"</div>" +
+							"<div style=\"color: #787880;\" class=\"zc-qk\">" +
+							"<div class=\"cny_style\" style=\"margin-top: -5px;\">" + money + '  '+ item.name +"</div>" +
+							values +
+							"</div>" +
+							// "<div class=\"zc-dj m0\" style=\"position: absolute;right: 0px;top: 10px;\">" +
+							// "<span class=\"mui-icon " + rightIcon + "\"></span>" +
+							// "</div>" +
+							aEnd +
+							"</li>";
+					});
+				}
+				// alert(li)
+				$("#moneyContainer").html(li);
+			}, function(data2) {});
+			mui('#pullrefresh').pullRefresh().endPulldownToRefresh(true);
+			mui('#pullrefresh').pullRefresh().refresh(true);
+		}
+
+		$("#shouyi").click(function(){
+			mui.openWindow({
+				url: '/index/profit.html',
+				id: '/index/profit.html'
+			})
+		})
+
+		$("#tixian_info").click(function() {
+			mui.openWindow({
+				url: './coin.html',
+				id: './coin.html' 
+			})
+		})
+		
+		$("#btn").click(function(){
+			mui.openWindow({
+				url: './zuli_status.html',
+				id: './zuli_status.html' 
+			})
+		})
+		$("#dingdan").click(function(){
+			mui.openWindow({
+				url: './detail_list.html',
+				id: './detail_list.html' 
+			})
+		})
+		mui.init({
+			pullRefresh: {
+				swipeBack: true, //启用右滑关闭功能
+				container: '#pullrefresh',
+				down: {
+					style: 'circle',
+					callback: pulldownRefresh
+				}
+			}
+		});
+	</script>
+</html>

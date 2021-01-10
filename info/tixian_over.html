@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>提现申请</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<style type="text/css">
+			.mui-icon {
+				color: #919194;
+			}
+			.mui-bar-nav {
+				background-color: #ffffff;
+				box-shadow: none;
+			}
+			.mui-bar .mui-title {
+				right: unset;
+				font-size: 16px;
+			}
+			.mui-icon-back:before, .mui-icon-left-nav:before {
+				color: #000;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="teamName">提现申请</h1>
+		</header>
+
+		<div style="margin-bottom: 20px; margin-top: 46px; padding: 5px 20px; background-color: #e8effe;color: #6a94f9;font-size: 14px;">
+			将在一个工作日内提现至您当前账号预留的银行账户上，请注意查收。
+		</div>
+		<div style="flex-direction: column; margin: 0 16px;display: flex;align-items: center;">
+
+			<img style="margin: 20px 0;" width="60px" src="../images/hashbox/dh-01.svg" />
+			<div style="margin-bottom: 10px;color: #2E2E31;">提现申请成功</div>
+			<div style="color: #002bda; font-size: 20px;">￥<span id="yuer"></span></div>
+			<div style="width: 100%;">
+				<div style="display: flex;justify-content: space-between;border-bottom: 1px solid #e5e5e5;height: 46px;;line-height: 46px;">
+					<span style="font-size: 16px;">提现账户</span>
+					<span id="bankCard" style="text-align: right;"></span>
+				</div>
+				<div style="display: flex;justify-content: space-between;border-bottom: 1px solid #e5e5e5;height: 46px;;line-height: 46px;">
+					<span style="font-size: 16px;">提现时间</span>
+					<span id="createDate" style="text-align: right;"></span>
+				</div>
+				<div style="margin-top: 22px;">
+					<button style="width: 100%;height: 41px;border-radius: 21px;color: #fff;font-size: 15px;background-color: #0068f7;border: none;" id="tixian-success">完成</button>
+				</div>
+			</div>
+		</div>
+
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/mui.js"></script>
+		<script src="../js/common/common.js"></script>
+
+		<script>
+			mui.init({
+				beforeback: function() {
+					var lists = plus.webview.currentWebview().opener();
+					mui.fire(lists, 'list');
+					return true;
+				},
+			})
+			
+			window.onload = function() {
+				$('#yuer').html(getQueryVariable('money'));
+				$('#bankCard').html(getQueryVariable('bankCard'));
+				$('#createDate').html(getTime());
+			}
+			//时间格式化
+			function getTime() {
+				var date = new Date();
+				var fullYear = date.getFullYear();
+				var month = date.getMonth() + 1;
+				var ms = month < 10 ? "-" + "0" + month : "-" + month;
+				var day = date.getDate();
+				var ds = day < 10 ? "-" + "0" + day : "-" + day;
+				var rs = fullYear + ms + ds;
+				var time = date.getHours();
+				if (time < 10) {
+					rs += " 0" + time;
+				} else {
+					rs += " " + time;
+				}
+				var minutes = date.getMinutes();
+				var min = minutes < 10 ? ":0" + minutes : ":" + minutes;
+				var seconds = date.getSeconds();
+				var sed = seconds < 10 ? ":0" + seconds : ":" + seconds;
+				rs += min + sed;
+				return rs;
+			}
+			//获取url的参数
+			function getQueryVariable(variable){
+				var query = window.location.search.substring(1);
+				var vars = query.split("&");
+				for (var i = 0; i < vars.length; i++) {
+					var pair = vars[i].split("=");
+					if (pair[0] == variable) {
+						return pair[1];
+					}
+				}
+				return (false);
+			}
+			mui("body").on("tap", "#tixian-success", function() {
+				mui.back();
+				return false;
+			})
+		</script>
+	</body>
+</html>

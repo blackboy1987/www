@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>租赁产品</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="css/hashbox.css">
+		<style>
+			.product .myHashList li img{margin-left: 0;}
+			.product .myHashList .hash-ps{margin-top: 5px;font-size: 12px; color: #808080;}
+			.box-sd{box-shadow: unset; background: #e6f0f4;}
+			.product .myHashList li img.success{left: 0;}
+			.listImg{margin-left: 10px!important;}
+			
+		</style>
+
+	</head>
+	<body style="background: #fff" id="pullrefresh">
+		<header class="mui-bar mui-bar-nav other">
+			<h1 class="mui-title">租赁产品</h1>
+		</header>
+
+		<div class="mui-content" id="index-html" style="background: #fff">
+			<div class="mui-control-content mui-active myHashbox product">
+				<img src="images/hashbox/banner_tz.png" width="100%" />
+
+				<div id="slider" class="mui-slider pay-tb">
+					<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+						<a class="mui-control-item mui-active" href="#item1mobile">
+							电费包产品
+						</a>
+						<a class="mui-control-item " href="#item2mobile">
+							租赁产品
+						</a>
+					</div>
+				</div>
+
+				<div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
+					<div class="pad10 pt0">
+						<ul class="mui-table-view mui-table-view-chevron myHashList" id="itemmobile1">
+							
+						</ul>
+					</div>
+				</div>
+
+				<div id="item2mobile" class="mui-slider-item mui-control-content">
+					<div class="pad10 pt0">
+						<ul class="mui-table-view mui-table-view-chevron myHashList" id="itemmobile2">
+							
+						</ul>
+						<img src="images/test.png" width="100%" id="immageType"/>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="js/jquery.min.js"></script>
+		<script src="js/mui.min.js"></script>
+		<script src="js/common/common.js" type="text/javascript" charset="utf-8"></script>
+
+		<script>
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+
+			//下拉刷新
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						style: 'circle',
+						callback: pulldownRefresh
+					},
+				}
+			});
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				setTimeout(function() {
+					//addData();
+					load(1);
+					load(2);
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+				}, 1500);
+			}
+			window.addEventListener('refresh', function(e) {
+				//在父页面中添加监听事件，刷新页面
+				load(1);
+				load(2);
+			});
+			
+			function load(type) {
+				var _this = this;
+				Common.muipost("/app/user/v2/product/list", {type: type}, function(data) {
+					if (data.date && data.date.length > 0) {
+						if (type == 2) {
+							$("#immageType").addClass("mui-hidden");
+						}
+						$("#itemmobile" + type).html("");
+						var content = "";
+						mui.each(data.date, function(index, item) {
+							var changeValue = "";
+							if (item.type == 2 || item.type == 4) {
+								changeValue = Common.moneyFormat(item.price) +
+									' <i class="dw"> 元</i> ';
+							} else {
+								changeValue = Common.moneyFormat(item.price) 
+										+ ' <i class="dw"> USDT</i> <span class="approximate" style="margin-left: 0px;">≈ ' 
+										+ Common.moneyFormat(item.money) + '</span>';
+							}
+			
+							// deal time fomat to MM/dd		
+							//var curTime = new Date();
+							//var expirationtime = new Date(Date.parse(item.expirationDate));
+							var curTime = new Date();
+							var tempTime = item.expirationDate.replace(/-/g, '/').substr(0, 10);
+							var expirationtime = new Date(tempTime);
+			
+							var images = "";
+							var toProDetails = ""
+							if (curTime < expirationtime) {
+								images = '<img class="success" src="images/hashbox/jxz_01.png" width="52px" height="40px" />'
+								toProDetails = "1";
+							} else {
+								images = '<img class="success" src="images/hashbox/yjs_01.png" width="52px" height="40px" />'
+								toProDetails = "2";
+							}
+			
+							content += '<li class="mui-table-view-cell box-sd mt10 toProDetails" _id=' + item.id + ' _isTime="' +
+								toProDetails + '">' +
+								'<a class="">' +
+								'<img src="' + basePath + item.icon +
+								'" width="45px" height="45px" onerror="this.src=\'images/hashbox/product.png\'" />' +
+								'' + images + '' +
+								'<div class="buy-record">' +
+								'<div class="record-name">' +
+								'' + item.name + '' +
+								'</div>' +
+								'<div class="record-data">' +
+								'' + changeValue +
+								'</div>' +
+								'<div class="hash-ps">购买算力合约，下单到上架完成大约需要48小时</div>'
+							'</div>' +
+							'<a>' +
+							'</li>';
+						});
+			
+						$("#itemmobile" + type).html(content);
+			
+					}
+				}, function(da) {
+			
+				});
+			}
+
+			mui("body").on("tap", "li.toProDetails", function() {
+				var _href = 'invest/leaseDetails.html';
+				var _isTime = $(this).attr("_isTime");
+				var _id = $(this).attr("_id");
+				alert(_isTime)
+				if (_isTime == 1) {
+					var webview = mui.openWindow({
+						url: _href,
+						id: _href,
+						extras: {
+							productId: _id
+						}
+					});
+				} else {
+					mui.toast("产品已过期，请选择其他产品");
+				}
+			});
+		</script>
+
+	</body>
+</html>

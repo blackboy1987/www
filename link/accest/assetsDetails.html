@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>资产</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../css/style.css">
+		<link rel="stylesheet" href="../css/hashbox.css">
+		
+	</head>
+	<body id="pullrefresh">
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">我的资产</h1>
+		</header>
+
+		<div class="mui-content" >
+			<!-- 首页 begin -->
+			<div id="tabbar" class="mui-control-content mui-active">
+
+					<div class="zc-list">
+						<div id="slider" class="mui-slider pay-tb">
+							<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+								<a class="mui-control-item mui-active" href="#item1mobile">
+									充值明细
+								</a>
+								<a class="mui-control-item " href="#item2mobile">
+									提币明细
+								</a>
+							</div>
+						</div>
+						<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-4"></div>
+						<div class="mui-slider-group pay-tb-all">
+							<div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
+								<div class="box-sd assets-tbmx">
+									<div class="mui-row">
+										<div class="mui-col-sm-7">
+											<p>充值时间：2019.02.25   15:30</p>
+											<p>处理时间：2019.02.25   15:30</p>
+											<p><span class="box success">充值成功</span></p>
+										</div>
+										<div class="mui-col-sm-5">
+											<p>充值金额(<span> BTC </span>)</p>
+											<p class="money">0.03</p>
+
+										</div>
+									</div>
+								</div>
+							</div>
+							<div id="item2mobile" class="mui-slider-item mui-control-content">
+								<div class="box-sd assets-tbmx">
+									<div class="mui-row">
+										<div class="mui-col-sm-7">
+											<p>提币时间：2019.02.25   15:30</p>
+											<p>处理时间：2019.02.25   15:30</p>
+											<p><span class="box success">提币成功</span></p>
+										</div>
+										<div class="mui-col-sm-5">
+											<p>提币金额(<span> BTC </span>)</p>
+											<p class="money">0.03</p>
+
+										</div>
+									</div>
+								</div>
+								<div class="box-sd assets-tbmx">
+									<div class="mui-row">
+										<div class="mui-col-sm-7">
+											<p>提币时间：2019.02.25   15:30</p>
+											<p>处理时间：2019.02.25   15:30</p>
+											<p><span class="fail">提币失败</span></p>
+										</div>
+										<div class="mui-col-sm-5">
+											<p>提币金额(<span> BTC </span>)</p>
+											<p class="money">0.03</p>
+
+										</div>
+									</div>
+								</div>
+								<div class="box-sd assets-tbmx">
+									<div class="mui-row">
+										<div class="mui-col-sm-7">
+											<p>提币时间：2019.02.25   15:30</p>
+											<p>处理时间：2019.02.25   15:30</p>
+											<p><span class="processing">处理中</span></p>
+										</div>
+										<div class="mui-col-sm-5">
+											<p>提币金额(<span> BTC </span>)</p>
+											<p class="money">0.03</p>
+
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+
+			</div>
+			<!-- 首页 end  -->
+		</div>
+	
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script src="../js/zepto.js"></script>
+	<script src="../js/jquery.min.js"></script>
+	<script src="../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		
+		
+		$("#toTx").click(function() {
+
+					mui.openWindow({
+			            url: 'BTC提币.html',
+			            id: 'BTC提币.html'
+			           
+			        });
+			});
+      
+	</script>
+</html>

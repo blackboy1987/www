@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+			<title>提币明细</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<style>
+		.mui-bar-nav{
+				background-color: #ffffff;
+				box-shadow: none;
+			}
+		.mui-bar-nav.mui-bar .mui-icon {
+				color: #919194;
+			}
+			
+			.m-inline{display: inline-block}
+			.mui-row{
+				border-bottom: 1px solid #E5E5E5;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" style="font-size: 20px;" id="teamName">提币明细</h1>
+		</header>
+		<div id="">
+			
+	
+		<div style="margin-top: 45px;" class="mui-slider-group pay-tb-all" id="pullrefresh">
+			<ul id="item3mobile" style="padding: 0 15px;" class="mui-table-view mui-table-view-chevron"/>
+			
+			</ul>
+		</div> 
+	</div>
+
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/mui.js"></script>
+		<script src="../js/common/common.js"></script>
+		
+		<script>
+		//下拉刷新
+		mui.init({
+			pullRefresh: {
+				swipeBack: true, //启用右滑关闭功能
+				container: '#pullrefresh',
+				down: {
+					style: 'circle',
+					callback: pulldownRefresh
+				}
+			}
+		});
+		// mui.ready(function() {
+			// pullupRefresh();
+		// });
+			
+		/**
+		 * 下拉刷新具体业务实现
+		 */
+		function pulldownRefresh() {
+			setTimeout(function() {
+				reload();
+			}, 1500);
+		}
+	
+		var excision = 0;
+		var page = 1;
+		
+		function pullupRefresh() {
+			var _this = this;
+			Common.muipost("/app/user/v2/come/page", {
+				excision: excision,
+				page: page
+			}, function(data) {
+				if (data.date.list && data.date.list.length > 0) {
+					var content = "";
+					mui.each(data.date.list, function(index, item) {
+						var changeValue = "";
+						if (item.name == "BTC" || item.name == "ETH") {
+							changeValue = Common.moneyFormatByDecimals(item.money, 8);
+						} else {
+							changeValue = Common.moneyFormat(item.money);
+						}
+						// deal time fomat to MM/dd									
+						var state = "";
+						if (item.state == 0) {
+							state =
+								'<p style="text-align:right"><span style="padding:5px;border-radius:5px;background:#67CC78;color:#fff;" class="processing">审核中</span></p>';
+						} else if (item.state == 1) {
+							state =
+								'<p style="text-align:right"><span style="padding:5px;border-radius:5px;background:#67CC78;color:#fff;" class="success">提币成功</span></p>';
+						} else {
+							state =
+								'<p style="text-align:right"><span style="padding:5px;border-radius:5px;background:#FB5C5C;color:#fff;" class="fail">提币失败</span></p>';
+						}
+						// content += '<div class="box-sd assets-tbmx">' +
+						// 	'<div class="mui-row">' +
+						// 	'<div class="mui-col-sm-7">' +
+						// 	'<p>提币时间：' + item.createDate + '</p>' +
+						// 	'' + state + '' +
+						// 	'</div>' +
+						// 	'<div class="mui-col-sm-5">' +
+						// 	'<p>提币金额(<span>' + item.name + '</span>)</p>' +
+						// 	'<p class="money">' + changeValue + '</p>' +
+						// 	'<p><a class="mui-pull-right withdraw" href="#" _id=' + item.id + '>提币信息</a></p>' +
+						// 	'</div>' +
+						// 	'</div>' +
+						// 	'</div>'
+
+						content += '<a class="mui-pull-centre withdraw" href="#" _id=' + item.id + '>' +
+							'<div class="box-sd assets-tbmx">' +
+							'<div class="mui-row p2">' +
+							'<div class="m-inline" style="height: 60px;">' +
+							'<p style="line-height: 40px;font-size: 16px;color:#333333;">提币金额 ('+item.name+')</p>' +
+							'<span style="color:#969699;font-size: 0.8rem;">' + item.createDate + '<span/>' +
+							'</div>' +
+							'<div class="m-inline" style="float:right">' +
+							'<p class="money" style="line-height: 40px;font-size: 16px;color:#333333;">' + changeValue + item.name +
+							'</p>' +
+							'' + state + '' +
+							'</div>' +
+							'</div>' +
+							'</div></a>'
+
+					});
+					if ($("#item3mobile > .assets-tbmx").length > 0) {
+						$("#item3mobile > .assets-tbmx:last").after(content);
+					} else {
+						$("#item3mobile").prepend(content);
+					}
+
+					_this.endPullupToRefresh(data.date.totalPage <= data.date.page);
+
+					excision = data.date.excision;
+					page++;
+
+				} else {
+					_this.endPullupToRefresh(true);
+				}
+			}, function(da) {
+				_this.endPullupToRefresh(true);
+			});
+		}
+
+		function reload() {
+			excision = 0;
+			page = 1;
+			var _this = this;
+			Common.muipost("/app/user/v2/come/page", {
+				excision: excision,
+				page: page
+			}, function(data) {
+				$(".assets-tbmx").remove();
+				if (data.date.list && data.date.list.length > 0) {
+					var content = "";
+					mui.each(data.date.list, function(index, item) {
+						var changeValue = "";
+						if (item.name == "BTC" || item.name == "ETH") {
+							changeValue = Common.moneyFormatByDecimals(item.money, 8);
+						} else {
+							changeValue = Common.moneyFormat(item.money);
+						}
+						// deal time fomat to MM/dd									
+						var state = "";
+						if (item.state == 0) {
+							state =
+								'<p style="text-align:right"><span style="padding:5px;border-radius:5px;background:#67CC78;color:#fff;" class="processing">审核中</span></p>';
+						} else if (item.state == 1) {
+							state =
+								'<p style="text-align:right"><span style="padding:5px;border-radius:5px;background:#67CC78;color:#fff;" class="success">提币成功</span></p>';
+						} else {
+							state =
+								'<p style="text-align:right"><span style="padding:5px;border-radius:5px;background:#FB5C5C;color:#fff;" class="fail">提币失败</span></p>';
+						}
+						// content += '<div class="box-sd assets-tbmx">' +
+						// 	'<div class="mui-row">' +
+						// 	'<div class="mui-col-sm-7">' +
+						// 	'<p>提币时间：' + item.createDate + '</p>' +
+						// 	'' + state + '' +
+						// 	'</div>' +
+						// 	'<div class="mui-col-sm-5">' +
+						// 	'<p>提币金额(<span>' + item.name + '</span>)</p>' +
+						// 	'<p class="money">' + changeValue + '</p>' +
+						// 	'<p><a class="mui-pull-right withdraw" href="#" _id=' + item.id + '>提币信息</a></p>' +
+						// 	'</div>' +
+						// 	'</div>' +
+						// 	'</div>'
+						
+						content += '<a class="mui-pull-centre withdraw" href="#" _id=' + item.id + '>' +
+							'<div class="box-sd assets-tbmx">' +
+							'<div class="mui-row p2">' +
+							'<div class="m-inline" style="height: 60px;">' +
+							'<p style="line-height: 40px;font-size: 16px;color:#333333;">提币金额 ('+item.name+')</p>' +
+							'<span style="color:#969699;font-size: 0.8rem;">' + item.createDate + '<span/>' +
+							'</div>' +
+							'<div class="m-inline" style="float:right">' +
+							'<p class="money" style="line-height: 40px;font-size: 16px;color:#333333;">' + changeValue + item.name +
+							'</p>' +
+							'' + state + '' +
+							'</div>' +
+							'</div>' +
+							'</div></a>'
+					});
+					$("#item3mobile").prepend(content);
+					excision = data.date.excision;
+					page++;
+				}
+			}, function(da) {
+
+			});
+			mui('#item3mobile').pullRefresh().endPulldownToRefresh(true);
+			mui('#item3mobile').pullRefresh().refresh(true);
+		}
+		//提币信息
+		mui("body").on("tap", "a.withdraw", function() {
+			var _id = $(this).attr("_id");
+			var _href = 'assets/withdraw.html';
+			var webview = mui.openWindow({
+				url: _href,
+				id: _href,
+				extras: {
+					outId: _id,
+				}
+			});
+		});
+
+		mui.init({
+			swipeBack: true,
+			pullRefresh: {
+				container: '#item3mobile', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+				up: {
+					height: 50, //可选.默认50.触发上拉加载拖动距离
+					auto: true, //可选,默认false.自动上拉加载一次
+					contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+					contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+					callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+				}
+			}
+		});
+	</script>
+
+	</body>
+</html>

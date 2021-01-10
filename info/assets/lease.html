@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>账户资产</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../../css/style.css">
+		<link rel="stylesheet" href="../../css/hashbox.css">
+		<style>
+			::-webkit-input-placeholder { color:#b3b3b3; }
+			::-moz-placeholder { color:#b3b3b3; } /* firefox 19+ */
+			:-ms-input-placeholder { color:#b3b3b3; } /* ie */
+			input:-moz-placeholder { color:#b3b3b3; }
+			.pay-tb-all .tb-pay-addr{ width: 80%; margin: 0 auto;}
+			.copyBtn{ position: relative;top: -20px;}
+			.assets-all .all-ass{ color: #a0c6ff;}
+			.lease-title{ font-size: 15px; color: #333;margin-bottom: 5px;;}
+			.lease-word{ font-size: 13px; color: #939599;margin-bottom: 10px;}
+			.lease-input{ position: relative; padding-top: 10px;}
+			.lease-input span{position: absolute;font-size: 25px; color: #4d4d4d; top: 17px;}
+			.lease-input input{ border: none; margin-bottom: 0; padding-left: 80px; font-size: 20px;}
+			.lease-input a{position: absolute; right: 0;font-size: 13px; color: #2c95e8; top: 10px;;}
+			.pay-tb-all{margin: 0;margin-top: 10px; background: #f2f2f2;}
+			.leaseBtn{ width: 100%; background:#2C95E8; color: #fff; height: 40px;margin-top: 20px; border:0;}
+			.a-assets .assets-all{background:unset;background:url('../../images/b_t.png') no-repeat;background-size: 100% 100%;}
+			.a-assets .assets-all .all-ass, .a-assets .assets-all p{text-align: left;color:#FFFFFF;}
+			.a-assets .assets-al{background:#fff;}
+			.a-assets .assets-al .all-ass{color:#787880;font-size: 16px;}
+			.a-assets .assets-al p{color:#2E2E31;}
+			#totalMoney{font-size: 30px;}
+			#mPrice{font-size: 25px;}
+			.m-p span{display: inline-block;color:#7D7D80;}
+			#sliderSegmentedControl, .pay-tb.mui-slider .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active{border-bottom: 1px solid #eee;}
+			.pay-tb.mui-slider .mui-segmented-control.mui-segmented-control-inverted .mui-control-item {border-bottom: 1px solid #eee;background:#fff;}
+			.mui-active span{border-bottom: 3px solid #1F74D7;color:#323233;}
+			.price-wrap, .lease-input a{color:#FF7800;}
+			.lease-title{font-size: 20px;}
+			.lease-input input{
+				border-bottom: 1px solid #eee;
+				line-height: 40px;
+				height: 50px;
+				font-size:16px;
+
+			}
+
+			.lease-title{
+				font-size: 16px;
+				color: #323233;
+			}
+			.lease-input{
+				padding-top: 0;
+			}
+		</style>
+
+	</head>
+	<body id="pullrefresh" style="background: #f2f2f2;">
+		<header class="mui-bar mui-bar-nav">
+			<a class="c2c-address mui-pull-left mui-action-back"><span class="mui-icon mui-icon-back"></span></a>
+			<h1 class="mui-title" id="detialTitle">账户租赁</h1>
+			<a id="detailedLink" data-href="detailed.html" class="mui-pull-right mui-btn-link" style="color:#000000;">明细</a>
+		</header>
+		<div class="mui-content a-assets" style="background: #fff">
+			<div class="assets-all p2">
+				<div class="all-ass pl1" id="moneyTotalTitle">总资产 </div>
+				<p id="totalMoney" class="pl1">--</p>
+				<p id="mPrice" class="pl1">--</p>
+			</div>
+			<div class="mui-row assets-al px2">
+				<div class="mui-col-xs-6" style="border-right: 1px solid #eee;">
+					<div class="all-ass">可用资产</div>
+					<p class="kyzc" id="canUseMoney">--</p>
+				</div>
+				<div class="mui-col-xs-6">
+					<div class="all-ass">冻结资产</div>
+					<p class="kyzc" id="frozenMoney">--</p>
+				</div>
+			</div>
+			<div id="slider" class="mui-slider pay-tb" style="background:#eee;">
+				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted mt1">
+					<a class="mui-control-item mui-active m-p" href="#item1mobile">
+						<span class="p1">转出</span>
+					</a>
+					<a class="mui-control-item m-p" href="#item2mobile">
+						<span class="p1">转入</span>
+					</a>
+				</div>
+			</div>
+			<div class="mui-slider-group pay-tb-all m0">
+				<div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
+					<div class="bg-white pad10">
+						<div class="lease-title py1 m0">转出到算力账户</div>
+						<div class="lease-input">
+							<input type="number" class="drawNum p0" id="drawNum_0" placeholder="请输入转出BTC数量" onchange="drawNumChange(this)" />
+							<a href="javascript:void(0)" onclick="drawAll(0)" style="padding: 10px;">全部转出</a>
+						</div>
+						<div class="lease-word py1 m0">最多可转出<span id="withdrawMax" class="price-wrap" style="border:none;color:#FF7800;">--</span></div>
+					</div>
+
+					<div class="pad10 mt2">
+						<button class="mui-btn mui-btn-block mui-btn-primary m-btn-ra" style="line-height: 40px;padding:0;font-size: 16px" onclick="leaseChange(0)">确认转出</button>
+					</div>
+				</div>
+				<div id="item2mobile" class="mui-slider-item mui-control-content ">
+					<div class="bg-white pad10">
+						<div class="lease-title py1 m0">转入到租赁账户</div>
+						<div class="lease-input">
+							<input type="number" class="drawNum p0" id="drawNum_0" placeholder="请输入转入BTC数量" onchange="drawNumChange(this)" />
+							<a href="javascript:void(0)" onclick="drawAll(1)" style="padding: 10px;">全部转入</a>
+						</div>
+						<div class="lease-word py1 m0">最多可转入<span id="rechargeMax" class="price-wrap" style="border:none;color:#FF7800;">--</span></div>
+						<!-- <div class="lease-title py1 m0">转入到租赁账户</div>
+						<div class="lease-input">
+							<input type="number" class="drawNum p0" id="drawNum_1" placeholder="请输入转入BTC数量" onchange="drawNumChange(this)" />
+							<a href="javascript:drawAll(1)" style="padding: 10px;">全部转入</a>
+							<div class="lease-word py1 m0">最多可转入<span id="rechargeMax" class="price-wrap" style="position: unset;">--</span></div>
+						</div> -->
+					</div>
+
+					<div class="pad10 mt2">
+						<button class="mui-btn mui-btn-block mui-btn-primary m-btn-ra" style="line-height: 40px;padding:0;font-size: 16px" onclick="leaseChange(1)">确认转入</button>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/jquery.min.js"></script>
+	<script src="../../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+	<link href="../../js/common/mui.loading.css" rel="stylesheet" />
+	<script src="../../js/common/mui.loading.js" type="text/javascript"></script>
+	<script>
+		//下拉刷新
+		mui.init({
+			pullRefresh: {
+				container: '#pullrefresh',
+				down: {
+					style: 'circle',
+					callback: pulldownRefresh
+				},
+			}
+		});
+
+		function pulldownRefresh() {
+			setTimeout(function() {
+				loadDetail();
+				mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+			}, 1000);
+		}
+
+		var assetName = "";
+		var assetType = "";
+		var price = 0
+		var rechargeMax = 0;
+		var withdrawMax = 0;
+		mui.plusReady(function() {
+			var current = plus.webview.currentWebview();
+			assetType = current.assetType;
+			assetName = current.name;
+			price = current.price;
+			$('#mPrice').text('≈ ' + price + ' 元')
+			$("#detialTitle").html("账户租赁 " + assetName);
+			$(".inputAssetName").html(assetName);
+
+			loadDetail();
+		});
+
+		function loadDetail() {
+			mui.showLoading("数据加载中...", "body");
+			Common.muipost("/app/user/v2/lease/details", {
+				asset: assetType
+			}, function(data) {
+				var invest = data.date.invest;
+				rechargeMax = invest.money;
+				var lease = data.date.lease;
+				withdrawMax = lease.money;
+				var money = lease.money;
+				var frozenMoney = lease.frozenMoney;
+				var totalMoney = parseFloat(money) + parseFloat(frozenMoney);
+				if (assetName == "BTC") {
+					$("#totalMoney").html(Common.moneyFormatByDecimals(totalMoney, 8));
+					$("#canUseMoney").html(Common.moneyFormatByDecimals(money, 8));
+					$("#frozenMoney").html(Common.moneyFormatByDecimals(frozenMoney, 8));
+					$("#withdrawMax").html(Common.moneyFormatByDecimals(withdrawMax, 8) + ' BTC');
+					$("#rechargeMax").html(Common.moneyFormatByDecimals(rechargeMax, 8) + ' BTC');
+				} else {
+					$("#totalMoney").html(Common.moneyFormat(totalMoney));
+					$("#canUseMoney").html(Common.moneyFormat(money));
+					$("#frozenMoney").html(Common.moneyFormat(frozenMoney));
+					$("#withdrawMax").html(Common.moneyFormat(withdrawMax) + ' USDT');
+					$("#rechargeMax").html(Common.moneyFormat(rechargeMax) + ' USDT');
+				}
+				$(".leaseBtn").removeClass("mui-disabled");
+			}, function(data) {
+				mui.toast(data.content);
+			});
+		}
+
+		function drawNumChange(thizz) {
+			thizz.value = thizz.value.replace(/^(.*\..{8}).*$/, "$1");
+		}
+
+		function drawAll(index) {
+			if (index == 0) {
+				$("#drawNum_0").val(withdrawMax);
+			} else {
+				$("#drawNum_1").val(rechargeMax);
+			}
+		}
+
+		function leaseChange(index) {
+			var amount = 0,
+				text = "",
+				tmp = 0;
+			if (index == 0) {
+				amount = $("#drawNum_0").val();
+				text = "转出";
+				tmp = withdrawMax;
+			} else {
+				amount = $("#drawNum_1").val();
+				text = "转入";
+				tmp = rechargeMax;
+			}
+			if (!amount || parseFloat(amount) > tmp) {
+				mui.toast("请输入正确的" + text + "数量");
+				return false;
+			}
+
+			var url = "/app/user/v2/lease/rule";
+			mui.showLoading("提币处理中..", "body");
+			mui.ajax(basePath + url, {
+				data: {
+					asset: assetType
+				},
+				dataType: 'json', //服务器返回json格式数据
+				type: 'POST',
+				timeout: 5000, //超时时间设置为10秒；
+				success: function(data) {
+					mui.hideLoading();
+					if (data.type == 0) {
+						//登录过期
+						plus.runtime.restart();
+					} else if (data.type == 20) {
+						// 20 warn 未设置资金密码
+						//mui.toast(data.content);            		
+						mui.confirm(data.content, "温馨提示", ["取消", "确定"], function(e) {
+							if (e.index == 1) {
+								mui.openWindow({
+									url: '/info/assetsPass.html',
+									id: '/info/assetsPass.html'
+								});
+							}
+						});
+						return false;
+					} else {
+						var dealUrl = "";
+						if (index == 0) {
+							dealUrl = "/app/user/v2/lease/outcome";
+						} else {
+							dealUrl = "/app/user/v2/lease/income";
+						}
+						mui.prompt('实际到账' + amount, '请输入密码', ['取消', "确认" + text],
+							function(e) {
+								if (e.index == 1) {
+									mui.showLoading(text + "处理中..", "body");
+									Common.muipost(dealUrl, {
+										asset: assetType,
+										money: amount,
+										pass: e.value
+									}, function(data) {
+										if (data.type == 200) {
+											mui.alert(text + "成功", function() {
+												plus.webview.currentWebview().reload(true);
+											});
+										} else {
+											mui.toast(data.content);
+										}
+									}, function(da) {});
+								}
+							}, 'div');
+						document.querySelector('.mui-popup-input input').type = 'password';
+					}
+				},
+				error: function(data) {
+					mui.hideLoading();
+					mui.toast(data.content);
+				}
+			});
+		}
+
+		mui("body").on("tap", "#detailedLink", function() {
+			var _href = $(this).attr("data-href");
+			var webview = mui.openWindow({
+				url: _href,
+				id: _href,
+				extras: {
+					assetType: assetType,
+					assetName: assetName,
+					accountType: 'account'
+				}
+			});
+		});
+	</script>
+</html>

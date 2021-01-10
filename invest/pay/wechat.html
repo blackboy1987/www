@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>KUPAY</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../../css/style.css">
+		<link rel="stylesheet" href="../../css/hashbox.css">
+		<style>
+			#cardUrl img{margin: auto;}		
+		</style>
+	</head>
+	<body style="background: #76a5ee; width: 100%; height: 100%;">
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="teamName">扫码支付</h1>
+		</header>
+		<div class="mui-content scan" style="background: #76a5ee;margin-bottom: 60px; ">
+			<div class="box-sd m10 pad10">
+				<div class="scanPay-title mui-text-center">
+					<p class="wechat"><img src="../../images/hashbox/wechat-icon.png" width="28px">微信支付</p>
+				</div>
+				<p class="scanPay-money fc2c9 mui-text-center">支付总金额：<span class="mon" id="amount"></span>元</p>
+				<p class="mui-text-center" id="cardUrl"><img src="../../images/image.png" width="180px"></p>
+				<p class="scanPay-ps mui-text-center">请在<span>30</span>分钟内完成支付，如需要请重新下单</p>
+				<!-- <p class="mui-text-center py1" style="color:red;">暂时只支持摄像头扫码支付</p> -->
+				<div class="scanPay-btn"><button class="mui-btn main-button" onclick="savePic()">保存二维码</button></div>
+				<div class="mui-row scanPay-step">
+					<div class="mui-col-xs-4">
+						<img src="../../images/hashbox/dowload.png" width="45px" height="42px" />
+						<p>保存二维码到相册</p>
+					</div>
+					<div class="mui-col-xs-4">
+						<div class="wechat">
+							<img src="../../images/hashbox/wechat_01.png" width="30px" height="42px" />
+							<p>打开微信</p>
+						</div>
+					</div>
+					<div class="mui-col-xs-4">
+						<img src="../../images/hashbox/scan.png" height="42px" width="45px" />
+						<p>扫一扫-相册选取该二维码</p>
+					</div>
+				</div>
+			</div>
+			<div class="footer-buy">
+				<div class="mui-pull-left proDe" id="all"></div>
+				<button class="mui-btn main-button" onclick="" id="over">完成支付</button>
+			</div>
+		</div>
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/jquery.min.js"></script>
+	<script src="../../js/common/common.js"></script>
+	<script src="../../js/qrcode.min.js" type="text/javascript" charset="utf-8"></script>
+	<link href="../../js/common/mui.loading.css" rel="stylesheet" />
+	<script type="text/javascript" src="../../js/common/mui.loading.js"></script>
+	<script>
+		var orderId = 0;
+		mui.plusReady(function() {
+			var current = plus.webview.currentWebview();
+			var orderPay = current.orderPay;
+			orderId = orderPay.orderId;
+			$("#amount").text(orderPay.amount);
+			$("#all").html('合计：<span style="color:#f20b0b;" id="allAmount">' + orderPay.amount + ' 元</span>');
+			var str="http";
+			if (orderPay.codeUrl != null && orderPay.codeUrl != "") {
+				if(orderPay.codeUrl.indexOf(str)!=-1){
+					$("#cardUrl img").attr("src",orderPay.codeUrl);
+				}else{
+					$("#cardUrl img").attr("src", basePath + orderPay.codeUrl);//数族用这个//(银盛用http判断) 有htpp:银盛   没有的:数族
+				}
+			} else {
+				$("#cardUrl").html("");
+				var qrcode = new QRCode('cardUrl', {
+					text: orderPay.memo,
+					width: 180,
+					height: 180,
+					colorDark: '#000000',
+					colorLight: '#ffffff',
+					correctLevel: QRCode.CorrectLevel.H
+				});
+				$(".scanPay-ps").css("margin-top", "10px");
+				$(".scanPay-step").css("margin-top", "20px");
+				$(".scanPay-btn").addClass("mui-hidden");
+			}
+		});
+		//完成支付
+		$("#over").click(function() {
+			mui.back();
+		})
+
+		// 保存图片到相册
+		function savePic() {
+			// var imgSrc = $("#imgUrl")[0].currentSrc;
+			var imgUrl = $("#cardUrl img").attr("src");
+
+			var imgSrc = imgUrl + "?v=" + new Date().getTime();
+			console.log(imgSrc);
+			mui.showLoading("图片保存中..", "div");
+			plus.gallery.save(imgSrc, function() {
+				mui.hideLoading();
+				mui.toast("保存图片到相册成功");
+			});
+		}
+
+		mui.init({
+			beforeback: function() {
+				//获得父页面的webview
+				var list = plus.webview.currentWebview().opener();
+				//触发父页面的自定义事件(refresh),从而进行刷新
+				mui.fire(list, 'refresh');
+				//返回true,继续页面关闭逻辑
+				return true;
+			}
+		});
+	</script>
+
+</html>

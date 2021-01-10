@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>明细</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../css/style.css">
+		<style>
+			.mx.team .mui-table-view:before {
+				height: 0
+			}
+			body {
+				background-color: #efeff4;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav other">
+			<div class="c2c-address mui-pull-left">
+				<a class="mui-action-back"> <span class="mui-icon mui-icon-back"></span></a>
+			</div>
+			<h1 class="mui-title">明细</h1>
+		</header>
+		<div class="mui-content " id="myDetial">
+			<div class="mui-scroll">
+				<ul class="mui-table-view mui-table-view-chevron" id="myDetialContainer"></ul>
+			</div>
+		</div>
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script src="../js/jquery.min.js"></script>
+	<script src="../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+	
+		var excision = 0;
+		var page = 1;	
+		function pullupRefresh() {
+			console.log(excision)
+			console.log(page);
+			var _this = this;
+			console.log("assetType = " + assetType);
+			Common.muipost("/app/user/record/page", {
+				asset: assetType,
+				excision: excision,
+				page: page
+			}, function(data) {
+				if(data.date.list && data.date.list.length > 0) {
+					var content = "";
+					mui.each(data.date.list, function(index, item) {
+						var changeValue = "";
+						if (item.assetTypeName == "BTC") {
+							changeValue = Common.moneyFormatByDecimals(item.changeValue, 8);
+						} else {
+							changeValue = Common.moneyFormat(item.changeValue);
+						}
+						content += "<div class='mui-card'>" +
+							"<div class='mui-card-content'>" +
+							"<div class='mui-card-content-inner'>" +
+							"<p>" + item.changeTime + "</p>" +
+							"<p style='color: #333;'>" + item.remark + "</p>" +
+							"</div>" +
+							"</div>" +
+							"<div class='mui-card-footer'>" +
+							"<span class='mui-card-link'>" + item.assetTypeName + " " + item.changeTypeName + "</span>" +
+							"<span class='mui-card-link'>" + changeValue + " " + item.assetTypeName + "</span>" +
+							"</div>" +
+							"</div>";
+					});
+
+					if($("#myDetialContainer > .mui-card").length > 0) {
+						$("#myDetialContainer > .mui-card:last").after(content);
+					} else {
+						$("#myDetialContainer").prepend(content);
+					}
+					
+					_this.endPullupToRefresh(data.date.totalPage <= data.date.page);
+
+					excision = data.date.excision;
+					page++;
+				} else {
+					_this.endPullupToRefresh(true);
+				}
+			}, function(da) {
+				_this.endPullupToRefresh(true);
+			});
+		}
+		
+		function pulldownRefresh() {
+			excision = 0;
+			page = 1;
+			var _this = this;
+			Common.muipost("/app/user/record/page", {
+				asset: assetType,
+				excision: excision,
+				page: page
+			}, function(data) {
+				$(".mui-card").remove();
+				if(data.date.list && data.date.list.length > 0) {
+					var content = "";
+					mui.each(data.date.list, function(index, item) {
+						content += "<div class='mui-card'>" +
+							"<div class='mui-card-content'>" +
+							"<div class='mui-card-content-inner'>" +
+							"<p>" + item.changeTime + "</p>" +
+							"<p style='color: #333;'>" + item.remark + "</p>" +
+							"</div>" +
+							"</div>" +
+							"<div class='mui-card-footer'>" +
+							"<span class='mui-card-link'>" + item.assetTypeName + " " + item.changeTypeName + "</span>" +
+							"<span class='mui-card-link'>" + Common.moneyFormat(item.changeValue) + " " + item.assetTypeName + "</span>" +
+							"</div>" +
+							"</div>";
+					});
+					$("#myDetial").prepend(content);
+					excision = data.date.excision;
+					page++;
+				}
+			}, function(da) {
+				
+			});
+			 mui('#myDetial').pullRefresh().endPulldownToRefresh(true);
+			 mui('#myDetial').pullRefresh().refresh(true);
+			
+		}
+	</script>
+	<script>
+		var assetType = "";
+		var assetName = "";
+		mui.plusReady(function() {
+			var current = plus.webview.currentWebview();
+			assetType = current.assetType;
+			assetName = current.assetName;
+		});
+		
+		mui.init({
+			swipeBack: true,
+			pullRefresh: {
+				container: '#myDetial', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+				up: {
+					height: 50, //可选.默认50.触发上拉加载拖动距离
+					auto: true, //可选,默认false.自动上拉加载一次
+					contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+					contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+					callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+				}
+				,down: {
+                    style:'circle',
+                    callback: pulldownRefresh
+                }
+			}
+		});
+
+	</script>
+
+</html>

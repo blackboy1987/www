@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>产品</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="css/hashbox.css">
+		<style>
+			.product .myHashList li img{margin-left: 0;}
+			.product .myHashList .hash-ps{margin-top: 5px;font-size: 12px; color: #808080;}
+			.box-sd{box-shadow: unset; background: #e6f0f4;}
+			.product .myHashList li img.success{left: 0;}
+			.listImg{margin-left: 10px!important;}
+			.m-success{right:0;position: absolute}
+			.m-name{
+				font-size: 18px;
+				color: #2E2E31;
+			}
+			.m-color{
+				color: #969699;
+			}
+			.m-right{
+				float: right;
+				padding-right:20px;
+			}
+			.m-back{
+				font-size: 16px;
+			}
+			.m-btn{
+				background: #FF7800;
+				color: #FEFEFE;
+				font-size:0.625rem;
+				width: 2.125rem;
+				height: 1.25rem;
+				padding: .2rem;
+				border-radius:4px;
+			}
+			.m-wrap{
+				font-size: 1.5rem;
+				color:#FF7D44;
+				vertical-align: top;
+				padding-right:20px;
+			}
+			.mui-table-view:before{
+				margin-right: 1rem;
+			}
+			.pay-tb.mui-slider .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active{
+				border:none;
+			}
+			.pay-tb.mui-slider .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active span{
+				color:#323233;
+				border-bottom:3px solid #1F74D7;
+				display: inline-block;
+				height: 100%;
+				box-sizing: content-box;
+			}
+			.mui-control-item span{
+				color:#7D7D80;
+			}
+			.myHashbox .mui-table-view:before {margin-left: 15px;margin-right: 20px;}
+			.myHashbox .mui-table-view:after, .myHashbox .mui-table-view-cell:after{content: unset;}
+			.myHashbox .mui-table-view:before, .myHashbox .mui-table-view:after{background-color: #E5E5E5;height: 0px;}
+			#sliderSegmentedControl{border: none;}
+			.product .myHashList .record-data .approximate{margin-left: 0}
+			.mr_1{margin-right: 3px}
+			.C488FA {
+				color: #4C88FA;
+				background: #DBE7FE;
+			}
+			header.other{border: none}
+			.m-flex{display: flex;}
+			.flex1{flex: 3;}
+			.flex2{flex: 4;}
+			.C488FA{padding: 3px;background: #DBE7FE;color: #4C88FA;border-radius: 4px;}
+			.m-f78{padding: 3px;background:#FFE4CC;color: #FF7800;border-radius: 4px;}
+			#slider{padding-right: 16px;padding-left: 16px;border-radius: 0!important;height: 2.3125rem !important;background-color: #4163ee;}
+			#slider #sliderSegmentedControl {
+				text-align: left;
+			}
+			.m-height{height: 22px;display: inline-block;}
+			#sliderSegmentedControl {
+				height: 2.4375rem;
+				font-size: 0;
+				display: inline-block;
+				position: relative;
+			}
+			#sliderSegmentedControl a {
+				display: inline-block;
+				position: absolute;
+				bottom: 0;
+				width:7.6875rem;
+				line-height: 2.0625rem;
+				font-size: 14px;
+				text-align: center;
+				color: #000;
+				border: none !important;
+				border-color: transparent !important;
+			}
+			#sliderSegmentedControl a:nth-child(1) {
+				background: url(images/product-tab-btc.svg) no-repeat center/cover;
+				opacity: .7;
+			}
+			#sliderSegmentedControl a:nth-child(2){ opacity: .7;
+				left: 6.03rem;
+				background: url(images/product-tab-eth.svg) no-repeat center/cover;
+			}
+			#sliderSegmentedControl a:nth-child(3) {
+				opacity: .7;
+				left: 12.15rem;
+				background: url(images/product-tab-eth.svg) no-repeat center/cover;
+			}
+			#sliderSegmentedControl a span {
+				color: #0068f7;
+			}
+			#sliderSegmentedControl a.mui-active {
+				width: 8.4375rem;
+				height: 2.625rem;
+				line-height: 3.1625rem;
+				background: url(images/product-tab-btc-default.svg) no-repeat center/cover;
+				opacity: 1;
+				pointer-events: none;
+			}
+			#sliderSegmentedControl a:nth-child(2).mui-active {
+				opacity: 1;
+				left: 6.0625rem;
+			}
+			#sliderSegmentedControl a.mui-active span {
+				color: #0068f7;
+			}
+			.m-header {
+				position: absolute;
+				right: -8px;
+				top: -8px;
+				background: red;
+				border-radius: 50%;
+				font-size: 12px;
+				color: #fff;
+				height: 18px;
+				width: 18px;
+				text-align: center;
+			}
+			.btn-two-tab {
+				height: 50px !important;
+			}
+			.btn-two-tab div {
+				height: 100% !important;
+			}
+			.btn-two-tab .mui-slider-indicator {
+				display: flex !important;
+				align-items: center !important;
+				background-color: #f7f7f7 !important;
+			}
+			.btn-two-tab .mui-slider-indicator a {
+				display: inline-block !important;
+				flex: 1 !important;
+				margin-right: 6px !important;
+				height: 30px !important;
+				line-height: 30px !important;
+				color: #000 !important;
+				font-size: 12px !important;
+				border: none !important;
+				box-sizing: border-box;
+			}
+			.btn-two-tab .mui-slider-indicator a:last-child(3) {
+				margin-right: 0 !important;
+			}
+			.btn-two-tab .mui-slider-indicator a.mui-active {
+				color: white !important;
+				background-color: #5c89f1 !important;
+				border-bottom: none !important;
+			}
+
+			#item-mobile-ul {
+				padding: 0 8px;
+				padding-bottom: 8px;
+				background-color: #f7f7f7;
+			}
+			/* 产品列表 */
+			li.create-product-li {
+				height: 7.25rem;
+				padding: 0.75rem 1rem !important;
+				margin-bottom: 8px;
+				position: relative;
+				background-color: #fff;
+			}
+			li.create-product-li:first-child {
+				border-radius:8px 8px 0 0;
+			}
+			li.create-product-li:last-child(3) {
+				margin-bottom: 0;
+			}
+			/* 产品列表-标题栏 */
+			li.create-product-li .record-top {
+				height: 1.125rem;
+				font-size: 0;
+				color: #000;
+			}
+			li.create-product-li .record-top .product-name,
+			li.create-product-li .record-top .tag,
+			li.create-product-li .record-top .active-date,
+			li.create-product-li .record-top .active-date span {
+				display: inline-block;
+			}
+			li.create-product-li .record-top .product-name {
+				font-size: 1rem;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			li.create-product-li .record-top .tag {
+				max-width: 9rem;
+				height: 100%;
+				font-size: 0;
+				overflow: hidden;
+			}
+			li.create-product-li .record-footer .active-date {
+				display: inline-block;
+				padding: 0 3px;
+				height: 1.125rem;
+				line-height: 1.125rem;
+				margin-left: 0.3125rem;
+				color: #ff8400;
+				background-color: #fffaee;
+				border: 1px solid #f6b37f;
+				border-radius: 2px;
+				font-size: 10px;
+				text-align: center;
+				/* vertical-align: top; */
+			}
+			li.create-product-li .record-footer .active-date:first-child {
+				margin-left: 0;
+			}
+			li.create-product-li .record-top .active-date span {
+				height: 100%;
+				-webkit-transform: scale(0.83);
+			}
+			/* 产品列表-内容栏 */
+			li.create-product-li .record-center {
+				height: 2.875rem;
+				padding-top: 1.125rem;
+				font-size: 18px;
+				color: #ff8400;	
+			}
+			li.create-product-li .record-center .price-rmb {
+				display: inline-block;
+				margin-left: 0.4375rem;
+				color: #979797;
+				font-size: 12px;
+				font-weight: 400;
+				/* -webkit-transform: scale(0.83); */
+			}
+			/* 产品列表-底部 */
+			li.create-product-li .record-footer {
+				height: 1.75rem;
+				padding-top: 0.625rem;
+				font-size: 0.75rem;
+				display: inline-flex;
+				width: 100%;
+				/* border-top: 1px solid #ececec; */
+			}
+			li.create-product-li .record-footer .start-time,
+			li.create-product-li .record-footer .output {
+				display: inline-block;
+				overflow: hidden;
+			}
+			li.create-product-li .record-footer .start-time {
+				color: #979797;
+				float: right;
+				position: absolute;
+				right: 0px;
+			}
+			li.create-product-li .record-footer .output {
+				float: right;
+			}
+			/* 过期完成图标 */
+			li.create-product-li img.tag-img {
+				width: 2.75rem;
+				height: 2.75rem;
+				margin: 0 !important;
+				position: absolute;
+				top: 0;
+				right: 0;
+			}
+			
+			.mui-bar .header-title {
+				color: white;
+				text-align: left;
+				right: 0;
+				left: 1rem;
+				font-size: 20px;
+			}
+			#index-html {
+				padding-top: 43px;
+			}
+			.box-border:after {
+				border: 1px solid #4163ee;
+			}
+		</style>
+
+	</head>
+	<body style="background: #fff" id="pullrefresh">
+		<header class="mui-bar mui-bar-nav other" style="background-color: #4163ee;">
+			<!-- <a class="c2c-address mui-pull-left mui-action-back"><span class="mui-icon mui-icon-back"></span></a> -->
+			<h1 class="mui-title header-title">产品</h1>
+			<div style="position: absolute; width: 30px; height: 30px; right: 0;" id="m-news">
+				<div style="position: absolute;right:1rem;top:.75rem;" id="m-header">
+					<img src="images/slf-06-12-19.svg" width="20px" height="20px" id="m-img" />
+				</div>
+		</div>
+		</header>
+
+		<div class="mui-content" id="index-html" style="background: #fff">
+			<div class="mui-control-content mui-active myHashbox product">
+				<div id="slider" class="mui-slider pay-tb">
+					<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control">
+						<a class="mui-control-item mui-control-item-m mui-active" href="#item1mobile" _coinType="1">
+							<span>BTC</span>
+						</a>
+						<a id="eth-tab" class="mui-control-item mui-control-item-m" _coinType="5">
+							<span>ETH</span>
+						</a>
+						<a id="fil-tab" class="mui-control-item mui-control-item-m" _coinType="6">
+							<span>FIL</span>
+						</a>
+<!--						<a class="mui-control-item mui-control-item-m" href="#item1mobile" _coinType="1">-->
+<!--							<span>TIL</span>-->
+<!--						</a>-->
+					</div>
+				</div>
+				<div class="mui-slider-group btn-two-tab">
+					<div id="item1mobile" class="mui-slider-item mui-active">
+						<div style="background: white;display: flex;">
+							<div class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" style="border-bottom: none;padding: 0 15px;">
+								<a _id="0" class="mui-control-item m-block mui-active box-border" _name="普通产品" _type="1">普通产品</a>
+								<a _id="1" class="mui-control-item m-block box-border" _name="期货产品" _type="5">期货产品</a>
+								<a _id="3" class="mui-control-item m-block box-border" _name="短期产品" _type="8">短期产品</a>
+								<a _id="2" class="mui-control-item m-block box-border" _name="兑换产品" _type="11">兑换产品</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="item-mobile-product" class="mui-slider-item">
+					<div class="pt0">
+						<ul class="mui-table-view mui-table-view-chevron myHashList" id="item-mobile-ul" />
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="js/jquery.min.js"></script>
+		<script src="js/mui.min.js"></script>
+		<script src="js/common/common.js" type="text/javascript" charset="utf-8"></script>
+
+		<script>
+			var a = false
+			var isDhzq = false;
+			var userId = 0;
+			//下拉刷新
+			mui.init({
+				swipeBack: true, //启用右滑关闭功能
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						style: 'circle',
+						callback: pulldownRefresh
+					},
+					up: {
+						height: 50, //可选.默认50.触发上拉加载拖动距离
+						auto: true, //可选,默认false.自动上拉加载一次
+						contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+						contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+						callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					}
+				}
+			});
+			var type = 1
+			var coinType = 1
+			var pullup = true
+			mui("body").on("tap", ".mui-control-item-m", function() {
+				coinType = $(this).attr('_coinType')
+				page = 1
+				type = 1
+				pullup = true
+				load();
+				if (coinType == 5 || coinType == 6){
+					var eth = '<a _id="0" class="mui-control-item m-block mui-active box-border" _name="普通产品" _type="1">普通产品</a>\n' +
+							'<a _id="1" class="mui-control-item m-block box-border" _name="期货产品" _type="5">期货产品</a>\n' +
+							'<a _id="3" class="mui-control-item m-block box-border" _name="短期产品" _type="8">短期产品</a>\n' +
+							'<a _id="4" class="mui-control-item m-block box-border" _name="整机产品" _type="12">整机产品</a>'
+
+					$('.mui-segmented-control-inverted').html(eth);
+				}else if (coinType == 1){
+					 var btc = '<a _id="0" class="mui-control-item m-block mui-active box-border" _name="普通产品" _type="1">普通产品</a>\n' +
+								'<a _id="1" class="mui-control-item m-block box-border" _name="期货产品" _type="5">期货产品</a>\n' +
+								'<a _id="3" class="mui-control-item m-block box-border" _name="短期产品" _type="8">短期产品</a>\n' +
+								'<a _id="2" class="mui-control-item m-block box-border" _name="兑换产品" _type="11">兑换产品</a>'
+
+					$('.mui-segmented-control-inverted').html(btc);
+				}else if (coinType == 6){
+					var fil = 	'<a _id="0" class="mui-control-item m-block mui-active box-border" _name="普通产品" _type="1">普通产品</a>\n' +
+								'<a _id="1" class="mui-control-item m-block box-border" _name="期货产品" _type="5">期货产品</a>'
+
+					$('.mui-segmented-control-inverted').html(fil);
+				}
+			})
+
+			// tab二级切换事件
+			mui("body").on("tap", ".m-block", function () {
+				type = $(this).attr('_type')
+				page = 1
+				pullup =true
+				load();
+			})
+
+			function pullupRefresh () {
+				if (type == 11) {
+					pullup = false
+					load()
+				}
+			}
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				setTimeout(function() {
+					//addData();
+					pullup = true
+					page = 1
+					newsNum()
+					load()
+				}, 1500)
+			}
+			window.addEventListener('refresh', function(e) {
+				//在父页面中添加监听事件，刷新页面
+				page = 1
+				pullup = true
+				newsNum()
+				load();
+			})
+			//修改产品有效日期颜色
+			function setDateColor(){
+				var tap = $(".active-date").text();
+				var alterColor = {"background":"#ecf3ff","color":"#4c88fa","border":"1px solid #dbe7fe"};
+				if (tap.indexOf("年") != -1 || tap.indexOf("月") != -1 || tap.indexOf("天") != -1 || tap.indexOf("永久有效") != -1){
+					$(".active-date:contains(年)").css(alterColor);
+					$(".active-date:contains(月)").css(alterColor);
+					$(".active-date:contains(天)").css(alterColor);
+					$(".active-date:contains(永久)").css(alterColor);
+				}
+			}
+			// mui.back = function(){
+				// console.log(12312231321321213321)
+				// $(".c2c-address").addClass("mui-hidden")
+			// }
+			var page = 1
+			function load() {
+				var url = ''
+				var param = {type: ''}
+				url = '/app/user/v2/product/list'
+				param = {
+					coinType: coinType,
+					type: type
+				}
+				var _this = this;
+				Common.muipost(url, param, function(data) {
+					var arr1 = []
+					var arr2 = []
+					var content = "";
+					$("#item-mobile-ul").html("");
+					if (data.date && data.date.length > 0) {
+						mui.each(data.date, function(index, item) {
+							var changeValue = "";
+							var expirationtime = new Date(Date.parse(item.expirationDate.replace(/-/g,'/')));
+							var curTime = new Date();
+							var tempTime = item.expirationDate.replace(/-/g, '/').substr(0, 10);
+							var expirationtime = new Date(tempTime);
+							var images = "";
+							if (curTime < expirationtime) {
+								images = 'images/hashbox/icon-48.svg'
+								if (item.type != 3) {
+									arr1.push(item)
+								}
+							} else {
+								images = 'images/hashbox/icon-49.svg'
+								if (item.type != 3) {
+									arr2.push(item)
+								}
+							}
+							// console.log(item.validity)
+							var time = '';
+							item.validty = JSON.parse(item.validity);
+							// 测试通道
+							// item.validty[0] = 50;
+							if(item.validty[0] != 0)
+								time = item.validty[0] +'年'
+								if (item.validty[0] >= 40 || item.saleType == 2){
+									time = '永久有效'
+								}
+							else if(item.validty[1] != 0)
+								time = item.validty[1] +'月'
+							else if(item.validty[2] != 0)
+								time = item.validty[2] +'天'
+							var label = ''
+							var tagArr = ''
+							if (time)
+								tagArr += '<span class="active-date">'+ time +'</span>'
+							if (item.tag) {
+								var value = item.tag.replace(/，/ig,',').split(',');
+								mui.each(value, function(index, el) {
+									tagArr += '<span class="active-date">'+ el +'</span>'
+								})
+							}
+							var imagesdf = "";
+							var textdf = ''
+							var text = ''
+							var profit = ''
+							// 挖矿时间
+							var expirationDate = ''
+							var tomorrow = new Date()
+							tomorrow.setDate(tomorrow.getDate() + 1)
+							if (item.profit) {
+								profit = '<div class="output">预计每日产出 <span>'+ item.profit +'</span></div>'
+							} else {
+								profit = '<div class="output"><span></span></div>'
+							}
+							if (item.type === 5) {
+								expirationDate = item.expirationDate.substring(0, 10);
+								if ('string' === typeof item.investTime && item.investTime) {
+									expirationDate = item.investTime.substring(0, 10);
+								}
+							} else {
+								expirationDate = Common.dateFtt("yyyy-MM-dd", tomorrow)
+							}
+							let price;
+							let rmbPrice;
+							if (item.saleType == 1){
+								price = item.price + ' USDT'
+								rmbPrice = '￥'+ item.rmbPrice
+							}else {
+								price = item.rmbPrice + ' ￥'
+								rmbPrice = item.price + ' USDT'
+							}
+							isDhzq = false;
+							text += '<li class="mui-table-view-cell m-mui-li m-media create-product-li" _coinType="'+ item.coinType +'" _saleType="'+ item.saleType +'" _isStock="'+ item.isStock +'" type="'+ item.type +'" _id="'+ item.id +'" _time="'+ item.expirationDate +'">' +
+							'<div class="record-top">' +
+								'<span class="product-name">' + item.name +
+								'</span>' +
+								'</div>' +
+							'</div>' + 
+							'<div class="record-center">' + price +
+								'<span class="price-rmb">≈ ' + rmbPrice +
+								'</span>' +
+							'</div>' +
+							'<div class="record-footer box-border-top">' +
+									'<div class="product-detail">'+tagArr+'</div>' +
+								'<div class="start-time" style="display: block">生效日期' + '<span>' + expirationDate + '</span>' + '</div>' +
+								// profit +
+							'</div>' + 
+							'<img class="tag-img" src="'+ images +'" >' +
+							'</li>';
+							content += text
+						});
+						$("#item-mobile-ul").html(content)
+						setDateColor()
+					}
+					var totalPage = data.date.totalPage ? data.date.totalPage : 1
+					mui('#pullrefresh').pullRefresh().endPulldown();
+					mui('#pullrefresh').pullRefresh().refresh(true)
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh(totalPage <= page);
+					page++;
+				}, function(da) {
+					mui.toast(da.content);
+					mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh(true);
+					mui('#pullrefresh').pullRefresh().refresh(true);
+					mui('#pullrefresh').pullRefresh().endPulldown();
+				});
+			}
+			// 合约产品详情
+			mui("body").on("tap", "li.m-media", function() {
+			
+				var gdzq = false;
+				if(type==2){
+					gdzq=true
+				}
+				var _isStock =  $(this).attr("_isStock");
+				var mHidden = _isStock == 'true' ? false : true
+				var expirationDate = $(this).attr("_time")
+				var expirationtime = new Date(Date.parse(expirationDate.replace(/-/g,'/')));
+				var curTime = new Date();
+				var tempTime = expirationDate.replace(/-/g, '/').substr(0, 10);
+				var expirationtime = new Date(tempTime);
+				if (curTime >= expirationtime) {
+					mui.toast("产品已过期，请选择其他产品");
+					return
+				}
+				var _href;
+				var _id = $(this).attr("_id");
+				var	saleType = $(this).attr("_saleType");
+				var	coinType = $(this).attr("_coinType");
+				if (coinType == 6 && saleType == 2){
+					_href = 'invest/productDetails2.html';
+				}else {
+					_href = 'invest/productDetails.html';
+				}
+				var webview = mui.openWindow({
+					url: _href,
+					id: _href,
+					extras: {
+						gdzq:gdzq,
+						productId: _id,
+						mShow: mHidden,
+						isDhzq:isDhzq,
+						saleType:saleType,
+						coinType:coinType
+					}
+				});
+			});
+			// 租赁产品详情
+			mui("body").on("tap", "li.m-zl", function() {
+				var _href = 'invest/rentDetails.html';
+				var _id = $(this).attr("_id");
+				var _status = $(this).attr("_status");
+				var arr =  ['已售罄', '挖矿中', '已过期']
+				if (_status == 1 || _status == 2 || _status == 0) {
+					mui.toast("产品" + arr[_status] + "，无法预订，请选择其他产品");
+					return
+				}
+				var webview = mui.openWindow({
+					url: _href,
+					id: _href,
+					extras: {
+						productId: _id,
+						day: 7
+					}
+				});
+			});
+			// 跳转公告列表
+			$("#m-news").click(function () {
+        mui.openWindow({
+            url: 'index/news.html',
+            id: 'index/news.html'
+        });
+    });
+			mui.plusReady(function () {
+				userId = JSON.parse(plus.storage.getItem("loginUser")).id
+				newsNum();
+			})
+			function newsNum() {
+				// 消息数量
+				var url = '/app/common/news-readNum';
+				Common.muipost(url, {userId: userId}, function (data) {
+					try {
+						var html
+						$("#m-num").remove();
+						if (data.date.unreadNum > 0) {
+								html = '<span id="m-num" class="m-header">' + data.date.unreadNum + '</span>'
+						} else {
+								html = ''
+						}
+						$('#m-img').after(html);
+					// data.date.filBlockStatus
+						if (data.date.filBlockStatus == false) {
+							$("#fil-tab").remove();
+						}else {
+							if ($('#sliderSegmentedControl>a').length == 2){
+								$("#eth-tab").after('<a id="fil-tab" class="mui-control-item mui-control-item-m" _coinType="6">\n' +
+										'<span>FIL</span>\n' +
+										'</a>')
+							}
+						}
+					} catch(e) {
+						mui.toast('获取数据失败：400')
+					}
+				}, function (da) {
+					mui.toast('网络异常')
+				}, 1);
+			}
+		</script>
+
+	</body>
+</html>

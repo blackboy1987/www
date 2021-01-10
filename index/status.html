@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>首页</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" href="../css/swiper.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../css/style.css">
+        <link rel="stylesheet" href="../css/hashbox.css">
+        <style>
+            .mtop{color:#969699;font-size: 13px;}
+            #first_wrap{border-bottom: 1px solid #eee;}
+            .m-line{line-height: 40px;}
+            .m-line::after{content:""; clear:both;display:block;}
+            .m-left{color:#646466;float:left;font-size: 14px;}
+            .m-right{color:#2E2E31;float:right;font-size: 14px;}
+            h5{color:#323233;font-size: 18px;border-top: 10px solid #eee;}
+            .m-main{display: flex;}
+            .m-main div{flex:1;}
+            .m-main-center{text-align: center;}
+            .m-main-right{text-align: right;}
+            .m_color, .m_color div{color:#646466;font-size: 14px;}
+            .m_color div{line-height: 40px;}
+            .m_color  .m-correct {color:#008000;}
+            .m_color  .m-negative {color:#FF0000;}
+        </style>
+	</head>
+	<body style="background: #fff" id="pullrefresh">
+        <header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="teamName">网络状态</h1>
+		</header>
+		<div class="mui-content" id="index-html" style="background: #fff">
+            <!-- <div class="mt2 mtop mx-sm-2">BTC网络数据来源：www.btc.com</div> -->
+            <div id="current">
+                
+            </div>
+            <h5 class="p2">历史记录</h5>
+            <div class="m-main mx-sm-2 m_color">
+                <div>日期</div>
+                <div class="m-main-center">全网算力</div>
+                <div class="m-main-right">价格走势</div>
+            </div>
+            <div id="m-nav" />
+            
+		</div>
+
+
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/mui.lazyload.js"></script>
+		<script src="../js/mui.lazyload.img.js"></script>
+		<script src="../js/common/common.js"></script>
+		<script src="../js/index/index.js"></script>
+		<script>
+			//下拉刷新
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						style: 'circle',
+						callback: pulldownRefresh
+					},
+				}
+            });
+            /**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				setTimeout(function() {
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh(true);
+					mui('#pullrefresh').pullRefresh().refresh(true);
+				}, 1000);
+            };
+            pullupRefresh()
+            function pullupRefresh() {
+                var _this = this;
+                var url = '/magic/data/get';
+				Common.muipost(url, {}, function(data) {
+                    var text = ''
+                    var html = ''
+                    var value = ''
+                    $("#current").html("");
+                    if (data.chart_data && data.chart_data.length > 0) {
+                        text = '<div id="first_wrap" class="mx-sm-2 pb1"><div class="m-line"><span class="m-left">全网算力</span><span class="m-right">' + data.network_hashrate_double + ' EH/s</span></div><div class="m-line"><span class="m-left">全网难度</span><span class="m-right">  + ' data.difficulty24_double + ' GH</span></div><div class="m-line"><span class="m-left">每日每T收益</span><span class="m-right">≈' + data.estimated_profit + ' BTC</span></div></div><div class="mx-sm-2 pt1"><div class="m-line"><span class="m-left">预测下次难度</span><span class="m-right">' + data.difficulty_double + ' GH</span></div><div class="m-line"><span class="m-left">距离调整还剩</span><span class="m-right">+ 'Number(data.diff_adj_remain_time_str).toFixed(2) + ' 天</span></div></div>'
+                        mui.each(data.chart_data, function(index, item) {
+                            var date = new Date(parseInt(item.timestamp));
+                            var dt = date.getFullYear() + "-" + (date.getMonth() < 10 ? '0' + (date.getMonth()+1) : (date.getMonth()+1)) + "-" + (date.getDate() < 10 ? '0' + date.getDate() : date.getDate())
+                            html += '<div class="m-main mx-sm-2 m_color"><div>' + dt + '</div><div class="m-main-center">' + item.hashrate.toFixed(2) + ' EH/s</div><div class="m-main-right">$ ' + item.price.toFixed(2) + '</div></div>'
+                        })
+                    }
+                    $("#current").html(text);
+                    $('#m-nav').html(html)
+                }, function(err){
+                    console.log(err)
+                }, 1)
+            }
+           
+				
+		</script>
+
+	</body>
+</html>

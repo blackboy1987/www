@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>实名认证</title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/style.css" rel="stylesheet" />
+		<link href="../../css/hashbox.css" rel="stylesheet" />
+		<style>
+			::-webkit-input-placeholder {
+				color: #ccc;
+				font-size: 15px;
+			}
+
+			::-moz-placeholder {
+				color: #ccc;
+				font-size: 15px;
+			}
+			/* firefox 19+ */
+
+			:-ms-input-placeholder {
+				color: #ccc;
+				font-size: 15px;
+			}
+			/* ie */
+
+			input:-moz-placeholder {
+				color: #ccc;
+				font-size: 15px;
+			}
+
+			.mui-input-group:after {
+				height: 0;
+			}
+			#submit{border-radius: 5px;font-size: 16px;display: block;width: 100%;margin-bottom: 10px;padding: 15px 0;line-height: 0;background: #1F75DA;color:#fff;border:none;}
+			.m-title{font-size: 15px;color: #333;}
+			.m-nav{text-align: left;color:#969699;font-size: 12px;}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">上传证件照</h1>
+		</header>
+		<div class="mui-content realname">
+			<div class="m10">
+				<div class="mui-row p1">
+					<div class="mui-text-center up-images" id="picture" _index="1">
+						<div class="pa-zheng pb1 m-title">身份证正面照</div>
+						<p class="m-nav">请确保证件照上的所有信息清晰可见，不可做人任何修改或遮挡。该身份认证照片只针对算力蜂认证有效。</p>
+						<div style="width: 60%;margin: 0 auto;"><img id="zheng" src="../../images/hashbox/idcard_01.png" style="width: 100%;" /></div>
+					</div>
+					<div class="mui-text-center up-images" id="picture" _index="2">
+						<div class="pa-hand py1 m-title">手持身份证和签名照</div>
+						<p class="m-nav">请上传一张手持身份证正面和个人签字的照片，签字内容包含姓名、算力蜂和认证日期，人脸完全露出。确保证件照上的所有信息清晰</p>
+					 	<div style="width: 60%;margin: 0 auto;"><img id="hand" src="../../images/hashbox/idcard_02.png" style="width: 100%;" /></div>
+					</div>
+				</div>
+				<form class="mui-input-group rn-form mui-hidden">
+					<div class="mui-input-row">
+						<label>真实姓名</label>
+						<input type="text" class="mui-input-clear" placeholder="请输入真实姓名" id="name" readonly="readonly"></span>
+					</div>
+					<div class="mui-input-row pCard">
+						<label>身份证号</label>
+						<input type="text" maxlength="18" class="mui-input-clear" placeholder="请输入18位身份证号" id="card" readonly="readonly"></span>
+					</div>
+				</form>
+			</div>
+			<div class="realname-btn" style="padding: 0 20px;">
+				<button class="mui-btn main-button mui-disabled" id="submit">提交审核</button>
+			</div>
+			<!-- <div class="mui-content realname-fail mui-hidden">
+				<div class="box-sd m10 mt20 pad10">
+					<p>审核失败原因：</p>
+					<p>1. 请检查上传的身份证照片是否足够清晰并无损</p>
+					<p>2. 请检查身份证信息是否与上传证件照片是否一致</p>
+					<p>3. 同一身份证号只能在本平台认证一次，请检查是否有其它账号已经认证过</p>
+					<p></p>
+				</div>
+			</div>
+			<div class="mui-content">
+				<img src="../../images/hashbox/realname-info.png" width="90%" style="margin: 20px; margin-left: 5%;" />
+			</div> -->
+			<!-- 下方弹出 -->
+			<div id="picture" class="mui-popover mui-popover-action mui-popover-bottom">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						<a href="appendByCamera()">拍照</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a href="appendByGallery()">从相册中选取</a>
+					</li>
+				</ul>
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						<a href="#picture"><b>取消</b></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<script type='text/javascript' src='../../js/jquery-1.11.1.min.js'></script>
+		<script type='text/javascript' src="../../js/mui.min.js"></script>
+		<script type='text/javascript' src='../../js/common/common.js'></script>
+		<script type='text/javascript' src='../../js/reaName/ID.js'></script>
+		<!-- aliyun upload js -->
+		<link href="../../js/common/mui.loading.css" rel="stylesheet" />
+		<script type="text/javascript" src="../../js/common/mui.loading.js"></script>
+		<script type="text/javascript">
+			var image = {
+				zheng: null,
+				hand: null
+			}
+			mui.init({
+                beforeback: function() {
+                    //获得父页面的webview
+                    var list = plus.webview.currentWebview().opener();
+                    //触发父页面的自定义事件(refresh),从而进行刷新
+                    mui.fire(list, 'refresh');
+                    //返回true,继续页面关闭逻辑
+                    return true;
+                }
+            });
+			var canUp = false;
+			var cardData = {};
+
+			mui.plusReady(function() {
+				loadAuth();
+				var current = plus.webview.currentWebview();
+				cardData = current
+
+				mui("body").on("tap", "#picture", function() {
+					if (!canUp) {
+						return false;
+					}
+					var indexs = $(this).attr("_index");
+					if (mui.os.plus) {
+						var buttonTit = [{
+							title: "拍照"
+						}, {
+							title: "从手机相册选择"
+						}];
+						plus.nativeUI.actionSheet({
+							cancel: "取消",
+							buttons: buttonTit
+						}, function(b) { /*actionSheet 按钮点击事件*/
+							switch (b.index) {
+								case 0:
+									break;
+								case 1:
+									getImage(indexs); /*拍照*/
+									break;
+								case 2:
+									galleryImg(indexs); /*打开相册*/
+									break;
+								default:
+									break;
+							}
+						})
+					}
+				}, false);
+			});
+
+			// 加载数据
+			function loadAuth() {
+				Common.muipost("/app/user/v2/auth/info", {}, function(data) {
+					if (data.date == null) {
+						// 无数据，带提交
+						$(".realname").removeClass("mui-hidden");
+						$("#submit").removeClass("mui-disabled");
+						// 可以上传
+						canUp = true;
+						$("#name").removeAttr("readonly");
+						$("#card").removeAttr("readonly");
+					} else {
+						// 显示数据
+						var images = JSON.parse(data.date.certPhoto);
+
+						// 验证是否为服务器图片
+						var zheng = images[0];
+						if (zheng.indexOf("/static/") == 0) {
+							zheng = basePath + zheng;
+							// $("#zheng").attr("src", zheng);
+						} else {
+							// 阿里云
+							Common.muipost("/common/oss/sts/auth", {key: zheng}, function(data) {
+								zheng = data.date;
+								// $("#zheng").attr("src", zheng);
+							}, function(data) {
+								mui.toast("图片服务异常，无法显示");
+							});
+						}
+						var hand = images[1];
+						if (hand.indexOf("/static/") == 0) {
+							hand = basePath + hand;
+							// $("#hand").attr("src", hand);
+						} else {
+							// 阿里云
+							Common.muipost("/common/oss/sts/auth", {key: hand}, function(data) {
+								hand = data.date;
+								// $("#hand").attr("src", hand);
+							}, function(data) {
+								mui.toast("图片服务异常，无法显示");
+							});
+						}
+						$("#name").val(data.date.name);
+						$("#card").val(data.date.certNo);
+						if (data.date.state == 0) {
+							$("#submit").html("审核中");
+						} else if (data.date.state == 2) {
+							$("#submit").html("审核通过");
+							$(".up-images").addClass("mui-disabled");
+						} else {
+							// 审核失败
+							$("#submit").html("提交审核");
+							// $("#submit").html("审核失败");
+							$("#submit").removeClass("mui-disabled");
+							$(".realname-fail").removeClass("mui-hidden");
+							// 可以重新上传
+							canUp = true;
+							$("#name").removeAttr("readonly");
+							$("#card").removeAttr("readonly");
+						}
+						$(".realname").removeClass("mui-hidden");
+					}
+				}, function(data) {
+					mui.alert(' ', data.content, '确定', function (e) {
+					}, 'body');
+				});
+			}
+
+			// 拍照获取图片
+			function getImage(index) {
+				var c = plus.camera.getCamera();
+				c.captureImage(function(file) {
+					plus.io.resolveLocalFileSystemURL(file, function(entry) {
+						plus.io.resolveLocalFileSystemURL(file, function(entry) {
+							upload(file, entry.name, index);
+						}, function(e) {
+							plus.nativeUI.toast("相册文件错误：" + e.message);
+						});
+					}, function(e) {
+						plus.nativeUI.alert('读取拍照文件错误');
+					});
+				}, function(s) {
+					plus.nativeUI.alert('拍照文件错误');
+				}, {
+					filename: "_doc/camera/"
+				})
+			}
+
+			// 从相册中选择图片
+			function galleryImg(index) {
+				// 从相册中选择图片
+				plus.gallery.pick(function(path) {
+					var file = path.files[0];
+					plus.io.resolveLocalFileSystemURL(file, function(entry) {
+						var filePath = entry.name.lastIndexOf(".")
+						var ext = entry.name.substr(filePath + 1).toUpperCase()
+						if (ext == 'PNG' || ext == 'JPEG' || ext == 'JPG') {
+							upload(file, entry.name, index);
+						} else {
+							plus.nativeUI.alert('暂时只支持png/jpeg/jpg格式');
+						}
+					}, function(e) {
+						plus.nativeUI.toast("相册文件错误：" + e.message);
+					});
+				}, function(e) {
+					plus.nativeUI.alert('取消选择图片');
+				}, {
+					filter: "image",
+					multiple: true,
+					maximum: 1,
+					system: false,
+					onmaxed: function() {
+						plus.nativeUI.alert('最多只能选择1张图片');
+					}
+				});
+			}
+
+			var isContinue = true;
+
+			function upload(files, fileName, index) {
+				var proxfName = proxf(fileName);
+				// 获取token
+				mui.showLoading("授权认证中...", "body");
+				Common.muipost("/common/oss/sts/token", {}, function(data) {
+					// 成功
+					var host = data.date.host;
+					var policyBase64 = data.date.policy;
+					var accessid = data.date.accessid;
+					var signature = data.date.signature;
+					var key = data.date.dir + uuid(32, 54) + proxfName;
+
+					mui.showLoading("照片上传中...", "body");
+					var task = plus.uploader.createUpload(host, {method: "POST"}, function(t, status) {
+						mui.hideLoading();
+						if (status == 200) {
+							mui.toast("上传成功");
+							var heightz = $('#zheng').height() > $(window).height() / 2 ? $(window).height() / 2 : $('#zheng').height();
+							var heighth = $('#hand').height() > $(window).height() / 2 ? $(window).height() / 2 : $('#hand').height();
+							if (index == 1) {
+								$("#zheng").attr("src", files);
+								$("#zheng").css("height", heightz)
+								image.zheng = key;
+							} else {
+								$("#hand").attr("src", files);
+								$("#hand").css("height", heighth)
+								image.hand = key;
+							}
+						} else {
+							if (index == 1) {
+								$("#zheng").attr("src", "../../images/hashbox/idcard_01.png");
+								image.zheng = null;
+							} else {
+								$("#hand").attr("src", "../../images/hashbox/idcard_02.png");
+								image.hand = null;
+							}
+							mui.toast("上传失败");
+						}
+					});
+					// 设置参数
+					task.addData("key", key);
+					task.addData("policy", policyBase64);
+					task.addData("OSSAccessKeyId", accessid);
+					task.addData("success_action_status", "200");
+					task.addData("signature", signature);
+					task.addFile(files, {key: "file"});
+					task.start();
+				});
+
+				/* var wt = plus.nativeUI.showWaiting();
+				var task = plus.uploader.createUpload(basePath + "/file/auth/upload", {
+						method: "POST"
+					},
+					function(t, status) { //上传完成
+						if (status == 200) {
+							mui.toast("上传成功");
+							if (index == 1) {
+								$("#zheng").attr("src", files);
+								image.zheng = JSON.parse(t.responseText).date;
+							} else {
+								$("#hand").attr("src", files);
+								image.hand = JSON.parse(t.responseText).date;
+							}
+							wt.close();
+						} else {
+							if (index == 1) {
+								$("#zheng").attr("src", "../../images/hashbox/idcard_01.png");
+								image.zheng = null;
+							} else {
+								$("#hand").attr("src", "../../images/hashbox/idcard_02.png");
+								image.hand = null;
+							}
+							mui.toast("上传失败");
+							wt.close();
+						}
+					}
+				);
+				//添加其他参数
+				task.addData("name", "test");
+				task.addFile(files, {
+					key: "file"
+				});
+				task.start(); */
+			}
+			/* //上传图片
+			function upload(files, index) {
+				var wt = plus.nativeUI.showWaiting();
+				var task = plus.uploader.createUpload(basePath + "/file/auth/upload", {
+						method: "POST"
+					},
+					function(t, status) { //上传完成
+						if (status == 200) {
+							mui.toast("上传成功");
+							if (index == 1) {
+								$("#zheng").attr("src", files);
+								image.zheng = JSON.parse(t.responseText).date;
+							} else {
+								$("#hand").attr("src", files);
+								image.hand = JSON.parse(t.responseText).date;
+							}
+							wt.close();
+						} else {
+							if (index == 1) {
+								$("#zheng").attr("src", "../../images/hashbox/idcard_01.png");
+								image.zheng = null;
+							} else {
+								$("#hand").attr("src", "../../images/hashbox/idcard_02.png");
+								image.hand = null;
+							}
+							mui.toast("上传失败");
+							wt.close();
+						}
+					}
+				);
+				//添加其他参数
+				task.addData("name", "test");
+				task.addFile(files, {
+					key: "file"
+				});
+				task.start();
+			} */
+
+			mui("body").on("tap", "#submit", function() {
+				if (image.zheng == null) {
+					mui.toast("请上传身份证正面照");
+					return false;
+				}
+				if (image.hand == null) {
+					mui.toast("请上传手持身份证照");
+					return false;
+				}
+				var name = cardData.name;
+
+				var card = cardData.card;
+				if (card == '' || card == null) {
+					mui.toast("请输入身份证号");
+					return false;
+				}
+				if (isCardNo(card) === false) {
+					mui.toast("您输入的身份证号码不正确");
+					return false;
+				}
+				if (checkProvince(card) === false) {
+					mui.toast("您输入的身份证号码不正确");
+					return false;
+				}
+				//校验生日
+				if (checkBirthday(card) === false) {
+					mui.toast("您输入的身份证号码不正确");
+					return false;
+				}
+				//检验位的检测
+				if (checkParity(card) === false) {
+					mui.toast("您输入的身份证号码不正确");
+					return false;
+				}
+
+				var param = {
+					"zheng": image.zheng,
+					"hand": image.hand,
+					"name": name,
+					"card": card
+				}
+				mui.showLoading("上传中...", "body");
+				Common.muipost("/app/user/v2/auth/create", param, function(data) {
+					mui.toast("上传成功，等待审核");
+					mui.back();
+				}, function(data) {
+					mui.toast(data.content);
+				});
+			});
+
+			function proxf(filename) {
+				var index = filename.lastIndexOf(".");
+				var length = filename.length;
+				return filename.substring(index, length);//后缀名
+			}
+			function uuid(len, radix) {
+				var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+				var uuid = [], i;
+				radix = radix || chars.length;
+
+				if (len) {
+					// Compact form
+					for (i = 0; i < len; i++) uuid[i] = chars[0 | Math.random()*radix];
+				} else {
+					// rfc4122, version 4 form
+					var r;
+
+					// rfc4122 requires these characters
+					uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
+					uuid[14] = '4';
+
+					// Fill in random data.  At i==19 set the high bits of clock sequence as
+					// per rfc4122, sec. 4.1.5
+					for (i = 0; i < 36; i++) {
+						if (!uuid[i]) {
+							r = 0 | Math.random()*16;
+							uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r];
+						}
+					}
+				}
+
+				return uuid.join('');
+			}
+		</script>
+	</body>
+
+</html>

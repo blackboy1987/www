@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>算力蜂</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta http-equiv="Cache" content="no-cache">
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-Control" content="no-cache">
+		<meta http-equiv="Expires" content="0">
+		<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,viewport-fit=cover">
+		
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/swiper.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="css/style.css">
+		<!-- <link rel="manifest" href="manifest.json"> -->
+	</head>
+	<style type="text/css">
+		.mui-bar-tab .mui-tab-item.mui-active span{
+			/* color: #969699; */
+			color: #000000;
+		}
+		.mui-bar-tab{
+			z-index: 998;
+		}
+		.mui-popover{display: unset;}
+		
+		/* 修改文低色值 */
+		.mui-tab-label{
+			color: #000000;
+		}
+		
+		/* .my-nav:before {position: absolute;top: 0;left: 0;height: 1px;width: 200%;content:'';display: block;-webkit-transform: scale(0.5);transform: scale(0.5);transform-origin: left top;background-color: #e5e5e5;} */
+		
+	</style>
+	<body style="background: #f5f5f5">
+		<!-- style="border-top:1px solid #eee;" -->
+		<nav class="mui-bar mui-bar-tab" id="m-nav" style="border-top:1px solid #eee;" >
+			<a class="mui-tab-item mui-active" id="index" href="#">
+				<span class="shouye"></span>
+				<span class="mui-tab-label">首页</span>
+			</a>
+			<a class="mui-tab-item" id="licai" href="#">
+				<span class="gouwudai"></span>
+				<span class="mui-tab-label">产品</span>
+			</a>
+			<a class="mui-tab-item" id="zichan" href="#">
+				<span class="jiaoyi"></span>
+				<span class="mui-tab-label">资产</span>
+			</a>
+			<a class="mui-tab-item" id="wode" href="#">
+				<span class="wode"></span>
+				<span class="mui-tab-label">我的</span>
+			</a>
+		</nav>
+		<!-- <div id="n-backdrop" style="position: fixed;bottom:0;height: 57px;width:100%;z-index:999;background:#262628;opacity: .3;text-align: center;">
+		</div> -->
+		
+	<script src="js/mui.min.js"></script>
+	<script type='text/javascript' src='js/jquery-1.11.1.min.js'></script>
+	<script src="js/common/common.js"></script>
+	<script src="js/watch.js"></script>
+		
+	<script>
+	  	mui.init({
+	  		swipeBack:true //启用右滑关闭功能
+	  	});
+		function parentPopover () {
+			plus.storage.removeItem("popover");
+			$('#n-backdrop').css('display','none');
+		}
+		$("#n-backdrop").click(function() {
+			$('#n-backdrop').css('display','none');
+			plus.storage.removeItem("popover");
+			mui.fire(plus.webview.getWebviewById('index.html'), 'showOrHidePopover');
+		})
+		// (function($) {
+		// 	console.log(123123123)
+		// })(mui);
+		var upstatus = false;
+		mui.plusReady(function(){
+			//_AppClean.clearAllCache("io.diao");
+			var loginUser = plus.storage.getItem("loginUser");
+			document.addEventListener('pause',function(){
+				process(false, JSON.parse(loginUser).id)
+			});
+			// 监听前台运行
+			document.addEventListener('resume',function(){
+				process(true, JSON.parse(loginUser).id)
+			});
+			var bh = '55px'
+		
+			if (mui.os.ios && window.screen.width >= 375) {
+				bh = '80px'
+			} else {
+				bh = '55px'
+			}
+			$("#m-nav").css("height", bh)
+			//保持手机竖屏显示
+			plus.screen.lockOrientation("portrait-primary");
+			//设置手机顶部颜色
+			// plus.navigator.setStatusBarBackground("#F1F2F3");
+		   	
+			var subpages=['index.html', 'product.html', '/info/assets.html', 'my.html']; 
+			var subpageStyle={
+			  		top:'0px',
+				    	bottom: bh
+			};
+			
+			var self = plus.webview.currentWebview();		//创建子窗体
+					for(var i = 0; i < subpages.length; i++) {
+							var sub = mui.preload({
+					url:subpages[i],
+					id:subpages[i],//默认使用当前页面的url作为id
+					styles:subpageStyle//窗口参数
+				});
+							sub.hide();							 //功能：隐藏页面
+						self.append(sub);						//功能：追加子页面,首个选项卡页面显示，其它均隐藏
+			}
+		 	plus.webview.show(subpages[0]);		//设置主页的sub.html默认显示出来，其他sub2.html默认隐藏
+			if (plus.storage.getItem("popover")) {
+				mui.fire(plus.webview.getWebviewById('index.html'), 'showOrHidePopover');
+			}
+			
+			//跳转 收益 页面
+			document.getElementById('licai').addEventListener('tap', function() {
+				if (!upstatus) {
+					closeAllView();
+					plus.webview.show(subpages[1]);
+					//创建刷新事件（子页面有监听事件）
+					mui.fire(plus.webview.getWebviewById(subpages[1]), 'refresh');
+				}
+			});
+	  
+			//跳转 首页 页面
+			document.getElementById('index').addEventListener('tap', function() {
+				if (!upstatus) {
+					closeAllView();
+					plus.webview.show(subpages[0]);
+					//创建刷新事件（子页面有监听事件）
+					mui.fire(plus.webview.getWebviewById(subpages[0]), 'refresh');
+					if (plus.storage.getItem("popover")) {
+						mui.fire(plus.webview.getWebviewById(subpages[0]), 'showOrHidePopover');
+					}
+				}
+			});
+	  
+			//跳转 资产 页面
+			document.getElementById('zichan').addEventListener('tap', function() {
+				if (!upstatus) {
+					closeAllView();
+					plus.webview.show(subpages[2]);
+					//创建刷新事件（子页面有监听事件）
+					mui.fire(plus.webview.getWebviewById(subpages[2]), 'refresh');
+				}
+			});
+	  
+			//跳转 我的 页面
+			document.getElementById('wode').addEventListener('tap', function() {
+				if (!upstatus) {
+					closeAllView();
+					plus.webview.show(subpages[3]);
+					//创建刷新事件（子页面有监听事件）
+					mui.fire(plus.webview.getWebviewById(subpages[3]), 'refresh');
+				}
+			});
+			
+			// http://localhost:13131/_www/manifest.json
+
+			if (mui.os.ios){
+				mui.getJSON("http://localhost:13131/_www/manifest.json", null, function(data) {
+					// version = data.version.code;
+					upVersion(data.version.code);
+					plus.storage.setItem('version',JSON.stringify(data.version.code))
+				});
+			} 
+			else {
+				mui.getJSON("manifest.json", null, function(data) {
+					// version = data.version.code;
+					upVersion(data.version.code);
+					plus.storage.setItem('version',JSON.stringify(data.version.code))
+				});
+			}
+	   		
+        	
+		});
+		
+        function upVersion(version) {
+		    //获取版本号
+		    mui.ajax(basePath + "/app/common/version", {
+	            data: {},
+	            dataType: 'json', //服务器返回json格式数据
+	            type: 'POST',
+	            timeout: 10000, //超时时间设置为10秒；
+	            success: function (data) {
+					if (data.type == 200) {
+						if (data.date.version > version) {
+							if (data.date.downUpdate) {
+								// 下载更新，打开浏览器
+								downUpdate(data.date.downUrl);
+							} else {
+								isUpdate(data, version)
+							}
+						}
+	            	} else {
+	            	}
+	            }, error: function (xhr, type, errorThrown) {
+	            	// 不做处理
+	            }
+	        });
+        }
+		
+		function downUpdate(downUrl) {
+			mui.alert("APP有新的版本，请重新下载", "版本更新", null, function() {
+				// 浏览器打开页面
+				plus.runtime.openURL( downUrl, function(e) {
+					mui.alert(" ", "手机浏览器访问失败，将在APP内打开下载页面", "确定", function(e) {
+						plus.runtime.openWeb(downUrl);
+					}, "body");
+				}, "" );
+			});
+		}
+		
+		function isUpdate(data, version) {
+			if (data.date.version > version) {
+				var wgtUrl = "";
+				if (mui.os.android) {
+					wgtUrl = data.date.androidUrl;
+				} else {
+					wgtUrl = data.date.iosUrl;
+				}
+				
+				if (data.date.forcedUpdate) {
+					// 强制更新
+					mui.alert("APP有新的版本，系统将自动更新", "版本更新", null, function() {
+						insWgt(wgtUrl);
+					});
+				} else {
+					// 提示更新
+					mui.confirm("APP有新的版本，需要更新到最新的版本吗？", "版本更新", ["稍后更新", "立即更新"], function(e) {
+				        if (e.index == 1) {
+							insWgt(wgtUrl);
+				        } else {
+				            // 不做处理
+				        }
+				    });
+				}
+			}
+		}
+		
+		function insWgt(wgtUrl) {
+			var url = wgtUrl.indexOf("http") != -1 ? wgtUrl : basePath + wgtUrl; // 下载文件地址
+			plus.nativeUI.showWaiting("正在下载更新包...");
+			var dtask = plus.downloader.createDownload(url, {filename:"_doc/update/"}, function ( d, status ) {
+				plus.nativeUI.closeWaiting();
+			    if ( status == 200 ) { // 下载成功
+						installWgt(d.filename); // 安装wgt包			       
+			    } else {//下载失败
+							mui.alert('下载失败')
+			        // alert( "Download failed: " + status ); 
+			        mui.toast("wgt download failed: " + status);
+			    }  
+			});
+			dtask.start(); 
+		}
+		
+		//关闭所有窗口
+		function closeAllView(){
+			var wvs = plus.webview.all();
+		}
+		
+		var first = null;
+    	mui.back = function() {
+			//首次按键，提示‘再按一次退出应用’
+        	if (!first) {
+            	first = new Date().getTime();
+	            mui.toast('再按一次退出应用');
+	            setTimeout(function() {
+    	            first = null;
+        	    }, 1000);
+	        } else {
+    	        if (new Date().getTime() - first < 1000) {
+        	        plus.runtime.quit();
+					process(false, JSON.parse(loginUser).id)
+            	}
+	        }
+    	};
+		function installWgt(wgtPath) {
+				plus.nativeUI.showWaiting("安装wgt文件...");
+		    plus.runtime.install(wgtPath, {}, function() {
+		        plus.nativeUI.closeWaiting();
+		        plus.nativeUI.alert("应用资源更新完成！", function(){
+		            plus.runtime.restart();
+		        });
+		    },function(e){
+		        plus.nativeUI.closeWaiting();
+		        plus.nativeUI.alert("安装wgt文件失败[" + e.code + "]：" + e.message);
+		    });
+		}
+	</script>
+	</body>
+</html>

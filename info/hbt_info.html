@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>HBT交易明细</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<style>
+			.mui-icon {
+				color: #919194;
+			}
+			.mui-bar-nav{
+				background-color: #ffffff;
+				box-shadow: none;
+				border-bottom: 1px solid #E5E5E5;
+			}
+			.father{
+				margin-top: 45px;
+				padding: 0 15px;
+			}
+			.list2 {
+				display: flex;
+				justify-content: space-between;
+				padding: 13px 0px;
+				box-sizing: border-box;
+			}
+			.lists {
+				border-bottom: 1px solid #E5E5E5;
+			
+			}
+			.flex {
+				display: flex;
+				flex-direction: column;
+				height: 50px;
+				justify-content: space-around;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" style="font-size: 18px;color: #000000;" id="teamName">HBT交易明细</h1>
+		</header>
+		<div id="bottom_parent" class="bottom_parent">
+			<div class="father" id="father">
+				
+			</div>
+		</div>
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/mui.js"></script>
+		<script src="../js/common/common.js"></script>
+		
+		<script>
+			var page = 1; 
+			var limit = 10;
+			getRecords();
+			function getRecords(){
+				Common.muipost("/app/user/log/hbtList",{
+					
+				}, function(res) {
+				var htmlContent = "";
+				for (var i = 0; i <res.date.list.length; i++) {
+					htmlContent += '<div id="lists" class="lists"> ' +
+						'		<div id="list2" class="list2"> ' +
+						'			<div class="flex"> ' +
+						'				<span style="color: #2E2E31;"><span>'+res.date.list[i].title+'</span></span> ' +
+						'				<span style="font-size:15px;color: #969699;margin-top: 10px;">' + res.date.list[i].createDate +
+						'</span> ' +
+						'			</div> ' +
+						'			<div class="flex"> ' +
+						'				<span style="color: #333333;font-size:15px;">';
+						if(res.date.list[i].status == 1){
+							htmlContent += '<span>+</span>';
+						}else{
+							htmlContent += '<span>-</span>';
+						}
+						htmlContent +='<span>' + res.date.list[i].money + '</span>  HBT</span> ' +
+						'			</div> ' +
+						'		</div> ' +
+						'	</div> ';
+				}
+				
+				$("#father").html(htmlContent);
+				}, function(s) {
+				
+				});
+			}
+			
+			function pullupRefresh() {
+				page++;
+				var url = "/app/user/log/hbtList";
+				var _this = this;
+				Common.muipost(url, {
+					page: page,
+					limit: limit,
+				}, function(res) {
+					if (res.date.list && res.date.list.length > 0) {
+						var htmlContent = getRecords();
+						$("#father").html($("#father").html() + htmlContent);
+						_this.endPullupToRefresh(false);
+					} else {
+						_this.endPullupToRefresh(true);
+					}
+					
+				}, function(data) {
+			
+				});
+			}
+			
+			function pulldownRefresh() {
+				page = 1; 
+				var _this = this;
+				var url = "/app/user/log/hbtList";
+				Common.muipost(url, {
+					page: page,
+					limit: limit,
+				}, function(res) {
+					if (res.date.list && res.date.list.length > 0) {
+						var htmlContent = getRecords();
+						$('#father').html(htmlContent);
+					}
+				}, function(data) {
+					mui('#bottom_parent').pullRefresh().endPulldownToRefresh(true);
+					mui('#bottom_parent').pullRefresh().refresh(true);
+				});
+				mui('#bottom_parent').pullRefresh().endPulldownToRefresh(true);
+				mui('#bottom_parent').pullRefresh().refresh(true);
+				
+			}
+			
+			mui.init({
+				pullRefresh: {
+					container: "#bottom_parent", //下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+					down: { 
+						style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+						color: '#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+						height: '50px', //可选,默认50px.下拉刷新控件的高度,
+						range: '100px', //可选 默认100px,控件可下拉拖拽的范围
+						offset: '0px', //可选 默认0px,下拉刷新控件的起始位置
+						auto: true, //可选,默认false.首次加载自动上拉刷新一次
+						callback: pulldownRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					},
+					up: {
+						height: 50, //可选.默认50.触发上拉加载拖动距离
+						auto: true, //可选,默认false.自动上拉加载一次
+						contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+						contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+						callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

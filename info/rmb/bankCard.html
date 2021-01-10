@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>银行卡列表</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../../css/style.css">
+		<link rel="stylesheet" href="../../css/hashbox.css">
+		<style>
+			.tf-btn button{ width: 94%;margin: 10px 3%;}
+		</style>
+
+	</head>
+	<body >
+		<header class="mui-bar mui-bar-nav">
+			<a class="c2c-address mui-pull-left mui-action-back"><span class="mui-icon mui-icon-back"></span></a>
+			<h1 class="mui-title" id="detialTitle">银行卡
+			</h1>
+		</header>
+		<div class="mui-content a-assets" style="background: #f2f2f2">
+			<div class="bank-card ">
+                <div class="card cardBg-red">
+                    <div class="card-icon"><img src="../../images/index-icon-org.png" width="60px"></div>
+                    <div class="card-info">
+                        <div class="bank-name">中国银行</div>
+                        <div class="bank-type">储蓄卡</div>
+                        <div class="bank-number">**** &nbsp;&nbsp; **** &nbsp;&nbsp; **** &nbsp;&nbsp; 1244</div>
+                    </div>
+                </div>
+            </div>
+			
+			
+			<div class="tf-btn" style="position: absolute;bottom: 0;width: 100%; background: #fff;margin: 0;">
+						<button class="mui-btn main-button" id="addCard">添加银行卡</button>
+					</div>
+		</div>
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/jquery.min.js"></script>
+	<script src="../../js/qrcode.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../js/common/mui.loading.css" />
+	<script type="text/javascript" src="../../js/common/mui.loading.js"></script>
+	<!--<script src="../../js/html5plus.js" type="text/javascript" charset="utf-8"></script>-->
+	
+	<script>
+		
+		$("#addCard").click(function(){
+			mui.openWindow({
+				url: 'bankAdd.html',
+				id: 'bankAdd.html'
+			});
+
+		})
+	</script>
+	
+</html>

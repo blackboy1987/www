@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>提现明细</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<style>
+			.mui-icon {
+				color: #919194;
+			}
+
+			#sliderSegmentedControl {
+				width: 70%;
+				margin: 0 auto;
+			}
+
+			.mui-segmented-control.mui-segmented-control-inverted .mui-control-item {
+				color: #7D7D80;
+			}
+
+			.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
+				color: #323233;
+			}
+
+			.list2 {
+				display: flex;
+				justify-content: space-between;
+				padding: 13px 0px;
+				box-sizing: border-box;
+				border-bottom: 1px solid #E5E5E5;
+				width: 90%;
+				margin: 0 auto;
+			}
+
+			.flex {
+				display: flex;
+				flex-direction: column;
+				height: 50px;
+				justify-content: space-between;
+			}
+
+			.flex1 {
+				display: flex;
+				flex-direction: column;
+				height: 50px;
+				align-items: flex-end;
+			}
+
+			.mui-active .p1 {
+				border-bottom: 3px solid #1F74D7;
+				padding-bottom: 7px;
+			}
+
+			#slider {
+				position: fixed;
+				background-color: #FFFFFF;
+				border-bottom: 1px solid #EEE;
+				top: 44px;
+				z-index: 10;
+				margin-top: 10px;
+				display: flex;
+				justify-content: space-around;
+			}
+
+			.mui-table-view:before {
+				height: 0 !important;
+			}
+
+			.pt0 {
+				padding-top: 30px;
+			}
+
+			.mui-bar {
+				background-color: #ffffff;
+			}
+
+			.mui-bar-nav {
+				box-shadow: none;
+				height: 60px;
+			}
+
+			.mui-table-view:after {
+				height: 0 !important;
+
+			}
+			.mui-pull-caption{
+				font-size: 14px;
+				color: #B7B7B7;
+			}
+		#slider .mui-control-item{
+				width: 30%;
+			}
+			#sliderSegmentedControl{
+				width: 100%;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" style="font-size: 20px;" id="teamName">交易明细</h1>
+		</header>
+
+		<div style="margin-top: 60px;">
+			<div id="slider" class="mui-slider pay-tb">
+				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted mt1">
+
+					<a style="width: 30%;" class="xiabiao mui-control-item mui-active" id="all">
+						<span class="p1" style="font-size: 16px">全部</span>
+					</a>
+					<a class="mui-control-item " id="aplay">
+						<span class="p1" style="font-size: 16px">收入记录</span>
+					</a>
+					<a class="mui-control-item" id="acount">
+						<span class="p1" style="font-size: 16px">支出记录</span>
+					</a>
+				</div>
+			</div>
+			<div id="myDetial">
+				<div id="item1mobiles" class="pullrefresh mui-slider-item mui-control-content mui-active">
+					<div class="pad10 pt0">
+						<ul class="lists mui-table-view mui-table-view-chevron mui-table-view mui-table-view-chevron myHashList" id="itemmobile1">
+
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/mui.js"></script>
+		<script src="../js/common/common.js"></script>
+		
+		<script>
+			var page = 1;
+			var limit = 5;
+			var type = '';
+			var userId = '';
+			mui.plusReady(function() {
+				userId = JSON.parse(plus.storage.getItem("loginUser")).id
+			})
+			
+			//全部
+			mui("body").on("tap", "#all", function() {
+				type = '';
+				pulldownRefresh();
+			})
+			//入账
+			mui("body").on("tap", "#aplay", function() {
+				type = 1;
+				pulldownRefresh();
+			})
+			//出账
+			mui("body").on("tap", "#acount", function() {
+				type = 2;
+				pulldownRefresh();
+				
+			})
+			
+			function pulldownRefresh() { 
+				page = 1;
+				var _this = this;
+				var url = "/app/user/log/rmbList";
+				Common.muipost(url, {
+					page: page,
+					limit: limit,
+					type: type
+				}, function(res) {
+					$("#itemmobile1").html('');
+					if (res.date.list && res.date.list.length > 0) {
+						var htmlBody = handleData(res);
+						$('#itemmobile1').html(htmlBody);
+					}
+				}, function(res) {
+					_this.endPullupToRefresh(true);
+				});
+				mui('#item1mobiles').pullRefresh().endPulldownToRefresh(true);
+				mui('#item1mobiles').pullRefresh().refresh(true);
+				mui('#item1mobiles').pullRefresh().enablePullupToRefresh();
+			}
+
+			function pullupRefresh() {
+				page++;
+				var url = "/app/user/log/rmbList";
+				var _this = this;
+				Common.muipost(url, {
+					page: page,
+					limit: limit,
+					type: type
+				}, function(res) {
+					if (res.date.list && res.date.list.length > 0) {
+						var htmlBody = handleData(res);
+						$("#itemmobile1").html($("#itemmobile1").html() + htmlBody);
+						_this.endPullupToRefresh(false);
+					} else {
+						_this.endPullupToRefresh(true);
+					}
+				}, function(res) {
+					
+				});
+			}
+
+			function handleData(res) {
+				var htmlBody = '';
+				for (var i = 0; i < res.date.list.length; i++) {
+					htmlBody += '<li><div class="list2">' +
+						'<div class="flex"> ' +
+						'<span style="color: #2E2E31;font-size:15px;">'+ res.date.list[i].title +'</span> ' +
+						'<span style="color: #969699;margin-top: 10px;font-size:13px">' + res.date.list[i].createDate + '</span> ' +
+						'</div> ' +
+						'<div class="flex1"> ' +
+						'<span style="color: #333333;font-size: 18px;">';
+						if(res.date.list[i].status == 1 && res.date.list[i].dataType == 1){
+							htmlBody += '<span>+</span>';
+						}else{
+							htmlBody += '<span>-</span>';
+						}
+						htmlBody +='<span style="font-size: 15px;color: #333333;">' + res.date.list[i].money + '</span>元</span> ' +
+						'<span style="margin-top: 10px;">';
+					if (res.date.list[i].state == 0) {
+						htmlBody += '<span style="color: #FF7800;font-size: 13px;">审核中</span>';
+					}else if(res.date.list[i].state == 1) {
+						htmlBody += '<span style="color: #40C873;font-size: 13px;">已到账</span>';
+					}else{
+						htmlBody += '<span style="color: #999999;font-size: 13px;">未收到</span>';
+
+					}
+					htmlBody += '</span> ' +
+						'</div> ' +
+						'</div> ' +
+						'</li>';
+				}
+				return htmlBody;
+			}
+			mui.init({
+				pullRefresh: {
+					container: "#item1mobiles", //下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+					down: {
+						style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+						color: '#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+						height: '50px', //可选,默认50px.下拉刷新控件的高度,
+						range: '100px', //可选 默认100px,控件可下拉拖拽的范围
+						offset: '0px', //可选 默认0px,下拉刷新控件的起始位置
+						auto: true, //可选,默认false.首次加载自动上拉刷新一次
+						callback: pulldownRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					},
+					up: {
+						height: 50, //可选.默认50.触发上拉加载拖动距离
+						auto: true, //可选,默认false.自动上拉加载一次
+						contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+						contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+						callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					}
+				}
+			});
+		
+		</script>
+
+	</body>
+</html>

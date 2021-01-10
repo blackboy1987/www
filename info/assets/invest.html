@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>账户资产</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<!--标准mui.css-->
+	<link rel="stylesheet" href="../../css/mui.min.css">
+	<!--App自定义的css-->
+	<link rel="stylesheet" href="../../css/style.css">
+	<link rel="stylesheet" href="../../css/hashbox.css">
+	<style>
+		::-webkit-input-placeholder { color:#b3b3b3; }
+		::-moz-placeholder { color:#b3b3b3; } /* firefox 19+ */
+		:-ms-input-placeholder { color:#b3b3b3; } /* ie */
+		input:-moz-placeholder { color:#b3b3b3; }
+		.pay-tb-all .tb-pay-addr{ width: 80%; margin: 0 auto;}
+		.copyBtn{ position: relative;top: -20px;}
+		.pay-color{color:#7D7D80;}
+		.tb-addr-img {
+			width: 20px;
+			height: 20px;
+			margin-top: -10px;
+		}
+		.tb-addr-img img {
+			float: right;
+			margin-top: 10px;
+		}
+		.tb-addr-a {
+			width: 61px;
+			height: 20px;
+			margin-top: -12px;
+		}
+		.tb-addr-a a {
+			float: right;
+			margin-top: 10px;
+		}
+		.tb-form input{
+			width: 88%;
+		}
+		#drawNum { width: 76%; }
+		.mui-bar .mui-btn-link{color:#000000;}
+		.a-assets .assets-all{background:unset;background-size: 100% 100%;}
+		.a-assets .assets-all .all-ass, .a-assets .assets-all p{text-align: left;color:#fff;}
+		.pay-tb.mui-slider .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active{border:none;}
+		.pay-tb.mui-slider .mui-segmented-control.mui-segmented-control-inverted .mui-control-item{font-size:20px;border:none;}
+		.m-p span{display: inline-block;color:#7D7D80;}
+		.mui-active span{border-bottom: 3px solid #1F74D7;color:#323233;}
+		.tb-form .tb-title{color:#323233;font-size: 16px;}
+		.tb-addr-img a, .tb-form .tb-how span{border:none;color:#FF7800;}
+		.mui-input-row .mui-input-clear~.mui-icon-clear{right:27px;}
+		#drawForm > div:nth-child(4) > span{right: 67px}
+	</style>
+
+</head>
+<body id="pullrefresh">
+<header class="mui-bar mui-bar-nav">
+	<a class="c2c-address mui-pull-left mui-action-back"><span class="mui-icon mui-icon-back"></span></a>
+	<h1 class="mui-title" id="detialTitle">账户资产
+		<!-- ETH-->
+	</h1>
+	<a id="detailedLink" data-href="detailed.html" class="mui-pull-right mui-btn-link">明细</a>
+</header>
+<div class="mui-content a-assets" style="background: #fff">
+	<div class="assets-all p2">
+		<!-- <div class="all-ass" id="detialCountTitle" style="color: white;">总资产
+        </div>
+        <p id="detialTotalMoney">--</p> -->
+		<div class="all-ass pl1" id="detialCountTitle">总资产 </div>
+		<p id="detialTotalMoney" class="pl1">--</p>
+		<p id="mPrice" class="pl1">--</p>
+	</div>
+	<!--<div class="mui-row assets-al">
+        <div class="mui-col-xs-6">
+            <div class="all-ass">可用资产</div>
+            <p id="detialMoney">--</p>
+        </div>
+        <div class="mui-col-xs-6">
+            <div class="all-ass">冻结资产</div>
+            <p id="detialFrozenMoney">--</p>
+        </div>
+    </div>-->
+	<div id="slider" class="mui-slider pay-tb">
+		<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+			<a class="mui-control-item mui-active m-p" href="#item1mobile">
+				<span>充值</span>
+			</a>
+			<a class="mui-control-item m-p" href="#item2mobile">
+				<span>提币</span>
+			</a>
+		</div>
+	</div>
+
+	<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-4"></div>
+	<div class="mui-slider-group pay-tb-all pad10">
+		<div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
+			<div style="text-align: center;line-height: 150px;" class="c96 mui-hidden" id="m-n">暂时不支持BTC充值</div>
+			<div id="m-btc">
+				<div class="tb-all pay-color" id="walletExplain">
+				</div>
+				<div class="tb-all-qr">
+					<p id="walletQrcodeImg" style="width: 180px;margin: 0 auto; text-align: center;margin-bottom: 4px;"></p>
+				</div>
+				<div class="tb-pay-addr mui-ellipsis pay-color" id="walletQrCode">
+					<img src="../../images/image.png" width="180px" height="180px" />
+				</div>
+				<a class="mui-pull-right copyBtn" href="javascript:void(0)" onclick="copy_fun()">
+					<img src="../../images/hashbox/copy.png" width="17px">
+				</a>
+				<div class="tb-pay-tips">
+					<p>温馨提示</p>
+					<p id="walletDesc">
+					</p>
+				</div>
+			</div>
+
+
+			<!--<div class="tb-arrive">
+                <ul class="mui-table-view arrive-title">
+                    <li class="mui-table-view-cell">
+                        即将到达的转账<a href="#" id="refresh" class="mui-pull-right">刷新</a>
+                    </li>
+                </ul>
+                <ul class="mui-table-view mui-table-view-chevron" id="rechargeRecord">
+                    <li class="mui-table-view-cell no-data">没有更多数据</li>
+                </ul>
+            </div>-->
+		</div>
+		<div id="item2mobile" class="mui-slider-item mui-control-content ">
+			<form class="tb-form  mui-input-group" id="drawForm">
+				<p class="tb-title">提币地址</p>
+				<div class="mui-input-row">
+					<input id='tb-addr' type="text" class="mui-input-clear mui-input" placeholder="输入或长按粘贴地址" name="addr">
+					<div class="tb-addr-img" onclick="clicked('/info/assets/qr.html',true,true)"><img src="../../images/saomiao.png" width="20px"></div>
+				</div>
+				<p class="tb-title">提币数量</p>
+				<div class="mui-input-row">
+					<input id='drawNum' type="number" class="mui-input-clear mui-input" placeholder="最低转出金额为 0.003" name="amount"
+						   onchange="drawNumChange(this)">
+					<div class="tb-addr-img tb-addr-a" onclick="drawAll()"><a href="javascript:void(0);">全部提现</a></div>
+				</div>
+				<div class="tb-how">最多可以提币 <span id="maxDrawNum"> 0 BTC </span></div>
+				<p class="tb-title">备注（选填）</p>
+				<div class="mui-input-row">
+					<input type="text" class="mui-input-clear mui-input" placeholder="仅在交易明细展示" name="comments">
+				</div>
+
+			</form>
+			<div class="tb-pay-tips">
+				<p>温馨提示</p>
+				<p id="drawDesc">
+				</p>
+			</div>
+			<div class="tf-btn">
+				<button class="mui-btn mui-btn-block mui-btn-primary m-btn-ra" style="line-height: 0;font-size: 16px;" id="drawBtn">确认提币</button>
+			</div>
+
+			<!--<div class="tb-arrive">
+                <ul class="mui-table-view arrive-title">
+                    <li class="mui-table-view-cell">
+                        正在处理中的转账<a href="#" id="refresh" class="mui-pull-right">刷新</a>
+                    </li>
+                </ul>
+                <ul class="mui-table-view mui-table-view-chevron" id="drawRecord">
+                    <li class="mui-table-view-cell no-data">没有更多数据</li>
+                </ul>
+            </div>-->
+		</div>
+	</div>
+</div>
+<div id="yzm" class="mui-popup-in meui-mask mui-hidden" style="z-index:99999;">
+	<div class="cons" style="height:118px">
+		<div class="mui-popup-inner">
+			<div class="mui-popup-text" style="margin:5px 0;text-align: center;border-bottom: 1px solid #E5E5E5;padding-bottom: 12px;">
+				短信验证
+			</div>
+			<div style="border: 1px solid rgba(0,0,0,.2);margin: 0 auto;width: 90%;height: 42px;">
+				<input id='yzmip' type="number" pattern="\d*" name="phonecode" class="mui-input-clear mui-input" style="float: left;width: 60%;margin-bottom: 0;border:none;" placeholder="短信验证码" maxlength="6">
+				<a type="button" class="fc2c9 fs15" style="line-height: 42px;" id="sendsms" onclick="sendSms()">获取验证码</a>
+			</div>
+
+		</div>
+		<div class="mui-popup-buttons">
+			<span onclick="nos()" class="mui-popup-button" style="color: #333333;">取消</span>
+			<span id="confirm" style="color: #1F75DA;" class="mui-popup-button mui-popup-button-bold" onclick="sms()">确认验证码</span>
+		</div>
+	</div>
+</div>
+<div id="txsubs" class="mui-popup-in meui-mask mui-hidden" style="z-index:99999;">
+	<div class="cons" style="height:118px">
+		<div class="mui-popup-inner">
+			<div class="mui-popup-text" id="m-value" style="margin:5px 0;text-align: center;border-bottom: 1px solid #E5E5E5;padding-bottom: 12px;font-size: 14px;">
+
+			</div>
+			<div style="border: 1px solid rgba(0,0,0,.2);margin: 0 auto;width: 90%;height: 42px;">
+				<input class="passwordInput" id="passwordInput" type="password" maxlength="6" style="float: left;width: 60%;margin-bottom: 0;border:none;" />
+			</div>
+
+		</div>
+		<div class="mui-popup-buttons">
+			<span onclick="cancel()" class="mui-popup-button" style="color: #333333;">取消</span>
+			<span id="pay_now" style="color: #1F75DA;" class="mui-popup-button mui-popup-button-bold">确认提币</span>
+		</div>
+	</div>
+</div>
+</body>
+<script src="../../js/mui.min.js"></script>
+<script src="../../js/jquery.min.js"></script>
+<script src="../../js/qrcode.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="../../js/common/mui.loading.css" />
+<script type="text/javascript" src="../../js/common/mui.loading.js"></script>
+<!--<script src="../../js/html5plus.js" type="text/javascript" charset="utf-8"></script>-->
+<script>
+	/*mui.init({
+        swipeBack:true,
+        pullRefresh: {
+            container: '#pullrefresh',
+            down: {
+                style:'circle',
+                callback: function(){
+                    plus.webview.currentWebview().reload(true);
+                    mui('#pullrefresh').pullRefresh().endPulldown();
+                }
+            }
+        }
+    });*/
+	var price = 0
+	// 处理点击事件
+	var openw = null;
+	var waiting = null;
+	var w = window;
+	var phone = ''
+
+	function closeWaiting() {
+		waiting && waiting.close();
+		waiting = null;
+	}
+	/**
+	 * 打开新窗口
+	 * @param {URIString} id : 要打开页面url
+	 * @param {boolean} wa : 是否显示等待框
+	 * @param {boolean} ns : 是否不自动显示
+	 * @param {JSON} ws : Webview窗口属性
+	 */
+	function clicked(id, wa, ns, ws) {
+		if (openw) { //避免多次打开同一个页面
+			return null;
+		}
+		if (w.plus) {
+			wa && (waiting = plus.nativeUI.showWaiting());
+			ws = ws || {};
+			ws.scrollIndicator || (ws.scrollIndicator = 'none');
+			ws.scalable || (ws.scalable = false);
+			var pre = ''; //'http://192.168.1.178:8080/h5/';
+			openw = plus.webview.create(pre + id, id, ws);
+			ns || openw.addEventListener('loaded', function() {
+				//页面加载完成后才显示
+				//		setTimeout(function(){//延后显示可避免低端机上动画时白屏
+				openw.show(as);
+				closeWaiting();
+				//		},200);
+			}, false);
+			openw.addEventListener('close', function() { //页面关闭后可再次打开
+				openw = null;
+			}, false);
+			return openw;
+		} else {
+			w.open(id);
+		}
+		return null;
+	};
+
+	//下拉刷新
+	mui.init({
+		pullRefresh: {
+			container: '#pullrefresh',
+			down: {
+				style: 'circle',
+				callback: pulldownRefresh
+			},
+		}
+	});
+	function nos () {
+		$("#yzmip").val("");
+		$("#yzm").addClass("mui-hidden");
+	}
+	function pulldownRefresh() {
+		setTimeout(function() {
+			loadDetail();
+			mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+		}, 1000);
+	}
+
+	var assetName = "";
+	var assetType = "";
+	var withdrawLimit = 0;
+	var withdrawMax = 0;
+	var withdrawRate = 0;
+	var addrMinLength = 0;
+	mui.plusReady(function() {
+		var current = plus.webview.currentWebview();
+		assetType = current.assetType;
+		assetName = current.name;
+		// console.log(assetName)
+		var loginUser = plus.storage.getItem("loginUser");
+		phone = JSON.parse(loginUser).username
+		// if (assetType == 1 || assetType == 5 || assetType == 6) {
+		// 	$("#m-n").removeClass("mui-hidden")
+		// 	$("#m-btc").addClass("mui-hidden")
+		// 	if (assetType == 5){
+		// 		$('.assets-all').css(
+		// 				{
+		// 					'background': "unset",
+		// 					'background': "url('../../images/e_h1.png') no-repeat",
+		// 					'backgroundSize': "100% 100%"
+		// 				}
+		// 		)
+		// 	}
+		// } else {
+		// 	$(".assets-all").css({'background': "unset"})
+		// 	$(".assets-all").css({'background': "url('../../images/b_t.png') no-repeat"})
+		// 	$(".assets-all").css({'backgroundSize': "100% 100%"})
+		// }
+		
+		if (assetType == 5){
+			$('.assets-all').css(
+				{
+					'background': "unset",
+					'background': "url('../../images/e_h1.png') no-repeat",
+					'backgroundSize': "100% 100%"
+				}
+			)
+		} else if (assetType == 6) {
+			$('.assets-all').css(
+				{
+					'background': "unset",
+					'background': "url('../../images/fil_bg.png') no-repeat",
+					'backgroundSize': "100% 100%"
+				}
+			)
+		} else if (assetType == 2) {
+			$(".assets-all").css({'background': "unset"})
+			$(".assets-all").css({'background': "url('../../images/b_t.png') no-repeat"})
+			$(".assets-all").css({'backgroundSize': "100% 100%"})
+		} else {
+			$(".assets-all").css({'background': "unset"})
+			$(".assets-all").css({'background': "url('../../images/b_b.png') no-repeat"})
+			$(".assets-all").css({'backgroundSize': "100% 100%"})
+		}
+		assetType == 1 ? $("#m-n").text('暂时不支持BTC充值') && $('#tb-addr').attr('placeholder', '输入或长按粘贴地址 (仅支持OMNI)') : assetType == 5 ? $("#m-n").text('暂时不支持ETH充值') : $("#m-n").text('暂时不支持FIL充值')
+		$('#mPrice').text('≈ ' + price +' 元')
+		$("#detialTitle").html(assetName);
+		//$("#detialCountTitle").html("总资产  " + assetName);
+		$("#walletExplain").html("向如下地址汇入" + assetName + "完成充值");
+
+		loadDetail();
+	});
+
+	function loadDetail() {
+		Common.muipost("/app/user/money/details", {
+			asset: assetType
+		}, function(data) {
+			if (data.type == 200 && data.date.money) {
+				var wallet = data.date.wallet;
+				var money = data.date.money.money;
+				var frozenMoney = data.date.money.frozenMoney;
+				var totalMoney = parseFloat(money) + parseFloat(frozenMoney);
+				assetType = data.date.money.assetType;
+				assetName = data.date.money.name;
+				price = data.date.money.price;
+				$("#mPrice").text('≈ ' + price +' 元');
+				$("#walletExplain").html("向如下地址汇入" + assetName + "完成充值");
+				$("#detialTitle").html(assetName);
+				assetType == 1 ? $("#m-n").text('暂时不支持BTC充值') && $('#tb-addr').attr('placeholder', '输入或长按粘贴地址 (仅支持OMNI)') : assetType == 5 ? $("#m-n").text('暂时不支持ETH充值') : $("#m-n").text('暂时不支持FIL充值')
+				//$("#moneyFormat").html(Common.moneyFormat(money));
+				//$("#detialFrozenMoney").html(Common.moneyFormat(frozenMoney));
+				if (assetName == "BTC" || assetName == "ETH" || assetName == "FIL") {
+					$("#detialTotalMoney").html(Common.moneyFormatByDecimals(totalMoney, 8));
+					withdrawMax = Common.moneyFormatByDecimals(data.date.withdraw, 8);
+				} else {
+					$("#detialTotalMoney").html(Common.moneyFormatByDecimals(totalMoney,8));
+					withdrawMax = Common.moneyFormat(data.date.withdraw);
+				}
+				if (wallet.walletAdd) {
+					$("#walletQrCode").html(wallet.walletAdd);
+					$("#walletQrcodeImg").text("")
+					var qrcode = new QRCode('walletQrcodeImg', {
+						text: wallet.walletAdd,
+						width: 180,
+						height: 180,
+						colorDark: '#000000',
+						colorLight: '#ffffff',
+						correctLevel: QRCode.CorrectLevel.H
+					});
+				} else {
+					$("#m-n").removeClass("mui-hidden")
+					$("#m-btc").addClass("mui-hidden")
+				}
+				var walletDescText = assetName + " 地址只能充值 " + assetName + " 资产，任何充入非 " + assetName + " 资产将不可找回。使用" + assetName +
+						"地址充值需要" + data.date.coinNum + "个网络确认才能到账。最低存入金额为" + data.date.rule.rechargeLimit + " " + assetName + " 。";
+				$("#walletDesc").html(walletDescText);
+				if (assetName != "USDT"){
+					$("#walletDesc").html(walletDescText);
+				}else {
+					$("#walletDesc").html(walletDescText + '目前仅支持 OMNI (比特币网络）！');
+				}
+
+				var rule = data.date.rule;
+				withdrawLimit = rule.withdrawLimit;
+				withdrawRate = rule.withdrawRate * 100;
+				$("#drawNum").attr("placeholder", "最低转出金额为 " + rule.withdrawLimit);
+				var text
+				if (assetName == "BTC") {
+					$("#maxDrawNum").html(Common.moneyFormatByDecimals(withdrawMax, 8) + " " + assetName);
+					text = ',且最高不超过0.001' + assetName
+				} else if (assetName == "ETH") {
+					$("#maxDrawNum").html(Common.moneyFormatByDecimals(withdrawMax, 8) + " " + assetName);
+					text = ',且最高不超过0.01' + assetName
+				} else {
+					$("#maxDrawNum").html(Common.moneyFormat(withdrawMax) + " " + assetName);
+					text = ''
+				}
+				var drawDescText = assetName + "地址只能向" + assetName + "地址发送资产，任何向非" + assetName + "地址发送资产将不可找回。" + assetName +
+						"提现费为" + withdrawRate + "% " + assetName + text +  "，最低转出金额为" + rule.withdrawLimit + " " + assetName + "。";
+				$("#drawDesc").html(drawDescText);
+				if (assetName != "USDT"){
+					$("#drawDesc").html(drawDescText);
+				}else {
+					$("#drawDesc").html(drawDescText + '目前仅支持 OMNI (比特币网络）！');
+				}
+
+				if (!rule.canWithdraw) {
+					$("#drawBtn").prop("disabled", "disabled").html("提币暂未开放");
+				}
+				addrMinLength = wallet.minLength;
+			} else {
+				// console.log("未获取到数据");
+			}
+		}, function() {});
+	}
+
+	function drawAll() {
+		$("#drawNum").val(withdrawMax);
+	}
+	var name = '';
+	mui("body").on("tap", "#detailedLink", function() {
+		var _href = $(this).attr("data-href");
+		var webview = mui.openWindow({
+			url: _href,
+			id: _href,
+			extras: {
+				name:name,
+				assetType: assetType,
+				assetName: assetName,
+				accountType: ''
+			},
+
+
+		});
+	});
+	function reget(count) {
+		var btn = $("#sendsms");
+		var count = count;
+		btn.html("60s后重发");
+		var resend = setInterval(function() {
+			count--;
+			if (count > 0) {
+				btn.css('pointer-events','none')
+				btn.html(count + "s后重发");
+			} else {
+				clearInterval(resend);
+				btn.css('pointer-events','unset')
+				$("#sendsms").css("color", "#00CDB9");
+				btn.html("重获验证码");
+			}
+		}, 1000);
+	}
+	function sms () {
+		var phonecode = $("#yzmip").val()
+		if (Common.isNull(phonecode)) {
+			mui.toast("短信验证码不能为空");
+			return false;
+		}
+		Common.muipost("/common/verifier/phone/code", {phone: phone, phonecode: phonecode}, function (data) {
+			mui.hideLoading();
+			$("#yzm").addClass("mui-hidden")
+			tx()
+		}, function (data) {
+			mui.alert(data.content);
+			$("#yzm").addClass("mui-hidden")
+			mui.hideLoading();
+		})
+	}
+	//发送验证码
+	function sendSms() {
+		var checkurl = "/common/obtain/phone/code";
+		mui.showLoading("短信发送中", "body");
+		Common.muipost(checkurl, {tel: phone}, function (data) {
+			$("#sendsms").css("color", "#F20B0B");
+			mui.hideLoading();
+			reget(60);
+		}, function (data) {
+			mui.hideLoading();
+			mui.alert(data.content);
+		})
+	}
+	//提币地址校验
+	function checkAddr(str, type) {
+		// var regex = type == 1 ? /^\d+?.*$/ : /^0x+?.*$/;
+		var regex = ''
+		if (type == 1) {
+			regex = /^\d+?.*$/
+		} else if (type == 5) {
+			regex = /^0x+?.*$/
+		} else if (type == 6) {
+			regex = /^(f|F)+?.*$/
+		} else {
+			return true
+		}
+		return regex.test(str)
+	}
+	function cancel () {
+		$("#txsubs").addClass("mui-hidden")
+	}
+	mui(".tf-btn").on("tap", "#drawBtn", function() {
+		var tb_addr = $("#tb-addr").val().replace(/\s+/g,'');
+		if (!tb_addr || tb_addr.length < addrMinLength || !checkAddr(tb_addr, assetType)) {
+			mui.alert("请检查提币地址")
+			return
+		}
+		if (!$("#drawNum").val()) {
+			mui.alert("请填写提币数量")
+			return
+		}
+		if (+withdrawMax < +($("#drawNum").val())) {
+			mui.alert("因帐号数量不足，无法继续操作")
+		} else {
+			var text = '请输入资金密码';
+			// if (assetType == 1) {
+			// 	text = '提币 ' + $("#drawNum").val() + ' BTC,手续费 5%，手续费封顶0.001BTC，请输入资金密码'
+			// } else if (assetType == 5) {
+			// 	text = '提币 ' + $("#drawNum").val() + ' ETC,手续费 5%，手续费封顶0.001ETCH，请输入资金密码'
+			// }
+			// else {
+			// 	text = '提币 ' + $("#drawNum").val() + ' USDT,手续费 5%，请输入资金密码'
+			// }
+			$("#m-value").text(text)
+			$("#txsubs").removeClass("mui-hidden")
+			// $("#yzm").removeClass("mui-hidden")
+		}
+	})
+	$("#pay_now").click(function() {
+		if (!$('#passwordInput').val()) {
+			mui.alert("请填写资金密码")
+			return
+		} else if($('#passwordInput').val().length < 6) {
+			mui.alert("请填写正确资金密码")
+			return
+		}
+		Common.muipost("/common/judgePass", {
+			password: $('#passwordInput').val()
+		}, function (data) {
+			$("#txsubs").addClass("mui-hidden")
+			$("#yzm").removeClass("mui-hidden")
+		}, function (err) {
+			mui.toast(err.content);
+		})
+	})
+	function tx () {
+		var drawNum = $("#drawNum").val().replace(/^(.*\..{8}).*$/, "$1");
+		$("#drawNum").val(drawNum);
+		var formJson = $("#drawForm").serializeJson();
+		var addr = $("#tb-addr").val();
+		var amount = $("#drawNum").val();
+		var comments = formJson.comments;
+		//提币前效验
+		var url = "/app/user/v2/invest/moneyRule";
+		var params = {
+			assetType: assetType
+		};
+
+		mui.showLoading("提币处理中..", "body");
+		mui.ajax(basePath + url, {
+			data: params,
+			dataType: 'json', //服务器返回json格式数据
+			type: 'POST',
+			timeout: 10000, //超时时间设置为10秒；
+			success: function(data) {
+				mui.hideLoading();
+				// 处理验证
+				if (data.type == 0) {
+					//登录过期
+					plus.runtime.restart();
+				} else if (data.type == 10) {
+					// 10 error 实名认证
+					//mui.toast(data.content);
+					mui.confirm(data.content, "温馨提示", ["取消", "确定"], function(e) {
+						if (e.index == 1) {
+							mui.openWindow({
+								url: '/info/info/idCard.html',
+								id: '/info/info/idCard.html'
+							});
+						}
+					});
+					return false;
+				} else if (data.type == 20) {
+					// 20 warn 未设置资金密码
+					//mui.toast(data.content);
+					mui.confirm(data.content, "温馨提示", ["取消", "确定"], function(e) {
+						if (e.index == 1) {
+							mui.openWindow({
+								url: '/info/assetsPass.html',
+								id: '/info/assetsPass.html'
+							});
+
+						}
+					});
+					return false;
+				} else if (data.type == 30) {
+					// 20 warn 未购买资格
+					//mui.toast(data.content);
+					mui.confirm(data.content, "温馨提示", ["取消", "确定"], function(e) {
+						if (e.index == 1) {
+							var webview = mui.openWindow({
+								url: "../../product.html",
+								id: "../../product.html",
+								extras:{
+									backs:'aaaa'
+								}
+							});
+						}
+					});
+					return false;
+				}
+				var reg = new RegExp("[^0-9a-zA-Z]");
+				if (!addr || addr.length < 15) {
+					mui.toast("提币地址错误");
+					return false;
+				}
+				if (reg.test(addr)) {
+					mui.toast("提币地址错误");
+					return false;
+				}
+
+				if (!amount || parseFloat(amount) > withdrawMax || parseFloat(amount) < withdrawLimit) {
+					mui.toast("请输入正确的提币数量");
+					return false;
+				}
+				if (comments && comments.length > 200) {
+					mui.toast("备注过长");
+					return false;
+				}
+
+				/*var fee = (amount * withdrawRate).toFixed(4);
+                var actual = amount - fee;*/
+				// mui.prompt('请输入资金密码', '', '请输入资金密码', ['取消', '确认提币'],
+				// function(e) {
+				// if (e.index == 1 && !e.value) {
+				// 	mui.alert('请输入资金密码');
+				// 	return
+				// }
+				// if (e.index == 1 && e.value.length !==6) {
+				// 	mui.alert('请输入正确资金密码');
+				// 	return
+				// }
+				// if (e.index == 1) {
+				mui.showLoading("提币处理中..", "body");
+				Common.muipost("/app/user/money/outcome", {
+					asset: assetType,
+					money: amount,
+					to: addr,
+					pass: $('#passwordInput').val()
+				}, function(data) {
+					if (data.type == 200) {
+						mui.alert("提币申请成功，待审核", function() {
+							plus.webview.currentWebview().reload(true);
+						});
+					} else {
+						mui.toast(data.content);
+					}
+				}, function(da) {});
+				// }
+
+				// }, 'div');
+				// document.querySelector('.mui-popup-input input').type = 'password';
+			},
+			error: function(xhr, type, errorThrown) {
+				//异常处理；
+				try {
+					mui.hideLoading();
+				} catch (err) {}
+				mui.toast('网络异常，无法访问' + xhr.status);
+			}
+		});
+	};
+
+	function drawNumChange(thizz) {
+		thizz.value = Math.abs(thizz.value.replace(/^(.*\..{8}).*$/, "$1"));
+	}
+</script>
+
+<!--二维码扫描返回数据-->
+<script type="text/javascript">
+	var img = null;
+	var blist = [];
+
+	function scaned(t, r, f) {
+		$("#tb-addr").val(r);
+		blist[blist.length] = {
+			type: t,
+			result: r,
+			file: f
+		};
+		update(t, r, f);
+	}
+
+	function selected(id) {
+		var h = blist[id];
+		update(h.type, h.result, h.file);
+		if (h.result.indexOf('http://') == 0 || h.result.indexOf('https://') == 0) {
+			plus.nativeUI.confirm(h.result, function(i) {
+				if (i.index == 0) {
+					plus.runtime.openURL(h.result);
+				}
+			}, '', ['打开', '取消']);
+		} else {
+			plus.nativeUI.alert(h.result);
+		}
+	}
+
+	function update(t, r, f) {
+		if (!f || f == 'null') {
+			img.src = '../../img/barcode.png';
+		} else {
+			plus.io.resolveLocalFileSystemURL(f, function(entry) {
+				img.src = entry.toLocalURL();
+			});
+		}
+	}
+
+	function onempty() {
+		if (window.plus) {
+			plus.nativeUI.alert('无扫描记录');
+		} else {
+			alert('无扫描记录');
+		}
+	}
+
+	function cleanHistroy() {
+		if (blist.length > 0) {
+			var hl = document.getElementById('history');
+			hl.innerHTML = '<li id="nohistory" class="ditem" onclick="onempty();">无历史记录	</li>';
+		}
+		plus.io.resolveLocalFileSystemURL('_doc/barcode/', function(entry) {
+			entry.removeRecursively(function() {
+				// Success
+			}, function(e) {
+				//alert( "failed"+e.message );
+			});
+		});
+	}
+
+	//  复制方法
+	function copy_fun() { //参数copy是要复制的文本内容
+		mui.plusReady(function() {
+			var copy = $("#walletQrCode").text();
+			//判断是安卓还是ios
+			if (mui.os.ios) {
+				//ios
+				var UIPasteboard = plus.ios.importClass("UIPasteboard");
+				var generalPasteboard = UIPasteboard.generalPasteboard();
+				//设置/获取文本内容:
+				generalPasteboard.plusCallMethod({
+					setValue: copy,
+					forPasteboardType: "public.utf8-plain-text"
+				});
+				generalPasteboard.plusCallMethod({
+					valueForPasteboardType: "public.utf8-plain-text"
+				});
+				mui.toast("复制成功");
+			} else {
+				//安卓
+				var context = plus.android.importClass("android.content.Context");
+				var main = plus.android.runtimeMainActivity();
+				var clip = main.getSystemService(context.CLIPBOARD_SERVICE);
+				plus.android.invoke(clip, "setText", copy);
+				mui.toast("复制成功");
+			}
+		});
+	}
+</script>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>KUPAY - PC网银支付</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../../css/style.css">
+		<link rel="stylesheet" href="../../css/hashbox.css">
+	</head>
+	<body style="width: 100%; height: 100%;">
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="teamName">网银支付 - PC</h1>
+		</header>
+		<div class="mui-content scan" style="margin-bottom: 60px; ">
+			<div class="mui-content" id="pay-content" style="width: 100%; height: 100%;">
+				
+				<div class="mui-content login-content">
+					<div>
+						<h3 style="width: 100%; height: 40px;text-align: center;line-height: 40px;font-weight: 100;">卡号</h3>
+					</div>
+					<form id='login-form' class="mui-input-group">
+						<div class="mui-input-row">
+							<input id='cradnum' name="cradnum" type="test" pattern="\d*" class="mui-input-clear mui-input" placeholder="请输入银行卡号"
+							  style="padding: 10px 15px;">
+						</div>
+						<div class="mui-content-padded">
+							<button id='login' onclick="loginSub()" type="button" class="mui-btn mui-btn-block mui-btn-primary">下一步</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			
+			<!-- <div class="footer-buy">
+				<div class="mui-pull-left proDe" id="all"></div>
+				<button class="mui-btn main-button" id="over">完成支付</button>
+			</div> -->
+		</div>
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/jquery.min.js"></script>
+	<script src="../../js/common/common.js"></script>
+	<script src="../../js/qrcode.min.js" type="text/javascript" charset="utf-8"></script>
+	<link href="../../js/common/mui.loading.css" rel="stylesheet" />
+	<script type="text/javascript" src="../../js/common/mui.loading.js"></script>
+
+	<script>
+		mui.init({
+			beforeback: function() {
+				//获得父页面的webview
+				var list = plus.webview.currentWebview().opener();
+				//触发父页面的自定义事件(refresh),从而进行刷新
+				mui.fire(list, 'refresh');
+				//返回true,继续页面关闭逻辑
+				return true;
+			}
+		});
+		
+		mui.ready(function() {
+			var height = window.screen.height;
+			var width = window.screen.width;
+			$("#pay-content").css("height", height);
+		});
+		
+		var orderId = 0;
+		mui.plusReady(function() {
+			var current = plus.webview.currentWebview();
+			var orderPay = current.orderPay;
+			orderId = orderPay.orderId;
+			$("#amount").text(orderPay.amount);
+			$("#all").html('合计：<span style="color:#f20b0b;" id="allAmount">' + orderPay.amount + ' 元</span>');
+			
+			
+			var linkUrl = basePath + orderPay.codeUrl + orderPay.id;
+			console.log(linkUrl); 
+			var html = '<iframe  style="border:none" src="' + linkUrl + '" width="100%" height="100%"></iframe>';
+			$("#pay-content").html(html);
+		});
+		
+		//完成支付
+		$("#over").click(function() {
+			mui.back();
+		});
+	</script>
+</html>

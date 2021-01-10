@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>发送图片邀请好友</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<!--标准mui.css-->
+	<link rel="stylesheet" href="../css/mui.min.css">
+	<!--App自定义的css-->
+	<link rel="stylesheet" href="../css/style.css">
+	<link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+	<link rel="stylesheet" href="../css/hashbox.css">
+	<link rel="stylesheet" href="../css/poster.css" />
+	<link rel="stylesheet" href="../css/share.css" />
+	<style>
+		.mui-btn{width:45%; height: 36px;}
+		.am-share-title{font-size:15px;color:#969699;line-height:24px;border:none;}
+		.am-share-sns li{border:none;padding:0;margin-bottom: 0;padding-bottom:25px;}
+		.am-share-sns{padding-top:25px;}
+		.hb-footer {
+			padding: 20px;
+			padding-top: 0;
+			background-color: #f2f2f2;
+			text-align: left;
+			overflow: hidden;
+		}
+		.hb-footer .shareDiv {
+			float: left;
+		}
+		.hb-footer .saveDiv {
+			float: right;
+		}
+		.hb-footer button.mui-btn {
+			margin: 0 !important;
+			border-radius: 18px;
+		}
+		#generatePoster .mui-slider-item {
+			width: auto;
+			height: 100%;
+		}
+		#generatePoster .mui-slider-item img {
+			width: auto;
+			height: 100%;
+			padding-bottom: 0;
+		}
+	</style>
+</head>
+
+	<body style="background: #f2f2f2;">
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" style="text-align: left;">邀请好友</h1>
+		</header>
+		<div class="mui-content" style="background: #f2f2f2;padding-bottom:50px;">
+			<div class="m10" style="margin-bottom: 0;">
+				<div id="Gallery" class="mui-slider">
+					<div class="mui-slider-group" id="generatePoster">
+						<div class="mui-slider-item">
+						</div>
+					</div>
+					<div class="mui-slider-indicator" id="muiId">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="hb" style="margin:10px;position: absolute;top: 25%;">
+			<img id="imgUrl" src="../images/zhanweifu.jpg" data-preview-src data-preview-group="1" width="100%" style="display: none;">
+			<div style="font-size: 10px;" id="imgLoad">
+				<h3>图片加载中，如果未显示，请重新进入</h3>
+			</div>
+		</div>
+		</div>
+		<div class="hb-footer" style="position: fixed; bottom: 0; z-index: 100;">
+			<button class="mui-btn shareDiv" onclick="shareDiv()" style=" background-color: #ff7800;">分享海报</button>
+			<button id="savePic" class="mui-btn saveDiv" style="background-color: #0068f7; border: 0px;">保存海报</button>
+		</div>
+
+
+<div class="am-share">
+	<h3 class="am-share-title m0 px-sm-2">分享到</h3>
+	<ul class="am-share-sns m0">
+		<li>
+			<a href="#" onclick="shareWchat('WXSceneSession')">
+				<i class="share-icon-weibo" style="background-image: url(../images/share/wechat.png);"></i>
+				<span>微信好友</span>
+			</a>
+		</li>
+		<li>
+			<a href="#" onclick="shareWchat('WXSceneTimeline')">
+				<i class="share-icon-weibo" style="background-image: url(../images/share/wechat_cicle.png);"></i>
+				<span>朋友圈</span>
+			</a>
+		</li>
+		<li class="">
+			<a href="#" onclick="shareQQ()">
+				<i class="share-icon-weibo" style="background-image: url(../images/share/qq.png);"></i>
+				<span>QQ</span>
+			</a>
+		</li>
+	</ul>
+	<!-- <div class="am-share-footer"><button class="share_btn">取消</button></div> -->
+</div>
+</body>
+<script src='../js/jquery-1.11.1.min.js'></script>
+<script src="../js/mui.min.js"></script>
+<script src="../js/mui.zoom.js"></script>
+<script src="../js/mui.previewimage.js"></script>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/common/common.js"></script>
+<link href="../js/common/mui.loading.css" rel="stylesheet" />
+<script type="text/javascript" src="../js/common/mui.loading.js"></script>
+<!-- <script src="https://cdn.bootcdn.net/ajax/libs/qrcodejs/1.0.0/qrcode.js"></script> -->
+<script src="../js/jquery.qrcode.js"></script>
+<script src="../js/qrcode.js"></script>
+<script type="text/javascript">
+	var el_qrcode_img = '';
+	var images_arr = [];
+	mui.init({
+		swipeBack: true //启用右滑关闭功能
+	});
+
+	var shares = null;
+	var imgIndex = 0;
+
+		mui.previewImage();
+		mui.plusReady(function() {
+			//webview是个对象
+			// mui.os.ios ? generatePosterForIos() : generatePoster();
+			generatePoster();
+			// 获取分享服务
+			plus.share.getServices(function(s) {
+				shares = {};
+				for (var i in s) {
+					var t = s[i];
+					shares[t.id] = t;
+				}
+			}, function(e) {
+				// 不支持分享
+				mui.toast('获取分享服务列表失败:' + e.message);
+				$(".shareDiv").addClass("mui-hidden");
+			});
+
+		// IOS 切换判断
+		document.addEventListener("resume", function(e) {
+		}, false);
+		document.addEventListener("pause", function() {
+			try {
+				mui.hideLoading();
+			} catch (e) {}
+		}, false);
+	});
+
+		function shareDiv() {
+			// 显示分享的div
+			$(".am-share").addClass("am-modal-active");
+			if ($(".sharebg").length > 0) {
+				$(".sharebg").addClass("sharebg-active");
+			} else {
+				$("body").append('<div class="sharebg"></div>');
+				$(".sharebg").addClass("sharebg-active");
+			}
+			$(".sharebg-active,.share_btn").click(function() {
+				$(".am-share").removeClass("am-modal-active");
+				setTimeout(function() {
+					$(".sharebg-active").removeClass("sharebg-active");
+					$(".sharebg").remove();
+				}, 300);
+			})
+		}
+		// mui.os.ios ?
+		function shareWchat(channel) {
+			if (!shares['weixin']) {
+				mui.toast('未配置微信分享模块，请重新下载最新版APP使用此功能');
+				return;
+			} else {
+				// 获取图片
+				var url = $("#poster-img-" + imgIndex).attr("src");
+				// 设置分享数据
+				var msg = {
+					type: 'image'
+				};
+				msg.extra = {
+					scene: channel
+				}; // 分享好友
+				msg.pictures = [url];
+				var srv = shares['weixin'];
+				doShare(srv, msg);
+			}
+		}
+
+	function shareQQ() {
+		if (!shares['qq']) {
+			mui.toast('未配置QQ分享模块，请重新下载最新版APP使用此功能');
+			return;
+		} else {
+			// 获取图片
+			var url = $("#poster-img-" + imgIndex).attr("src");
+			var invest = $("#poster-img-" + imgIndex).attr("data-invest");
+
+			// 设置分享数据
+			var msg = {
+				type: 'image',
+				pictures: [url],
+				thumbs: [url],
+				content: "算力蜂 QQ分享 - 邀请注册",
+				title: "算力蜂 QQ分享 - 邀请注册",
+				href: invest
+			};
+
+				var srv = shares['qq'];
+				doShare(srv, msg);
+			}
+		}
+
+	// 发送分享
+	function doShare(srv, msg) {
+		var option = {};
+		option.imgUrl = msg.pictures[0];
+		option.fileName = 'share'+(new Date().getTime())+'.png';
+		option.type = 1;
+		saveTmpImg(option, function(url) {
+			msg.pictures[0] = url;
+			mui.showLoading("分享处理中..", "div");
+			if (srv.authenticated) {
+				// outLine('---已授权---');
+				console.log("已授权");
+				srv.send(msg, function(e) {
+					mui.hideLoading();
+					mui.toast('分享到 "' + srv.description + '" 完成！');
+					delSroce(url);
+				}, function(e) {
+					mui.hideLoading();
+					mui.toast('分享到 "' + srv.description + '" 失败: ' + JSON.stringify(e));
+					delSroce(url);
+				});
+			} else {
+				// outLine('---未授权---');
+				console.log("未授权");
+				srv.authorize(function() {
+					srv.send(msg, function(e) {
+						mui.hideLoading();
+						mui.toast('分享到 "' + srv.description + '" 完成！');
+						delSroce(url);
+					}, function(e) {
+						mui.hideLoading();
+						mui.toast('分享到 "' + srv.description + '" 失败: ' + JSON.stringify(e));
+						delSroce(url);
+					});
+				}, function(e) {
+					// 认证授权失败
+					mui.hideLoading();
+					mui.toast("认证授权失败: " + JSON.stringify(e));
+					delSroce(url);
+				});
+			}
+		});
+	}
+
+	//加载海报
+	function generatePoster() {
+		var url = '/app/user/v2/relation/extend_v2';
+		Common.muipost(url, {}, function(data) {
+			mui.showLoading("图片生成中..", "div");
+			var text = "";
+			var muiText = "";
+			var posters = data.date.posters;
+			var investUrl =data.date.invite;
+			var optionArr = [];
+			// basePath = 'http://api.suanlifeng.com';
+			for (var i = 0; i < posters.length; i++) {
+				var imageUrl = basePath + posters[i].backUrl;
+				optionArr[i] = {
+					qrcodeSize: posters[i].qrcodeSize,
+					imgSrc: imageUrl,
+					x: posters[i].qrcodeX,
+					y: (posters[i].qrcodeY),
+					width: posters[i].backWidth,
+					height: posters[i].backHeight,
+					index: i,
+					invite: investUrl
+				}
+				console.log(posters[i].qrcodeY)
+			}
+			optionArr.forEach(function(itme){
+				compoundImg(itme, function(url, index) {
+					text += '<div class="mui-slider-item"><img class="poster" src="' + url +
+							'" width="100%" data-invest="' + investUrl + '" id="poster-img-' + index +
+							'" onerror="this.src=\'../images/zhanweifu.jpg\'" style="width: 100%;padding: 10px;height:100%!important;"/></div>';
+							if (index == 0) {
+								muiText += '<div class="mui-indicator mui-active" data-index="' + index + '"></div>';
+							} else {
+								muiText += '<div class="mui-indicator" data-index="' + index + '"></div>';
+							}
+					})
+				})
+				setTimeout(function() {
+					mui.hideLoading();
+					$("#generatePoster").html(text);
+					$("#muiId").html(muiText);
+					if (muiText != "") {
+						$("#imgLoad").addClass("mui-hidden");
+					}
+					mui.toast("图片加载完成，如果加载失败，请重新进入");
+				}, 1200);
+			}, function(data) {
+				mui.toast(data.content);
+			});
+		}
+
+		document.querySelector('.mui-slider').addEventListener('slide', function(event) {
+			imgIndex = event.detail.slideNumber;
+		});
+		// 到相册
+		function savePic() {
+			var option = {};
+			option.imgUrl = ($("#poster-img-" + imgIndex)[0]).src;
+			console.log(option.imgUrl)
+			option.fileName = 'suanlifeng'+(new Date().getTime())+'.jpg';
+			saveTmpImg(option, function(url){
+				plus.gallery.save(url, function() {
+					mui.hideLoading();
+					mui.toast("保存图片到相册成功");
+					delSroce(url);
+				});
+			});
+		}
+		$('#savePic').click(function (){
+			savePic()
+		})
+		/**
+		 * 图片合成
+		 * @param {Object} 图片合成参数
+		 * @param {Object} option.qrcodeSize 二维码尺寸
+		 * @param {Object} option.invite 二维码地址
+		 * @param {Object} option.width 背景图宽度
+		 * @param {Object} option.height 背景图高度
+		 * @param {Object} option.imgSrc 背景图地址
+		 * @param {Object} option.x 二维码x坐标
+		 * @param {Object} option.y 二维码y坐标
+		 * @param {function} callback
+		 */
+		function compoundImg(option, callback) {
+			if (!el_qrcode_img) {
+				// 创建二维码
+				var el_qrcode = document.createElement('div');
+				$(el_qrcode).qrcode({
+					width: option.qrcodeSize,
+					height: option.qrcodeSize,
+					text: option.invite
+				})
+				el_qrcode_img = ($(el_qrcode).children('canvas'))[0];
+			}
+			// 创建画布
+			var image = document.createElement('img');
+			var canvas = document.createElement('canvas');
+			canvas.width = option.width;
+			canvas.height = option.height;
+			var ctx = canvas.getContext('2d');
+			image.crossOrigin = '';
+			// 绘制背景图
+			image.onload = () => {
+				ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+				// 绘制二维码
+				ctx.drawImage(el_qrcode_img, option.x,option.y)
+				callback(canvas.toDataURL('image/png'), option.index);
+			}
+			image.src = option.imgSrc;
+		}
+		/**
+		 * 保存临时图片
+		 * @param {Object} option 文件参数
+		 * @param {String} imgUrl base64图片地址
+		 * @param {String} fileName 文件名
+		 * @param {String} type 类型(默认值:0)[0-保存图片，1-分享图片]
+		 * @param {Object} callback
+		 */
+		var b;
+		function saveTmpImg(option, callback) {
+			option.type = option.type || 0;
+			getLocalTmpUrl(function(path) {
+				// 创建bitmap对象
+				var bitmap = new plus.nativeObj.Bitmap(option.fileName);
+				// 加载图片到bitmap对象
+				bitmap.loadBase64Data(option.imgUrl,
+				function() {
+					if (option.type === 0)
+						mui.showLoading("图片保存中..", "div");
+					else
+						mui.showLoading("分享处理中..", "div");
+				}, function(s) {
+					console.log('图片加载失败')
+				})
+				var bitmapOption = {
+					overwrite: true,
+					format: 'png'
+				};
+				bitmap.save(path+option.fileName, bitmapOption
+				,function(e){
+					callback(e.target);
+					bitmap.clear();
+				}, function(e) {
+							b = e;
+					mui.toast('失败');
+					bitmap.clear();
+				})
+			});
+		}
+		// 获取本地保存临时路径
+		function getLocalTmpUrl(callback) {
+			var path = 'file://';
+			plus.io.requestFileSystem(
+				plus.io.PUBLIC_DOWNLOADS, function(fs) {
+					path += fs.root.fullPath;
+					callback(path);
+				}
+		);
+	}
+	// 资源删除
+	function delSroce(path) {
+		plus.io.resolveLocalFileSystemURL(
+				path, function(entry) {
+					entry.remove()
+				})
+	}
+</script>
+</html>

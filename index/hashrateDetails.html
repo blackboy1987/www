@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>订单详情</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!--标准mui.css-->
+    <link rel="stylesheet" href="../css/mui.min.css">
+    <!--App自定义的css-->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/hashbox.css">
+    <link rel="stylesheet" href="../css/ion.rangeSlider.css">
+    <style>
+        p{color: #fff}
+        .mui-content > .mui-table-view:first-child {margin-top: 0}
+        body{background-color: #ecedef}
+        html,body {height: 100%;}
+        .my .shouyi-mx.mui-table-view:after {height: 0;}
+        .mui-bar .mui-title {text-align: left;}
+        .mui-action-back {line-height: 44px;}
+        .pay-tb.mui-slider .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {border: none;}
+        .pay-tb .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {color: #323233;}
+        .pay-tb.mui-slider .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active .m-span {display: inline-block;height: 100%;border-bottom: 3px solid #1F74D7;}
+        .m-block1:after {position: absolute;right: 0;bottom: 0;left: 0px;height: 1px;content: '';-webkit-transform: scaleY(.5);transform: scaleY(.5);background-color: #e5e5e5;}
+        .mui-table-view-cell.invest-list.toDetails0{height: auto;}
+        .mui-table-view-cell.invest-list.toDetails0{padding-bottom: 0;}
+        .mui-title {font-size: 13px;}
+        header.other {border-bottom: none;}
+        .mui-bar {padding: 0}
+        .mui-col-xs-6{height: 100%}
+        .box-sd{border-radius: 0}
+        #title{text-align: left;line-height: 50px;padding: 0 15px;color: #4167ed;background: #fff;font-size: 15px}
+        #list{height: 325px;margin: 0 10px;padding-left: 0;background: #fff;}
+        #list > li{height: 46px;padding: 15px 0;font-size: 13px;margin: 0 15px;}
+        li{list-style: none;}
+        .recharge{height: 120px;margin: 0 10px;padding: 0 10px;background: #fff;margin-top: 10px}
+        .irs--round.irs-with-grid{width: 60%;float: right}
+        .save{margin-top: 5px;width: 100%;border-radius: 24px;color: #fff;background: #4167ed}
+        .cutting{width: 50%;}
+        .irs-handle {z-index: 0;}
+    </style>
+</head>
+<body>
+<header class="mui-bar mui-bar-nav other" style="height: 44px;width: 100%">
+    <div>
+        <a class="mui-action-back mui-pull-left"><img src="../images/hashbox/slf-47.svg" style="width: 15px;margin-left: 10px;"></a>
+        <h1 class="mui-title">算力详情</h1>
+    </div>
+</header>
+<div class=" box-sd m10" style="height: 50px;margin-top: 54px;background: #fff">
+    <h6 id="title"></h6>
+</div>
+<ul id="list">
+    <li class="box-border-bottom"><span class="mui-pull-left">算力订单</span><span class="mui-pull-right" id="id">--</span></li>
+    <li class="box-border-bottom"><span class="mui-pull-left">开挖时间</span><span class="mui-pull-right" id="investTime">--</span></li>
+    <li class="box-border-bottom"><span class="mui-pull-left">产品周期</span><span class="mui-pull-right" id="validity">--</span></li>
+    <li class="box-border-bottom"><span class="mui-pull-left">购买算力</span><span class="mui-pull-right" id="invest" style="color: #ff7800">--</span></li>
+    <li class="box-border-bottom"><span class="mui-pull-left">已封装算力</span><span class="mui-pull-right" id="encapsulationInvest">--</span></li>
+    <li class="box-border-bottom"><span class="mui-pull-left">封装周期</span><span class="mui-pull-right" id="encapsulationDay">--</span></li>
+    <li><span class="mui-pull-left">管理费</span><span class="mui-pull-right" id="manage">--</span></li>
+</ul>
+<div  class="recharge">
+    <div style="font-size: 15px;height: 24px;padding-top: 25px;">
+        <span class="cutting mui-pull-left box-border-right" style="font-size: 12px;text-align: center !important;">昨日质押币<span id="cashPledge" style="color: #4167ed">--</span><img class="cashPledge prompt gas-threshold" style="width: 15px;position: relative;top: 2px;left: 3px;}" src="../images/tanhao.svg" alt=""></span></span>
+        <span class="cutting mui-pull-right" style="font-size: 12px;text-align: center !important;">昨日GAS费<span id="gasPrice" style="color: #4167ed;">--</span><img class="gasPrice prompt gas-threshold" style="width: 15px;position: relative;top: 2px;left: 3px;}" src="../images/tanhao.svg" alt=""></span>
+    </div>
+    <button class="save" id="recharge" style="margin-top: 25px">FIL充值</button>
+</div>
+<div  class="recharge" style="margin-bottom: 10px">
+    <span style="color: #282828;position: relative;top: 29px;">GAS封装阀值</span><img id="gasImg" class="prompt gas-threshold" style="width: 15px;position: relative;top: 30px;left: 4px;" src="../images/tanhao.svg" alt="">
+    <input id="demo_6">
+    <button class="save" id="amend">保存</button>
+</div>
+</body>
+<script src="../js/mui.min.js"></script>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/common/common.js"></script>
+<script src="../js/ion.rangeSlider.js"></script>
+<script src="../js/lodash.js"></script>
+<script>
+    var type,id;
+    var coinType,productId,investId,gasThreshold;
+    mui.plusReady(function() {
+        var current = plus.webview.currentWebview();
+        console.log(current);
+        types = Number(current.target.type);
+        productId = Number(current.target.productId);
+        investId = current.target.id
+        console.log(typeof investId)
+        load()
+    });
+
+
+    function load() {
+        Common.muipost("/app/user/invest/detail",{
+            id: investId
+        }, function (data) {
+            if (data.date) {
+                $('#title').text(data.date.productName == null ? 0 :data.date.productName)
+                $('#invest').text(data.date.invest == null ? 0 : data.date.invest+'T')
+                $('#encapsulationInvest').text(data.date.encapsulationInvest == null ? 0 +'T' : data.date.encapsulationInvest+'T')
+                $('#investTime').text(data.date.investTime == null ? 0 :data.date.investTime)
+                $('#validity').text('永久有效')
+                $('#manage').text(data.date.manage == null ? 0 : data.date.manage+'%')
+                $('#cashPledge').text(data.date.cashPledge == null ? 0 : data.date.cashPledge+'FIL/T')
+                $('#gasPrice').text(data.date.gasPrice == null ? 0 : data.date.gasPrice+'FIL/T')
+                $('#encapsulationDay').text(data.date.encapsulationDay == null ? 0 : data.date.encapsulationDay+'天')
+                $('#id').text(data.date.id == null ? 0 : data.date.id)
+
+                let k;
+                if (!data.date.gasThreshold){
+                    k = 0
+                }else if (data.date.gasThreshold == 10){
+                    k = 1
+                }else if (data.date.gasThreshold == 20){
+                    k = 2
+                }else if (data.date.gasThreshold == 30){
+                    k = 3
+                }else if (data.date.gasThreshold == 50){
+                    k = 4
+                }
+
+                $("#demo_6").ionRangeSlider({
+                    grid: true,
+                    skin: "round",
+                    postfix: 'T',
+                    from: k,
+                    values: ["05", "10", "20", "30", "50"],
+                    onChange: function (data) {//数据变化时触发
+                        gasThreshold = data.from_value
+                        console.log(data)
+                    }
+                })
+            }
+
+        }, function (data) {
+
+        });
+    }
+    $('.gasPrice').click(function (){
+        mui.toast('每封装1T算力所需消耗的Fil个数')
+    })
+    $('.cashPledge').click(function (){
+        mui.toast('每封装1T算力所需质押的Fil个数')
+    })
+    $('#gasImg').click(function (){
+        mui.toast('当Fil资产余额不足抵扣GAS费时，当日将不会封装有效算力')
+    })
+    //阀值修改
+    mui("body").on("tap", "#amend", function () {
+        if (!gasThreshold){
+            mui.toast('请修改GAS阀值')
+        }else {
+            Common.muipost("/app/user/invest/update/gasThreshold",{
+                gasThreshold: gasThreshold,
+                id: investId
+            }, function (data) {
+                mui.toast('阀值修改成功')
+            }, function (ree) {
+                mui.toast('网络错误')
+            });
+        }
+    });
+        //FIL充值跳转
+    mui("body").on("tap", "#recharge", function () {
+        mui.openWindow({
+            url: '../info/assets/invest.html',
+            id: '../info/assets/invest.html',
+            extras: {
+                assetType: 6
+            }
+        })
+    });
+
+</script>
+</html>

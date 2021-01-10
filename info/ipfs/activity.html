@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>IPFS邀请</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="black" name="apple-mobile-web-app-status-bar-style">
+  <!--标准mui.css-->
+  <link rel="stylesheet" href="../../css/mui.min.css">
+  <link rel="stylesheet" href="../../css/style.css">
+  <link href="../../css/hashbox.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/common.css">
+  <link href="../../js/common/mui.loading.css" rel="stylesheet">
+</head>
+<style>
+  html,body {width: 100%; height: 100%;}
+	ul {
+		margin: 0;
+		padding: 0;
+	}
+	li {
+		list-style: none;
+	}
+  .container {
+    width: 100%;
+    background-image: url('../../images/ipfs/bg.png');
+    background-position: top;
+    background-size: cover;
+		padding-top: 2.6875rem;
+  }
+  .container .top {
+		position: relative;
+  }
+	#invite-share {
+		position: absolute;
+		left: 50%;
+		bottom: -4%;
+		transform: translateX(-50%);
+		width: 35%;
+	}
+	#invite-share img {
+		width: 100%;
+		-webkit-animation: invite-share 2s linear infinite;
+	}
+	.container .top .top-content {
+		width: 100%;
+		height: 40%;
+		position: absolute;
+		top: 26%;
+		text-align: center;
+	}
+	.container .schedule {
+		margin-top: 44px;
+		padding: 51px 20px 0 20px;
+		height: 13.6875rem;
+		background-color: #fff1e4;
+		border-radius: 15px;
+		border: 1px solid pink;
+		position: relative;
+	}
+	.schedule .title {
+		width: 68vw;
+		position: absolute;
+		left: 50%;
+		top: -6.2vw;
+		transform: translateX(-50%);
+	}
+	.schedule .title span {
+		position: absolute;
+		top: 22%;
+		left: 50%;
+		transform: translateX(-50%);
+		font-size: 18px;
+		color: #fff;
+		font-weight: bold;
+	}
+	.schedule p,
+	.schedule .schedule-strip {
+		margin: 0;
+		margin-bottom: 10px;
+		font-size: 1rem;
+		color: #000000;
+	}
+	.schedule .schedule-strip {
+		margin-top: 25px;
+	}
+	.schedule .time {
+		color: #d81d00;
+		font-weight: bold;
+	}
+	.schedule-strip .progress-bar {
+		/* overflow: hidden; */
+		text-align: center;
+	}
+	.progress-bar span {
+		color: #ff4e28;
+	}
+	.progress-bar .bar {
+		width: 80%;
+		display: inline-block;
+		height: 15px;
+		background-color: #f1e7dd;
+		vertical-align: text-top;
+		border-radius: 8px;;
+		position: relative;
+	}
+	.progress-bar .completed .icon,
+	.progress-bar .end {
+		position: absolute;
+		top: -10px;
+		width: 2rem;
+		height: 2rem;
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: cover;
+		opacity: .9;
+	}
+	.progress-bar .end {
+		right: -0.5rem;
+		background-image: url('../../images/ipfs/botton2.png');
+	}
+	.progress-bar .completed {
+		width: calc(16.6666% * 0);
+		height: 100%;
+		border-radius: 8px;
+		background-image: linear-gradient(to right,#ff9c19,#ff5326);
+	}
+	.progress-bar .completed .icon{
+		left: -0.5rem;
+		background-image: url('../../images/ipfs/botton1.png');
+	}
+	#person-list {
+		padding: 0;
+		height: 14.75rem;
+		font-size: 0.9375rem;
+    position: relative;
+    box-sizing: border-box;
+	}
+	#person-list .header {
+		height: 4.75rem;
+		border-bottom: 1px solid #f3b2a0;
+		padding-top: 2.8125rem;
+	}
+	#person-list .content-box {
+		height: calc(15.75rem - 7rem);
+		padding-top: 0.875rem;
+		background-color: #fff;
+		border-radius: 0 0 15px 15px;
+		overflow: hidden;
+		/* animation: 10s rowup linear infinite normal; */
+		/* -webkit-animation: rowup 10s linear infinite; */
+	}
+	#person-list .content-box ul {
+		-webkit-animation:5s rowup linear infinite normal;
+		animation:5s rowup linear infinite normal;
+	}
+	#person-list .content-box li {
+		height: 2.0625rem;
+		line-height: 2.0625rem;
+	}
+	#person-list .baffle {
+		width: 100%;
+		height: 39%;
+		position: absolute;
+		bottom: -2px;
+		background-image: linear-gradient(to bottom, rgba(255,255,255,0.1),white 90%);
+		background-image: -webkit-linear-gradient(to bottom, rgba(255,255,255,0.1),white 90%);
+		border-radius: 0 0 15px 15px;
+	}
+	.footer {
+		padding: 0.25rem 1.4375rem;
+		text-align: center;
+		color: white;
+	}
+	.footer-title {
+		height: 4rem;
+		line-height: 4rem;
+		font-size: 20px;
+		font-weight: bold;
+	}
+	.footer-title img {
+		height: 1.25rem;
+		vertical-align: text-bottom;
+	}
+	.footer .footer-text {
+		text-align: left;
+		font-size: 12px;
+		padding-bottom: 0.625rem;
+	}
+	.footer .footer-text li {
+		line-height: 1.5625rem;
+	}
+	.fl {
+		float: left;
+	}
+	.fr {
+		float: right;
+	}
+	.c113 {
+		color: #9b5113;
+	}
+	.mlr15 {
+		margin: 0 0.9375rem;
+	}
+	.p20 {
+		padding: 0 1.25rem;
+	}
+	.c00 {
+		color: #000;
+	}
+	.w16 {
+		width: 16%;
+	}
+	.w31 {
+		width: 31%;
+	}
+	.inline-block {
+		display: inline-block;
+	}
+	.mui-icon-back:before,
+	.mui-icon-left-nav:before {
+		content: '\e471';
+		font-size: 16px;
+	}
+	/*******  立即邀请  *******/
+	@keyframes invite-share{
+		0% {
+			transform: scale(1);
+			/* opacity: 0.5; */
+		}
+		50% {
+			transform: scale(0.9);
+			/* opacity: 0; */
+		}
+		100% {
+			transform: scale(1);
+			/* opacity: 0.5; */
+		}
+	}
+	/*******  已领取列表  *******/
+	@keyframes rowup{
+		0% {
+			-webkit-transform: translate3d(0,0,0);
+			transform: translate3d(0,0,0);
+		}
+		100% {
+			-webkit-transform: translate3d(0,calc(100% / -2),0);
+			transform: translate3d(0,calc(100% / -2),0);
+		}
+		/* 100% {
+			-webkit-transform: translate3d(0,0,0);
+			transform: translate3d(0,0,0);
+		} */
+	}
+</style>
+<body id="pullrefresh">
+  <div class="container">
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left" style="color:white !important;position:absolute;top:17px;left:10px;font-size:15px">返回</a>
+    <div class="top mlr15">
+			<img src="../../images/ipfs/container-box.png" style="width: 100%;" >
+			<div class="top-content">
+				<div class="c113" style="font-size: 26px;font-weight: 600;">恭喜您获得</div>
+				<div style="margin-top: 6%;font-size: 24px;font-weight: 600;color: #000000;"><span id="fil-num">0T</span><span id="fil-amount" class="c113">0</span>元FIL算力</div>
+				<span style="display: inline-block;font-size: 12px;position: absolute;bottom: 6px;transform: translateX(-50%);">解锁规则请下滑查看</span>
+			</div>
+			<div id="invite-share">
+				<img src="../../images/ipfs/2.png" >
+				<span></span>
+				<span></span>
+			</div>
+    </div>
+		<div class="schedule mlr15">
+			<div class="title">
+				<img src="../../images/ipfs/container-header.png" style="width: 100%;" >
+				<span>已完成情况</span>
+			</div>
+			<p>剩余时间：</p>
+			<p><span class="time day">00</span>天<span class="time hour">00</span>小时<span class="time minute">00</span>分<span class="time second">00</span>秒</p>
+			<div class="schedule-strip">
+				<p>已完成进度：</p>
+				<div class="progress-bar">
+					<span class="current fl">00</span>
+					<div class="bar">
+						<div class="completed">
+							<div class="icon"></div>
+						</div>
+						<div class="end"></div>
+					</div>
+					<span class="end-time fr">06</span>
+				</div>
+			</div>
+		</div>
+		<div id="person-list" class="schedule mlr15">
+			<div class="title">
+				<img src="../../images/ipfs/container-header.png" style="width: 100%;" >
+				<span>已成功领取</span>
+			</div>
+			<div class="header p20 c00">
+				<span class="name inline-block w16">姓名</span>
+				<span class="phone inline-block w31">电话</span>
+				<span class="date inline-block">时间</span>
+			</div>
+			<div class="content-box p20">
+				<ul>
+					<li>
+						<span class="content-name inline-block w16">王**</span>
+						<span class="content-phone inline-block w31">133****123</span>
+						<span class="content-date inline-block">2020-11-29 14:47</span>
+					</li>
+					<li>
+						<span class="content-name inline-block w16">李**</span>
+						<span class="content-phone inline-block w31">133****123</span>
+						<span class="content-date inline-block">2020-11-29 14:47</span>
+					</li>
+					<li>
+						<span class="content-name inline-block w16">兰**</span>
+						<span class="content-phone inline-block w31">133****123</span>
+						<span class="content-date inline-block">2020-11-29 14:47</span>
+					</li>
+					<li>
+						<span class="content-name inline-block w16">黄**</span>
+						<span class="content-phone inline-block w31">133****123</span>
+						<span class="content-date inline-block">2020-11-29 14:47</span>
+					</li>
+					<li>
+						<span class="content-name inline-block w16">青**</span>
+						<span class="content-phone inline-block w31">133****123</span>
+						<span class="content-date inline-block">2020-11-29 14:47</span>
+					</li>
+					<li>
+						<span class="content-name inline-block w16">王**</span>
+						<span class="content-phone inline-block w31">133****123</span>
+						<span class="content-date inline-block">2020-11-29 14:47</span>
+					</li>
+					<li>
+						<span class="content-name inline-block w16">李**</span>
+						<span class="content-phone inline-block w31">133****123</span>
+						<span class="content-date inline-block">2020-11-29 14:47</span>
+					</li>
+					<li>
+						<span class="content-name inline-block w16">兰**</span>
+						<span class="content-phone inline-block w31">133****123</span>
+						<span class="content-date inline-block">2020-11-29 14:47</span>
+					</li>
+					<li>
+						<span class="content-name inline-block w16">黄**</span>
+						<span class="content-phone inline-block w31">133****123</span>
+						<span class="content-date inline-block">2020-11-29 14:47</span>
+					</li>
+					<li>
+						<span class="content-name inline-block w16">青**</span>
+						<span class="content-phone inline-block w31">133****123</span>
+						<span class="content-date inline-block">2020-11-29 14:47</span>
+					</li>
+				</ul>
+			</div>
+			<div class="baffle"></div>
+		</div>
+		<div class="footer">
+			<div class="footer-title">
+				<img src="../../images/ipfs/container-icon.png" >
+				<span>解锁规则</span>
+				<img src="../../images/ipfs/container-icon.png" >
+			</div>
+			<ul class="footer-text">
+				<li>①、此价值<span id="price">0</span>元待解锁算力为FIL算力产品（产出、周期、管理费以此产品为准）；</li>
+				<li>②、邀请规则：需邀请六名新注册用户，并对任意一款FIL产品下单购买即为有效邀请，只注册不购买视为无效邀请；</li>
+        <li>③、购买要求：仅限FIL算力产品任意一款即可，无T数要求；</li>
+        <li>④、时间限制：从邀请第一个用户完成注册后，开始倒计时30天内为有效期，到期未完成则视为自动放弃；</li>
+        <li>⑤、完成邀请后算力次日到账，可在我的算力页面查询；</li>
+        <li>⑥、此活动所有用户均可参与，完成邀请后可再次参与，所有用户没有参与次数要求；</li>
+        <li>⑦、如发现异常情况，算力蜂有权对活动规则做出调整，活动最终解释权归平台所有！</li>
+        <li>⑧、此活动结束期限以官方公告为准；</li>
+			</ul>
+		</div>
+	</div>
+  <script src='../../js/jquery-1.11.1.min.js'></script>
+  <script src="../../js/mui.min.js"></script>
+  <script src="../../js/mui.zoom.js"></script>
+  <script src="../../js/mui.previewimage.js"></script>
+  <script src="../../js/common/mui.loading.js"></script>
+  <script src="../../js/common/common.js"></script>
+  <script>
+    mui.init({
+      swipeBack: true, //启用右滑关闭功能
+      pullRefresh: {
+        container: '#pullrefresh',
+        down: {
+            style: 'circle',
+            callback: pulldownRefresh
+        },
+      }
+    });
+    mui.plusReady(function() {
+			getData();
+    });
+    function getData () {
+      var url = '/app/user/activity/list';
+      Common.muipost(
+        url, {},
+        function (e) {
+          try {
+            if (e.type != 200) {
+              mui.toast('数据异常');
+              return false
+            }
+            let data = e.date;
+            // 日期倒计时
+            endTime = data.endTime;
+            if (endTime && endTime != null && data.count) {
+              setInterval("renderDate(endTime)", 1000);
+            } else {
+              renderDate(null);
+            }
+            let options = {
+              count: data.count || 0,
+              total: data.total || 0,
+              success: data.success || 0,
+              amount: data.amount || 0,
+							list: data.successList || [],
+							price: data.price
+            }
+            renderView(options);
+          } catch (e) {
+            mui.toast('拉取数据失败');
+          }
+        }, function (e) {
+          mui.toast('网络异常，请稍后重试');
+        }
+      );
+    }
+    // 页面数据渲染
+    function renderView (option) {
+      try {
+        let count = option.count < 10 ? '0' + option.count : option.count;
+        let total = option.total < 10 ? '0' + option.total : option.total;
+        let listText = "";
+        $("#fil-num").text(option.success + 'T');
+        $("#fil-amount").text(option.amount);
+        $("span.current").text(count);
+				$("span.end-time").text(total);
+				$("#price").text(option.price);
+        $(".progress-bar .completed").css({ "width": `calc(16.66666% * ${option.count})` });
+        $(".progress-bar .completed .icon").css({ "left": `calc(16.66666% * ${option.count} - 1.475rem)` });
+        if (!option.count) {
+          $(".progress-bar .completed .icon").css({ "left": "-0.5rem" });
+        }
+        if (option.count == 6) {
+          $(".progress-bar .end").remove();
+        }
+        // 已成功领取数据
+        mui.each(option.list, function(index, item){
+          let time = new Date((item.delTime).replace(/-/g,'/'));
+          let delTime = Common.dateFtt('yyyy-MM-dd', time);
+					let hours = time.getHours();
+					hours = hours < 10 ? `0${hours}` : hours;
+					let minutes = time.getMinutes();
+					minutes = minutes < 10 ? `0${minutes}` : minutes;
+          delTime = `${delTime} ${hours}:${minutes}`;
+          listText += `
+            <li>
+              <span class="content-name inline-block w16">${item.userName}</span>
+              <span class="content-phone inline-block w31">${item.phone}</span>
+              <span class="content-date inline-block">${delTime}</span>
+            </li>`;
+        });
+        if (option.list.length <= 3) {
+          // 移除列表滚动动画
+          $("#person-list .content-box ul").css({
+            "-webkit-animation": "unset",
+            "animation": "unset"
+          })
+        } else if (option.list.length > 3) {
+          listText += listText;
+          let time = Math.ceil(option.list.length * 0.625);
+          $("#person-list .content-box ul").css({
+            "-webkit-animation": `${time}s rowup linear infinite normal`,
+            "animation": `${time}s rowup linear infinite normal`
+          })
+        }
+        $("#person-list .content-box ul").html(listText);
+      } catch (e) {
+        mui.toast('加载数据异常')
+      }
+    }
+    // 倒计时渲染
+    function renderDate (renderTime) {
+      let day = 30;
+      let hour = minute = second = 0;
+      const now = parseInt(new Date().getTime() / 1000);
+      if (renderTime && renderTime != null) {
+        renderTime = parseInt(new Date(renderTime.replace(/-/g,"/")).getTime() / 1000);
+        let time = renderTime - now;
+        let secondTime = 60;
+        let minuteTime = 60;
+        let hourTime = secondTime * minuteTime;
+        let dayTime = hourTime * 24;
+        let completeDay = time % dayTime;
+        let completeMinute = completeDay % hourTime;
+        day = parseInt(time / dayTime);
+        hour = parseInt(completeDay / hourTime);
+        minute = parseInt(completeMinute / minuteTime);
+        second = parseInt((completeMinute % minuteTime));
+        day = day < 10 ? '0'+ day : day;
+        hour = hour < 10 ? '0'+ hour : hour;
+        minute = minute < 10 ? '0'+ minute : minute;
+        second = second < 10 ? '0'+ second : second;
+      }
+      // 获取元素
+      let baseEl = '.schedule p ';
+      let dayEl = baseEl + '.day';
+      let hourEl = baseEl + '.hour';
+      let minuteEl = baseEl + '.minute';
+      let secondEl = baseEl + '.second';
+      $(dayEl).text(day);
+      $(hourEl).text(hour);
+      $(minuteEl).text(minute);
+      $(secondEl).text(second);
+    }
+    // 跳转分享页
+    mui("body").on("tap", "#invite-share", function () {
+      mui.openWindow({
+        url: '../invite.html',
+        id: '../invite.html'
+      })
+    })
+    // 下拉刷新具体业务实现
+    function pulldownRefresh() {
+      var current_view = plus.webview.currentWebview()
+      var parent_view = current_view.opener()
+      setTimeout(function () {
+          getData();
+          mui('#pullrefresh').pullRefresh().endPulldownToRefresh(true);
+          mui('#pullrefresh').pullRefresh().refresh(true);
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

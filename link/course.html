@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>教学区</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../css/style.css">
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav other" style="z-index: 1200;">
+			<div class="c2c-address mui-pull-left mui-action-back"><span class="mui-icon mui-icon-back"></span></div>
+			<h1 class="mui-title">视频教学</h1>
+		</header>
+		<!--中间内容-->
+		<!--中间内容-->
+		<div class="mui-content mui-hidden">
+			
+		</div>
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script src="../js/jquery.min.js"></script>
+	<script src="../js/player/index_video.js"></script>
+	<script src="../js/player/index_mp4.js"></script>
+	<script>
+		var id;
+		var title;
+		var videoText;
+		mui.plusReady(function() {
+			var current = plus.webview.currentWebview();
+			id = current.id;
+			title = current.title;
+			videoText = current.data;
+			
+			$(".mui-title").html(title);
+			
+			showVideo();
+		});
+		
+		function showVideo() {
+			
+			$(".mui-content").html(videoText.content);
+			
+			// 处理内容中的video标签
+			var videoList = $("video");
+			for (var i=0; i<videoList.length; i++) {
+				var videoUrl = $(videoList[i]).attr("src");
+				var html = '<div id="mse-' + i + '" data-id="' + i + '" data-urls="' + videoUrl + '" class="mseVideo" style="width: 100%; height: 320px;"></div>';
+				$(videoList[i]).after(html);
+				$(videoList[i]).remove();
+			}
+			
+			var mseList = $(".mseVideo");
+			for (var i=0; i<mseList.length; i++) {
+				var mseId = $(mseList[i]).attr("data-id");
+				var mseUrl = $(mseList[i]).attr("data-urls");
+				var player = new Player({
+					id: 'mse-' + mseId,
+					autoplay: false,
+					volume: 0.3,
+					url: mseUrl,
+					poster: 'https://hashbox-news.oss-cn-hangzhou.aliyuncs.com/upload/news/20190516/DR3eqYnW5PVh3ecolM8UFao7QKjUO5dj.png',
+					playsinline: false,
+					height: window.innerWidth * 0.6,
+					width: window.innerWidth,
+					whitelist: ['']
+				});
+			}
+			
+			$(".mui-content").removeClass("mui-hidden");
+		}
+	</script>
+</html>

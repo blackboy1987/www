@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>我的算力</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!--标准mui.css-->
+    <link rel="stylesheet" href="../css/mui.min.css">
+
+    <!--App自定义的css-->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/hashbox.css">
+    <style>mui-table-view-cell
+    .myHashbox .mui-table-view:before, .myHashbox .mui-table-view-cell:after {
+        background-color: #f2f2f2 !important;
+    }
+
+    .mui-table-view-cell {
+        margin: 0 16px 0 16px
+    }
+
+    .mui-table-view-cell a {
+        border-bottom: 1px solid #e9e9e9;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    .mui-table-view-cell:after {
+        left: 0;
+    }
+
+    .hashBtn {
+        text-align: center;
+        width: 100%;
+        height: 68px;
+        background: #ffffff;
+        float: bottom;
+        position: fixed;
+        bottom: 0;
+    }
+
+    .hashBtn button {
+        width: 35%;
+        color: #fff;
+        margin-top: 15px;
+    }
+
+    .hashBtn #buy_cancel {
+        background: #ffffff;
+    }
+
+    body {
+        background-color: #f6f6f7
+    }
+
+    .flexs {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .buy-record {
+        /*margin: 20px 0 20px 0;*/
+        padding: 13px 16px 10px 16px;
+        height: 75px;
+        background: #ffffff;
+    }
+
+    .hashDetails img {
+        margin: 0 10px;
+    }
+
+    .title {
+        font-size: 16px;
+        line-height: 46px;
+        color: #282828;
+    }
+
+    .pad10 {
+        padding: 0;
+        margin-top: 15px !important;
+        margin-bottom: 0 !important;
+    }
+
+    .mui-bar-nav.mui-bar .mui-icon {
+        margin-left: 0;
+    }
+
+    .mui-bar {
+        height: 50px;
+    }
+
+    .box-sd {
+        border-radius: 0;
+        -webkit-box-shadow: none;
+    }
+
+    .mui-table-view li {
+        color: #282828;
+    }
+    .mui-table-view li:last-child a{
+        border-bottom: 0;
+    }
+
+    </style>
+</head>
+<body style="background: #f6f6f6;" id="pullrefresh">
+<header class="mui-bar mui-bar-nav other">
+    <a class="mui-action-back mui-pull-left" style="line-height: 50px;margin-right: 5px"><img
+            src="../images/hashbox/slf-47.svg" style="width: 15px"></a>
+    <!--			<h1 class="mui-title" id="title"></h1>-->
+    <p class="title">订单详情</p>
+</header>
+
+<div class="mui-content" id="index-html" style="background: #f6f6f6">
+    <div class="mui-control-content mui-active myHashbox">
+        <div class="box-sd m10 mt20 pad10">
+            <div class="myHashList hashDetails">
+                <div class="buy-record">
+                    <div class="flexs">
+                        <div class="record-name" id="productName"></div>
+                        <div class="d-num" id="">
+                            x<span id="quantity"></span>
+                        </div>
+                    </div>
+
+                    <div class="record-data fc9 flexs">
+<!--                        <span class="" id="price" style="color: #999;font-size: 13px"></span>-->
+                        </span><span class="mui-pull-left"><span
+                                style="font-size: 14px;color: #999;">应付金额: </span> <span id="money" style="color: #FF7800;font-size: 14px"></span></span>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <ul class="mui-table-view mt10" style="margin-left:10px;margin-right: 10px ">
+            <li class="mui-table-view-cell">
+                <a>订单状态<span class="mui-pull-right" id="state"></span></a>
+            </li>
+            <li class="mui-table-view-cell">
+                <a>订单编号<span class="mui-pull-right" id="sn"></span></a>
+            </li>
+            <li class="mui-table-view-cell">
+                <a>下单时间<span class="mui-pull-right" id="createDate"></span></a>
+            </li>
+            <li class="mui-table-view-cell">
+                <a>购买数量<span class="mui-pull-right fc2c9" style="color: #FF7800 !important;" id="invest"></span></a>
+            </li>
+            <li class="mui-table-view-cell">
+                <a>产品周期<span class="mui-pull-right" id="validity"></span></a>
+            </li>
+            <li class="mui-table-view-cell" style="display: none" id="packageTime">
+                <a>封装周期<span class="mui-pull-right" id="package"></span></a>
+            </li>
+            <li class="mui-table-view-cell">
+                <a>电费<span class="mui-pull-right" id="electric"></span></a>
+            </li>
+            <li class="mui-table-view-cell">
+                <a>管理费<span class="mui-pull-right" id="manage"></span></a>
+            </li>
+            <li class="mui-table-view-cell" id="dfzq">
+                <a>购买电费包<span class="mui-pull-right" id="cycle" style="color: #FF7800"></span></a>
+            </li>
+            <li class="mui-table-view-cell">
+                <a>购买算力<span class="mui-pull-right" id="sumInvest"></span></a>
+            </li>
+        </ul>
+        <div class=hashBtn>
+            <button class="mui-btn main-button mui-hidden" id="buy_cancel"
+                    style="color: #5a5d66;border: 1px solid #d2d2d2">取消支付
+            </button>
+            <button class="mui-btn main-button mui-hidden" id="buy_amount"
+                    style="border: 1px solid #d2d2d2;background: #0068f7;">去支付
+            </button>
+        </div>
+
+    </div>
+</div>
+
+
+<script src="../js/jquery.min.js"></script>
+<script src="../js/mui.min.js"></script>
+<script src="../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+    mui.init({
+        swipeBack: true,
+        beforeback: function () {
+            //获得父页面的webview
+            var list = plus.webview.currentWebview().opener();
+            //触发父页面的自定义事件(refresh),从而进行刷新
+            mui.fire(list, 'refresh');
+            //返回true,继续页面关闭逻辑
+            return true;
+        }
+    });
+    var productType = ''
+    var orderId = 0;
+    var dfzq = false;
+    var isETH = false;
+    var torm = '';
+    var type = '';
+    var types = '';
+    var current;
+
+
+    var day = 0
+    mui.plusReady(function () {
+         current = plus.webview.currentWebview();
+        orderId = current.orderId;
+        dfzq = current.dfzq;
+        isETH = current.isETH;
+        console.log(isETH)
+        load();
+    });
+
+
+    function load() {
+        Common.muipost("/app/user/v2/order/detail", {
+            orderId: orderId
+        }, function (data) {
+            productType = data.date.productType
+            day = data.date.day
+            coinType = data.date.coinType
+            $("#title").text(data.date.productName);
+            $("#profuctIcon").attr("src", basePath + data.date.productIcon);
+            $("#profuctIcon").attr("onerror", "this.src='../images/hashbox/product.png'");
+            $("#productName").text(data.date.productName);
+            $("#quantity").text(data.date.quantity);
+            torm = '份'
+            if (data.date.coinType == 5) {
+                types = '电费 MHS/天'
+                type = 'M'
+            } else if (data.date.coinType == 5 && data.date.saleType == 2) {
+                types = '电费 MHS/台/天'
+                type = 'M'
+            } else {
+                types = '电费 THS/天'
+                type = 'T'
+            }
+
+            if (data.date.productType == 2 || data.date.productType == 4) {
+                $("#money").text(Common.moneyFormat(data.date.amount) + " USDT" + " ≈ " + data.date.rmbPrice + "￥");
+                $("#price").html(Common.moneyFormat(data.date.price) + "<span> 元</span>" + '/' + torm);
+            } else {
+                $("#money").text(Common.moneyFormat(data.date.amount) + " USDT" + " ≈ " + data.date.rmbPrice + "￥");
+                //订单金额
+                $("#price").html(Common.moneyFormat(data.date.price) + "<span> USDT</span>");
+            }
+            if (data.date.saleType == 1) {
+                if (data.date.productElectric == null || data.date.productElectric == '') {
+                    $("#electric").text("--");
+                } else {
+                    $("#electric").text("$" + data.date.productElectric + types);
+                }
+            } else {
+                if (data.date.rmbElectricPrice == null || data.date.rmbElectricPrice == '') {
+                    $("#electric").text("--");
+                } else {
+                    $("#electric").text(data.date.rmbElectricPrice + ' ¥ 天/台');
+                }
+            }
+
+            if (data.date.coinType == 6) {
+                $("li:contains(购买电费包)").remove()
+                $("li:contains(电费)").remove()
+                if (data.date.encapsulationDay && data.date.encapsulationDay > 0){
+                    $('#packageTime').css('display','block')
+                    $('#package').text(data.date.encapsulationDay + "天")
+                }
+            }
+            $("#cycle").text(data.date.day ? data.date.day + '天' : 0 + '天')
+            $("#sumInvest").text(data.date.invest * data.date.quantity + type)
+            $("#createDate").text(data.date.createDate);
+            var validity = "有效期";
+
+            if (data.date.productValidity != null && data.date.productValidity != "") {
+                var temp = JSON.parse(data.date.productValidity);
+                if (temp[0] == 0 && temp[1] == 0 && temp[2] == 0 || temp[0] >= 40 || data.date.saleType == 2) {
+                    validity = "永久有效";
+                } else {
+                    validity = Number(temp[0]) * 365 + Number(temp[1]) * 30 + Number(temp[2]) + "天";
+                }
+                $("#validity").text(validity);
+            }else if (data.date.productValidity == null){
+                validity = "永久有效";
+            }
+
+            $("#manage").text(data.date.productManage + "%");
+            if (data.date.saleType == 2) $("#invest").text(data.date.quantity + '台');
+            else $("#invest").text(data.date.quantity + torm);
+            $("#sn").text(data.date.sn);
+
+            $("#buy_amount").addClass("mui-hidden");
+            $("#buy_cancel").addClass("mui-hidden");
+            var state = "";
+            if (data.date.state == 1 || data.date.state == 0) {
+                state = "待支付";
+                $("#buy_amount").removeClass("mui-hidden");
+                $("#buy_cancel").removeClass("mui-hidden");
+                $("#state").css("color", "red");
+            } else if (data.date.state == 2) {
+                state = "已支付";
+            } else if (data.date.state == 3) {
+                state = "已完成";
+                $("#state").css("color", "#0068f7");
+            } else if (data.date.state == 4) {
+                state = "取消";
+            } else if (data.date.state == 5) {
+                state = "退款中";
+            } else if (data.date.state == 6) {
+                state = "已退款";
+            }
+            $("#state").text(state);
+        }, function (data) {
+            mui.toast(data.content);
+        });
+    }
+
+    $("#buy_amount").click(function () {
+        var dete = productType == 8 ? 1 : '';
+        // 打开支付页面
+        mui.openWindow({
+            url: '../invest/order/orderDetails.html',
+            id: '../invest/order/orderDetails.html',
+            extras: {
+                orderId: orderId,
+                day: day,
+                recordId: 1,
+                dete: dete
+            }
+        });
+    });
+
+    $("#buy_cancel").click(function () {
+        mui.confirm("确定取消订单", "订单详情", ["确定", "取消"], function (e) {
+            if (e.index == 0) {
+                Common.muipost("/app/user/v2/order/cancelOrder", {
+                    orderId: orderId
+                }, function (data) {
+                    mui.toast("订单取消成功");
+                    setTimeout(function () {
+                        load();
+                    }, 1800)
+                }, function (data) {
+                    mui.toast(data.content);
+                });
+            }
+        })
+    })
+
+    window.addEventListener('refresh', function (e) {
+        //在父页面中添加监听事件，刷新页面
+        //订单详情
+        load();
+    });
+</script>
+
+</body>
+</html>

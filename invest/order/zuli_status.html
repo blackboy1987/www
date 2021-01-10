@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>30天租赁算力包</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/hashbox.css">
+		<style type="text/css">
+			body {
+				background-color: #F5F5F5;
+			}
+
+			.mui-icon {
+				color: #919194;
+			}
+
+			.mui-bar-nav {
+				background-color: #ffffff;
+				box-shadow: none;
+			}
+
+			.bgc {
+				background-color: #FFF4EE;
+				margin-top: 45px;
+				padding-top: 5px;
+				text-align: center;
+			}
+
+			.bgc_color {
+				background-color: white;
+			}
+
+			.flexs {
+				display: flex;
+				flex-direction: column;
+				margin-top: 20px;
+				width: 100%;
+				height: 60%;
+				justify-content: space-between;
+
+			}
+
+			.contes {
+				display: flex;
+				padding: 20px 15px;
+			}
+
+			.flex_common {
+				display: flex;
+				justify-content: space-between;
+			}
+
+			.list_status {
+				margin-top: 10px;
+			}
+
+			.giy_color {
+				color: #646466;
+				font-size: 14px;
+			}
+
+			.blackColor {
+				color: #2E2E31;
+				font-size: 14px;
+			}
+
+			.footer_buy {
+				position: fixed;
+				bottom: 0;
+				height: 49px;
+				width: 100%;
+				padding: 0 12px;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				border-top: 1px solid #E5E5E5;
+			}
+
+			.btns {
+				background-color: #1F75DA;
+				width: 105px;
+				height: 38px;
+				border-radius: 19px;
+				color: #FFFFFF;
+				font-size: 15px;
+				border: none;
+			}
+
+			li {
+				list-style: none;
+			}
+
+			.track-list {
+				padding: 0 5px;
+				position: relative;
+			}
+
+			.track-list li {
+				position: relative;
+				line-height: 18px;
+				color: #999;
+			}
+
+			.track-list li:first-child {
+				color: red;
+				padding-top: 0;
+				border-left-color: #fff;
+			}
+
+			.track-list li .node-icon {
+				position: absolute;
+				left: -2px;
+				top: 10px;
+				width: 5px;
+				height: 5px;
+				background-color: #FF843A;
+				border-radius: 50%;
+			}
+
+			.track-list .first .node-icon {
+				background-position: 0 -72px;
+			}
+			.mui-disabled{background: #1F75DA;opacity: 1;}
+			#passDiv{
+				width: 0px;
+				height: 0px;
+				background: red;
+				position: fixed;
+				top: 65%!important;
+				left: 50%;
+			}
+			.cons {
+				position: absolute;
+				width: 300px;
+				height: 190px;
+				left: 50%;
+				top: 50%;
+				margin-left: -150px;
+				margin-top: -95px;
+				background-color: #ffffff;
+				border-radius: 10px;
+				text-align: center;
+			}
+			.meui-mask {
+				position: fixed;
+				z-index: 99;
+				top: 0;
+				right: 0;
+				left: 0;
+				bottom: 0;
+				background-color: rgba(0, 0, 0, .4);
+			}
+			.mui-popup-inner{
+				padding: 10px 0;
+			}
+			.passwordInput{ margin: 5%; width: 80% !important; font-size: 30px; text-align: center; letter-spacing: 10px}
+			.m-wrap{border-left: 1px solid #FF843A;height: 70px;display: inline-block;width: 1px;position: absolute;top: 15px;}
+			.track-list li:last-child span{height: 0;}
+			.track-list li{padding-bottom: 20px;}
+			.track-list li:last-child{padding-bottom: 0;}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="title">订单支付</h1>
+		</header>
+		<div class="bgc" style="width: 100%;height: 100px;">
+			<div class="flexs">
+				<div style="font-size:18px;color: #FF6407;" id="m-wrap"></div>
+				<div style="font-size:14px;color: #333333;" id="m-investTime"></div>
+			</div>
+		</div>
+		<div style="width: 100%;height: 100px;">
+			<div class="contes bgc_color">
+				<div style="margin-right: 10px;">
+					<img width="45" height="45" id="m-img" onerror="this.src='../../images/hashbox/product.png'" />
+				</div>
+				<div style="display: flex;justify-content: space-around;flex-direction: column;width: 100%;">
+					<div style="display: flex;justify-content: space-between;color: #2E2E31;font-size:18px;" id="name"></div>
+					<div style="color: #999999;font-size:13px;" id="m-price"></div>
+				</div>
+
+			</div>
+		</div>
+		<div class="list_status bgc_color p-sm-2">
+			<div style="border-bottom: 1px solid #E5E5E5;height: 35px;" class="flex_common">
+				<span class="giy_color">总押金</span>
+				<span style="color: #FF7800;font-size: 14px;" id="m-amout"></span>
+			</div>
+			<div class="track-list">
+				<ul style="display: inline;" id="itemmobile">
+					<li id="m-one">
+						<span class="m-wrap"></span>
+						<div style="display: inline-block;margin-left: 20px;width: 100%">
+							<i class="node-icon"></i>
+							<div style="color: #FF843A;font-size: 14px;">阶段1：支付定金</div>
+							<div class="flex_common" style="margin-top: 15px;">
+								<span class="giy_color">已支付</span>
+								<span class="mui-pull-right" style="color: #2E2E31;font-size: 14px;margin-right: 20px;" id="m-yzf"></span>
+							</div>
+						</div>
+					</li>
+					<li id="m-two">
+						<span class="m-wrap"></span>
+						<div style="display: inline-block;margin-left: 20px;width: 100%">
+							<i class="node-icon"></i>
+							<div style="color: #FF843A;font-size: 14px;">阶段2：支付尾款</div>
+							<div class="flex_common" style="margin-top: 15px;">
+								<span class="giy_color m-tail">待支付</span>
+								<span style="color: #2E2E31;font-size: 14px;margin-right: 20px;" id="m-wk"></span>
+							</div>
+						</div>
+					</li>
+					<li id="m-three">
+						<span class="m-wrap"></span>
+						<div style="display: inline-block;margin-left: 20px;width: 100%">
+							<i class="node-icon"></i>
+							<div style="color: #FF843A;font-size: 14px;" id="m-three-title">阶段3：定金处理</div>
+							<div class="flex_common" style="margin-top: 15px;">
+								<span class="giy_color" id="m-order-tail">订单尾款</span>
+								<span style="color: #2E2E31;font-size: 14px;margin-right: 20px;" id="m-order-tail-num"></span>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="bgc_color" style="margin-top: 15px;padding: 15px 15px;margin-bottom: 30px;">
+			<div style="height: 50px;margin-top: 10px;" class="flex_common">
+				<span class="giy_color">订单编号</span>
+				<span style="color: #1F75DA;" id="m-order"></span>
+			</div>
+			<div style="height: 50px;" class="flex_common">
+				<span class="giy_color">预订时间</span>
+				<span class="blackColor" id="m-date"></span>
+			</div>
+			<div style="height: 50px;" class="flex_common">
+				<span class="giy_color">算力</span>
+				<span class="blackColor" id="m-num"></span>
+			</div>
+			<div style="height: 50px;" class="flex_common">
+				<span class="giy_color">产品周期</span>
+				<span class="blackColor" id="m-day"></span>
+			</div>
+		</div>
+		<div class="footer_buy bgc_color">
+			<div>
+				<span style="font-size: 13px;color: #ADADAD;">押金尾款</span>
+				<span style="color: #FF7800;font-size: 15px;" id="product-price"></span>
+			</div>
+			<div>
+				<button type="button" class="btns" id="pay-content">支付尾款</button>
+			</div>
+		</div>
+		<!-- <div id="yzm" class="mui-popup-in meui-mask mui-hidden" style="z-index:99999;">
+			<div class="cons" style="height:118px">
+				<div class="mui-popup-inner">
+					<div class="mui-popup-text" style="margin:5px 0;text-align: center;border-bottom: 1px solid #E5E5E5;padding-bottom: 12px;">
+						短信验证
+					</div>
+					<div style="border: 1px solid rgba(0,0,0,.2);margin: 0 auto;width: 90%;height: 42px;">
+						<input id='yzmip' type="number" pattern="\d*" name="phonecode" class="mui-input-clear mui-input" style="float: left;width: 60%;margin-bottom: 0;border:none;" placeholder="短信验证码" maxlength="6">
+						<a type="button" class="fc2c9 fs15" style="line-height: 42px;" id="sendsms" onclick="sendSms()">获取验证码</a>
+					</div>
+					
+				</div>
+				<div class="mui-popup-buttons">
+					<span onclick="nos()" class="mui-popup-button" style="color: #333333;">取消</span>
+					<span id="confirm" style="color: #1F75DA;" class="mui-popup-button mui-popup-button-bold" onclick="sms()">确认验证码</span>
+				</div>
+			</div>
+		</div> -->
+		<div id="subs" class="mui-popup-in meui-mask mui-hidden">
+			<div class="cons" style="height:118px">
+		    <div class="mui-popup-inner">
+		        <div class="mui-popup-text" style="margin:5px 0;text-align: center;border-bottom: 1px solid #E5E5E5;padding-bottom: 12px;">
+		            请输入支付密码
+		        </div>
+				<div style="margin-top: 15px;font-size:15px;" id="m-money"></div>
+				<input class="passwordInput" type="password" maxlength="6" />
+		    </div>
+		    <div class="mui-popup-buttons">
+		        <span id="nos" class="mui-popup-button" style="color: #333333;">取消</span>
+		        <span id="okey" style="color: #1F75DA;" class="mui-popup-button mui-popup-button-bold">确认支付</span>
+		    </div>
+			</div>
+		</div>
+		
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/common/common.js"></script>
+		<link href="../../js/common/mui.loading.css" rel="stylesheet" />
+		<script type="text/javascript" src="../../js/common/mui.loading.js"></script>
+		<script src="../../js/yzm.js"></script>
+		<script>
+			mui.init({
+				beforeback: function() {
+					//获得父页面的webview
+					var list = plus.webview.currentWebview().opener();
+					//触发父页面的自定义事件(refresh),从而进行刷新
+					mui.fire(list, 'zlrefresh');
+					//返回true,继续页面关闭逻辑
+					return true;
+				}
+			})
+			var orderId = 0;
+			var temp = '';
+			var day = 0
+			var phone = ''
+			$("#pay-content").click(function(){
+				$("#subs").removeClass("mui-hidden");
+			})
+			function nos () {
+				$("#yzmip").val("");
+				$(".passwordInput").val("");
+				$("#yzm").addClass("mui-hidden");
+				$("#subs").addClass("mui-hidden");
+			}
+			$("#okey").click(function(){
+				var coinType = 3;
+				var pass = $(".passwordInput").val();
+				mui.showLoading("支付中..", "div");
+				Common.muipost("/app/user/v2/order/pay", {
+					orderId: orderId,
+					coinType: coinType,
+					pass: pass
+				}, function(data) {
+					mui.hideLoading();
+					$(".passwordInput").val("");
+					mui.toast("支付成功");
+					$("#subs").hide();
+					load()
+				}, function(data) {
+					mui.toast(data.content);
+					mui.hideLoading();
+				});
+			})
+			mui.plusReady(function() {
+				var current = plus.webview.currentWebview();
+				orderId = current.orderId;
+				load()
+				var loginUser = plus.storage.getItem("loginUser");
+				phone = JSON.parse(loginUser).username
+			})
+			function load() {
+				mui.showLoading("数据加载中..", "div");
+				Common.muipost("/app/user/order/detail", {
+					orderId: orderId
+				}, function(data) {
+					var vaData = JSON.parse(data.date.productValidity)
+					day = Number(vaData[0]) * 365 +  Number(vaData[1]) * 30 + Number(vaData[2])
+					mui.hideLoading();
+					$("#title").text(data.date.productName);
+					$("#name").html(data.date.productName + '<span style="color: #969699;font-size:15px;">x' + data.date.quantity + '/THS</span>');
+					$("#m-img").attr("src", basePath + data.date.productIcon);
+					$("#m-amout").text(Common.moneyFormat(data.date.amount || 0) + '元')
+					$("#m-yzf").text('￥' + Common.moneyFormat(data.date.earnest || 0))
+					$("#m-money").text('￥ ' + Common.moneyFormat(data.date.balancePayment || 0))
+					$("#product-price").html('￥' + Common.moneyFormat(data.date.balancePayment || 0));
+					$("#m-wk").text('￥ ' + Common.moneyFormat(data.date.balancePayment || 0))
+					$("#m-order").text(data.date.sn)
+					$("#m-date").text(data.date.createDate)
+					$("#m-num").text(Common.moneyFormatByDecimals(data.date.quantity * data.date.invest, 2) + ' T')
+					$("#m-day").text('有效期' + day + '天')
+					$("#m-price").text('￥ ' + data.date.price + '/THS')
+					//生效日期前一天20点
+					var investTime = new Date(data.date.investTime.replace(/-/g,'/'))
+					var d = new Date(new Date(investTime.toLocaleDateString()).getTime() + 20 * 60 * 60 * 1000)
+					d.setDate(d.getDate() - 1)
+					var t = new Date(new Date(investTime.toLocaleDateString()).getTime() + 20 * 60 * 60 * 1000)
+					//失效日期
+					var expirationDate = new Date(new Date(data.date.expirationDate.replace(/-/g,'/')).getTime())
+					temp = $("#m-three")
+					var s = new Date(new Date(new Date(data.date.expirationDate).toLocaleDateString()).getTime() + 10.5 * 60 * 60 * 1000)
+					s.setDate(s.getDate() + 1)
+					var a = Date.parse(data.date.expirationDate)
+					var createDate = Date.parse(data.date.investTime)
+					var cur = Date.parse(data.date.today)
+					//尾款已支付
+					if (data.date.state == 3){
+						if (createDate < cur) {
+							if (cur > s) {
+								$(".m-tail").text('已支付')
+								$("#m-wrap").text('已到期')
+								$("#m-investTime").html('押金和奖励已到账')
+								$("#m-three-title").text('阶段3：退还押金')
+								$("#m-order-tail").text('已退还')
+								$("#m-order-tail-num").text('￥ ' + Common.moneyFormat(data.date.amount || 0))
+								$(".footer_buy").remove()
+							} else {
+								$(".m-tail").text('已支付')
+								if (cur > a) {
+									$("#m-wrap").text('已到期')
+									$("#m-investTime").html('押金和奖励待入账')
+									$("#m-three-title").text('阶段3：退还押金')
+									$("#m-order-tail").text('待入账')
+									$("#m-order-tail-num").text('￥ ' + Common.moneyFormat(data.date.amount || 0))
+									$(".footer_buy").remove()
+								} else {
+									$("#m-wrap").text('挖矿中')
+									$("#m-investTime").html('合约到期日' + expirationDate.getFullYear() + '年' + (expirationDate.getMonth() + 1) + '月' + expirationDate.getDate() + '日')
+									$("#m-three").remove()
+									$(".footer_buy").remove()
+								}
+							}
+						} else {
+							// 已完成
+							$(".m-tail").text('已支付')
+							$("#m-wrap").text('租赁成功')
+							$("#m-investTime").html('合约' + t.getFullYear() + '年' + (t.getMonth() + 1) + '月' + t.getDate() + '日开始生效')
+							$("#m-three").remove()
+							$(".footer_buy").remove()
+						}
+						
+					//未付尾款
+					} else if (data.date.state == 8) {
+						// $("#m-three").remove()
+						// $(".m-tail").text('待支付')
+						$("#m-wrap").text('已失效')
+						$("#m-three-title").text('阶段3：定金处理')
+						$(".footer_buy").remove()
+						$("#m-order-tail").text('不可退')
+						$("#itemmobile > li:last").after(temp);
+						$("#m-investTime").html('您没有及时支付尾款')
+						$("#m-order-tail-num").text('￥ ' + Common.moneyFormat(data.date.earnest || 0))
+					} else if (data.date.state == 7) {
+						$("#m-wrap").text('预订成功')
+						$("#m-investTime").html('请在<span class="ff843a">' + (d.getMonth() + 1) + '月' + d.getDate() + '日20:00前</span>完成尾款支付')
+						if (Date.parse(d) < Date.parse(new Date())) {
+							$("#m-wrap").text('已失效')
+							$("#m-three-title").text('阶段3：定金处理')
+							$(".footer_buy").remove()
+							$("#m-order-tail").text('不可退')
+							$("#itemmobile > li:last").after(temp);
+							$("#m-investTime").html('您没有及时支付尾款')
+							$("#m-order-tail-num").text('￥ ' + Common.moneyFormat(data.date.earnest || 0))
+						}
+						$("#m-three").remove()
+					} else if (data.date.state == 1) {
+						mui.openWindow({
+							url: './productDetails.html',
+							id: './productDetails.html',
+							extras: {
+								orderId: orderId
+							}
+						})
+					}
+				},function(data){})
+			}
+		</script>
+	</body>
+</html>

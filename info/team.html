@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>我的团队</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../css/style.css">
+		<link rel="stylesheet" href="../css/hashbox.css">
+		<style>
+			.my-head .my-info a.m-button{background:#1F75DA;border-radius: 5px;top:15px;}
+			.m-user-color{color:#FF7800;}
+			.my-head .my-info #userName{font-size: 20px; color: #303033;}
+			.my-head .my-info .inventCode{font-size: 14px; color: #787880;}
+			.m-img{background:#F5F5FA;border-radius: 50%;width: 3.5rem;height: 3.5rem;position: relative;vertical-align: bottom;}
+			/* .m-img img{position: absolute;left: 20%;top: 20%;} */
+			.mui-push-right:after{font-size:35px;}
+			.team img.head{margin-top: 10px !important;margin-left: 12px !important;}
+		</style>
+	</head>
+	<body style="background: #eee" id="pullrefresh">
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="teamName">我的团队</h1>
+			<a id="detailedLink" class="mui-pull-right mui-btn-link">奖励规则</a>
+		</header>
+		<div class="mui-content team" style="background: #eee">
+			<div class="my-head b0 m0 p2" style="background: #fff">
+				<div class="my-info mui-clearfix">
+					<div class="m-inline m-img"><img src="../images/hashbox/uhead.png" width="56px" height="56px" /></div>
+					<div class="m-inline">
+						<div id="userName"></div>
+						<div class="inventCode">团队成员 <span class="fs15 m-user-color" id="teamNum">--</span> 人</div>
+					</div>
+					<a class="mui-pull-right main-button m-button" href="#" id="toMyProfit">团队奖励</a>
+
+				</div>
+			</div>
+			<div class="mt1">
+				<ul class="mui-table-view mui-table-view-chevron" id="relationContainer" />
+			</div>
+		</div>
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script src="../js/jquery.min.js"></script>
+	<script src="../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+		mui.init({
+			swipeBack: true //启用右滑关闭功能
+		});
+		mui('body').on('shown', '.mui-popover', function(e) {
+			//console.log('shown', e.detail.id);//detail为当前popover元素
+		});
+		mui('body').on('hidden', '.mui-popover', function(e) {
+			//console.log('hidden', e.detail.id);//detail为当前popover元素
+		});
+		var info = document.getElementById("info");
+
+
+		loadHtml();
+
+		function loadHtml() {
+			//获取用户资料
+			var info = "/app/user/info/index";
+			Common.muipost(info, null, function(data) {
+				$("#userName").html(data.date.userName);
+			}, function(data) {
+				mui.toast(data.content);
+			});
+		}
+
+		load();
+
+		function load() {
+			var id = $.getUrlParam("id");
+			var username = decodeURI($.getUrlParam("username"));
+			var param = {};
+			if (id) {
+				param = {
+					parent: id,
+					username: username
+				};
+				console.log("id = " + id);
+			}
+			Common.muipost("/app/user/relation/list", param, function(data) {
+
+				if (data.date && data.date.length > 0) {
+					var ul = "";
+					mui.each(data.date, function(index, item) {
+						var auth = "";
+						var vip = "";
+
+						if (item.isAuth) {
+							auth = '<span class="yrz">已认证</span>';
+							vip = 'vip.png';
+						} else {
+							auth = '<span class="wrz">未认证</span>';
+							vip = 'vip-no.png';
+						}
+
+						ul += '<li class="mui-table-view-cell myTeams px2" _child="' + item.child + '" _id="' + item.id +
+							'" _name="' + item.userName + '">' +
+							'<a class="mui-navigate-right m0 p0">' +
+							'<div class="m-inline m-img"><img class="head m0" src="../images/hashbox/uhead.png" width="32px" height="35px"></div>' +
+							'<div class="team-info m-inline">' +
+							'<div class="team-name">' +
+							'' + item.userName + '<img src="../images/' + vip + '" width="15px">' + auth + '' +
+							'</div>' +
+							'<div class="team-date">团队成员<span class="m-user-color"> ' + item.child + '</span> 人<span style="position: absolute;right: 40px;top:18px;">' + item.createDate
+							.substr(0, 10) + '</span></div>' +
+							'</div>' +
+							'</a>' +
+							'</li>'
+					});
+					$("#teamNum").text(data.date.length);
+					$("#relationContainer").html(ul);
+
+				} else {
+					$("#teamNum").text(0);
+				}
+			}, function(data2) {});
+		}
+
+
+		//下拉刷新
+		mui.init({
+			pullRefresh: {
+				container: '#pullrefresh',
+				down: {
+					style: 'circle',
+					callback: pulldownRefresh
+				},
+			}
+		});
+		/**
+		 * 下拉刷新具体业务实现
+		 */
+		function pulldownRefresh() {
+			setTimeout(function() {
+				//addData();
+				load();
+				mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+			}, 1500);
+		}
+		//我的收益	
+		$("#toMyProfit").click(function() {
+			mui.openWindow({
+				url: '/info/team/profit.html',
+				id: '/info/team/profit.html'
+			});
+		});
+		//奖励规则
+		$("#detailedLink").click(function() {
+			mui.openWindow({
+				url: '/info/team/reward.html',
+				id: '/info/team/reward.html'
+			});
+		});
+		//团队成员算力购买记录
+		mui("body").on("tap", "li.myTeams", function() {
+			var _id = $(this).attr("_id");
+			var _name = $(this).attr("_name");
+			var child = $(this).attr("_child");
+			if (child > 0) {
+				//var btnArray = [{title:"查看投资明细"},{title:"查看下级团队"}];
+				var btnArray = [{
+					title: "查看投资明细"
+				}, {
+					title: "查看下级团队"
+				}];
+			} else {
+				var btnArray = [{
+					title: "查看投资明细"
+				}];
+			}
+
+			plus.nativeUI.actionSheet({
+				title: _name + "的团队",
+				cancel: "取消",
+				buttons: btnArray
+			}, function(e) {
+				var index = e.index;
+
+				switch (index) {
+					case 0:
+						console.log("选择取消");
+						break;
+					case 1:
+						mui.openWindow({
+							url: '/info/team/buyDetail.html',
+							id: '/info/team/buyDetail.html',
+							extras: {
+								userId: _id,
+								name: _name
+							}
+						});
+						break;
+					case 2:
+						mui.openWindow({
+							url: '/info/team/team.html',
+							id: '/info/team/team.html',
+							extras: {
+								userId: _id,
+								name: _name
+							}
+						});
+						break;
+				}
+			});
+		})
+	</script>
+</html>

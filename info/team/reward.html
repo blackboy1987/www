@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../../css/style.css">
+	</head>
+	<body style="background: #f2f2f2; width: 100%; height: 100%;">
+		<header class="mui-bar mui-bar-nav other">
+			<div class="c2c-address mui-pull-left mui-action-back"><span class="mui-icon mui-icon-back"></span></div>
+			<h1 class="mui-title" id="teamName">奖励规则</h1>
+		</header>
+		<div class="mui-content" id="pay-content" style="background: #f2f2f2; width: 100%; height: 100%;">
+		</div>
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/jquery.min.js"></script>
+	<script src="../../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+	<link href="../../js/common/mui.loading.css" rel="stylesheet" />
+	<script type="text/javascript" src="../../js/common/mui.loading.js"></script>
+	<script>
+		mui.init({
+			swipeBack: true //启用右滑关闭功能
+		});
+		mui.plusReady(function() {
+			var self = plus.webview.currentWebview();
+
+			//关于我们类型
+			var type = 5;
+			var parms = {
+				type: type
+			}
+			Common.muipost("/app/user/v2/new/detail", parms, function(data) {
+				var linkUrl = basePath + data.date.linkUrl; //获得参数
+				var title = data.date.title; //获得参数
+				var height = window.screen.height;
+				$("#pay-content").css("height", height);
+				loadOrder(linkUrl);
+			})
+
+
+
+
+		});
+
+		function loadOrder(linkUrl) {
+			var html = '<iframe style="border:none" src="' + linkUrl + '" width="100%" height="100%"></iframe>';
+			$("#pay-content").html(html);
+		}
+	</script>
+</html>

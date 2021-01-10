@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>挖矿机详情</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../css/style.css">
+		<!--App加载进度css-->
+		<link href="../js/common/mui.loading.css" rel="stylesheet"/>
+	</head>
+	<body class="bg-f2">
+
+		<header class="mui-bar mui-bar-nav other">
+			<div class="c2c-address mui-pull-left mui-action-back"><span class="mui-icon mui-icon-back"></span></div>
+			<h1 class="mui-title" onclick="create();">立即购买</h1>
+		</header>
+		<!--中间内容-->
+		<div class="mui-content mining" style="margin-bottom: 60px;">
+			<div class="mining-img" style="padding-top: 0px;">
+				<img src="../images/zhanweifu.jpg" id="product-icon" width="100%">
+			</div>
+			<div class="pay-details mining-title">
+				<div class="mui-row">
+					<span class="name" id="product-name">--</span>
+					<div class="mui-pull-right">
+						<p class="notice_active_ch" onclick="show('01')">预计收益回报比<span class="mui-icon mui-icon-help"></span></p>
+						<p id="product-profit-year">--</p>
+					</div>
+				</div>
+			</div>
+			<div class="pay-details mining-content">
+				<div class="mui-row" id="product-price">
+					--<span class="mui-pull-right">--</span>
+				</div>
+				<div class="mui-row" id="product-electric">
+					--<span class="mui-pull-right">--</span>
+				</div>
+				<div class="mui-row" id="product-manage">
+					--<span class="mui-pull-right">--</span>
+				</div>
+				<div class="mui-row" id="product-profit">
+					--<span class="mui-pull-right">--</span>
+				</div>
+			</div>
+			<div class="zhanwei"></div>
+			<div class="pay-details mining-content mining-date">
+				<div class="mui-row" id="invest-date">
+					--<span class="mui-pull-right">--</span>
+				</div>
+				<div class="mui-row" id="profit-date">
+					--<span class="mui-pull-right">--</span>
+				</div>
+				<div class="mui-row">
+					提现规则:<span class="mui-pull-right" onclick="show('02')">次日提现<span class="mui-icon mui-icon-help notice_active_ch"></span></span>
+				</div>
+			</div>
+			<div class="zhanwei"></div>
+			<ul class="mui-table-view mui-table-view-chevron mui-hidden">
+				<li class="mui-table-view-cell">
+					<a href="javascript:showQuestion();" class="mui-navigate-right">常见问题</a>
+				</li>
+			</ul>
+		</div>
+		<!--底部购买-->
+		<div class="footer-buy">
+			<div class="mui-numbox" data-numbox-min='1' data-numbox-max=''>
+				<button class="mui-btn mui-btn-numbox-minus mui-disabled" type="button">-</button>
+				<input id="quantity" class="mui-input-numbox" type="number" value="1" />
+				<button class="mui-btn mui-btn-numbox-plus mui-disabled" type="button">+</button>
+			</div>
+			<button class="mui-btn mui-disabled" onclick="create()">立即买入</button>
+		</div>
+
+
+		<!-- 公告弹窗 -->
+		<div id="tanchuang" class="tan-01">
+			<div id="tanchuang-content" class="guize_html">
+				
+			</div>
+		</div>
+		
+		<!-- 弹窗内容 -->
+		<div class="mui-hidden" id="tan-01">
+			<span class="guize_html_nei" style="min-height: 200px; height: 240px; overflow-y: hidden;">
+				<h3><br>什么是预计年收益回报比？</h3>
+				<br />
+				<br />
+				<p style="text-indent: 0rem; color: #F96C02; font-weight: 700;">
+				  预计年收益回报比 = (预计日收益x365) / 买入本金x100%
+				</p>
+				<br />
+				<p style="text-indent: 0rem; font-weight: 600;">
+				实际收益情况受行情和全网算力影响会有较大波动，预计年收益回报率仅供参考使用。					 
+				</p>
+			</span>
+			<div id="g_close" class="btn">
+				确定
+			</div>
+		</div>
+		<div class="mui-hidden" id="tan-02">
+			<span class="guize_html_nei" style="min-height: 150px; height: 160px; overflow-y: hidden;">
+				<h3><br>提现规则</h3>
+				<br />
+				<p style="text-indent: 0rem; font-weight: 600;">
+				提交金额在提现次日24点前到账
+				</p>
+				<p style="text-indent: 0rem; font-weight: 600;">
+				提现手续费：5%，且不超过0.001BTC					 
+				</p>
+			</span>
+			<div id="g_close" class="btn">
+				确定
+			</div>
+		</div>
+		
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script src="../js/jquery.min.js"></script>
+	<script src="../js/mui.lazyload.js"></script>
+	<script src="../js/mui.lazyload.img.js"></script>
+	<script src="../js/common/common.js"></script>
+	<script type="text/javascript" src="../js/common/mui.loading.js"></script>
+	<script>
+		function show(id) {
+			$("#tanchuang-content").html($("#tan-" + id).html());
+			$("#tanchuang").show();
+			$('body').css("overflow","hidden");
+		}
+	
+	    //关闭公告
+	    $(document).on('click', "#g_close", function(){
+	        $("#tanchuang").hide();
+	        $('body').css("overflow","unset");
+	    });
+	    
+	    // 数据change事件
+	    var productTmp;
+	    $(document).on('change', "#quantity", function(){
+	        if (productTmp == null || productTmp == undefined) {
+	        	return;
+	        } else {
+	        	var num = $("#quantity").val();
+	        	// 修改价格等显示
+	        	var price = Common.accMul(productTmp.price, num);
+	        	$("#product-price").html("价格：<span class='mui-pull-right'>" + Common.moneyFormat(price) + " USDT</span>");
+				var profit = Common.accMul(productTmp.profit, num);
+				$("#product-profit").html("预计每天收益：<span class='mui-pull-right'>" + Common.moneyFormatByDecimals(profit, 8) + " BTC</span>");
+	        }
+	    });
+	    
+	    mui.init({
+			swipeBack: true //启用右滑关闭功能
+		});
+	    
+	    var productId = 0;
+	    var limit = 1;
+	    mui.plusReady(function(){
+		    var self = plus.webview.currentWebview();
+		    productId = self.productId;//获得参数
+		    loadProduct();
+		});
+	    
+	    function loadProduct() {
+	    	var url = "/app/user/product/detail";
+			Common.muipost(url, {'id': productId}, function(data) {
+				productTmp = data.date;
+				$(".mui-title").html(data.date.name);
+				$("#product-icon").attr("src", basePath + data.date.images);
+				$("#product-name").html(data.date.name);
+				$("#product-profit-year").html(Common.moneyFormat(data.date.profitYear) + "%");
+				var price = Common.accMul(data.date.price, data.date.limit);
+				$("#product-price").html("价格：<span class='mui-pull-right'>" + Common.moneyFormat(price) + " USDT</span>");
+				$("#product-electric").html("电费：<span class='mui-pull-right'>$" + data.date.electric + "/THS/天</span>");
+				$("#product-manage").html("管理费：<span class='mui-pull-right'>" + data.date.manage + "%</span>");
+				var profit = Common.accMul(data.date.profit, data.date.invest);
+				profit = Common.accMul(profit, data.date.limit);
+				$("#product-profit").html("预计每天收益：<span class='mui-pull-right'>" + Common.moneyFormatByDecimals(profit, 8) + " BTC</span>");
+				// 算力到账日期
+				$("#invest-date").html("算力到账日期<span class='mui-pull-right'>" + Common.dateFtt("yyyy-MM-dd", new Date()) + "</span>");
+				$("#profit-date").html("收益日期<span class='mui-pull-right'>" + Common.dateFtt("yyyy-MM-dd", Common.dateAdd(2, new Date())) + "</span>");
+				// 开放买入点击
+				$("button").removeClass("mui-disabled");
+				
+				// 购买限制
+				limit = data.date.limit;
+				$("#quantity").val(limit);
+			}, function(data) {
+				mui.alert("网络异常，无法访问")
+			});
+	    }
+	    
+	    function create() {
+	    	if (productId == 0) {
+	    		return;
+	    	} else {
+	    		// 获取数量
+	    		var quantity = $("#quantity").val();
+	    		if (quantity < limit) {
+	    			mui.alert(limit + "个产品起售，请选择产品数量")
+	    			return;
+	    		} else {
+	    			var url = "/app/user/order/create";
+		    		mui.showLoading("正在生成订单...", "div");
+		    		Common.muipost(url, {'productId': productId, 'quantity': quantity}, function(data) {
+		    			console.log(data.date.id)
+						// 打开支付页面
+						mui.openWindow({
+							url: 'order.html',
+							id: 'order.html',
+							extras: {
+								orderId: data.date.id
+							}
+						});
+					}, function(data) {
+						mui.alert("网络异常，无法访问");
+					});
+	    		}
+	    	}
+	    }
+	    
+	    function showQuestion() {
+	    	mui.openWindow({
+				url: 'questionCourse.html',
+				id: 'questionCourse.html'
+			});
+	    }
+	</script>
+
+</html>

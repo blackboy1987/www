@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>收益计算器</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!--标准mui.css-->
+    <link rel="stylesheet" href="../css/mui.min.css">
+    <link rel="stylesheet" type="text/css" href="../css/layer.css" />
+    <link rel="stylesheet" type="text/css" href="../css/mui.picker.css" />
+    <link rel="stylesheet" type="text/css" href="../css/mui.poppicker.css" />
+    <!--App自定义的css-->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/hashbox.css">
+    <style>
+        body{background: #f5f5f5}
+        p{margin: 0;padding: 0;color: #000}
+        input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {color: #bfc5e2;font-size: 16px;}
+        input:-moz-placeholder, textarea:-moz-placeholder {color: #bfc5e2;font-size: 16px;}
+        input::-moz-placeholder, textarea::-moz-placeholder {color: #bfc5e2;font-size: 16px;}
+        input:-ms-input-placeholder, textarea:-ms-input-placeholder {color: #bfc5e2;font-size: 16px;}
+        #sliderSegmentedControl {border-bottom: none}
+        li{list-style-type:none;}
+        .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active{border: 0}
+        .mui-control-item.mui-active > span {font-size: 18px;border-bottom: 2px solid #007aff;padding-bottom: 10px;}
+        .mui-bar-nav~.mui-content {padding-top: 0;padding-bottom: 20px}
+        .mui-bar-nav p {font-size: 14px;margin-top: 17px;color: #000000;margin-bottom: 0;margin-left: 35px;}
+        .mui-action-back{margin-top: 13px;}
+        .mui-slider-indicator.mui-segmented-control {position: relative;top: 1px;}
+        #profitcontent{margin-top: 96px;}
+        .product-name{height: 56px;border-top: 1px solid #e5e5e5}
+        .product-name p{padding: 0 20px;line-height: 56px;color: #000}
+        .product-name .mui-icon{font-size: 22px;margin-top: -6px;position: relative;right: -7px;}
+        .product-name .mui-pull-right{line-height: 56px;padding-right: 20px}
+        .box{height: 90px;padding: 11px 20px 0;}
+        .box p{}
+        .but{padding: 0 20px}
+        .box input{margin-bottom: 0;margin-top: 11px;border: 1px solid #cdcccc;height: 47px}
+        .box span{position: relative;bottom: 33px;right: 20px;}
+        .box>.discount{border-right: 1px solid #cccccc;height: 38px;bottom: 42px;line-height: 38px;padding-right: 30px;}
+        .explain{color: #999999;font-size: 15px;display: inline-block;padding: 0 20px}
+        #submit{width: 100%;height: 47px;background: #0068f7;color: #fff;margin-top: 14px}
+        #earnings{padding: 0;margin: 17px 0 0 0;display: none}
+        #earnings li{height: 311px;margin: 0 0 17px 0}
+        #earnings li img{width: 15px}
+        li div{padding: 0 20px;border-top: 1px solid #cccccc;height: 64px;background: #fff}
+        #earnings li .title{height: 56px;background: #fffbe5;line-height: 56px;border-top: 1px solid #8395d8}
+        #earnings li div .mui-pull-left{padding-top: 16px}
+        #earnings li div .mui-pull-right{padding-top: 16px;text-align: right;}
+        #earnings li div span.mui-pull-right{color: #999999;font-size: 14px;}
+
+                 /*mui选择器css修改*/
+        .mui-picker {background-color: #fff;}
+        .mui-poppicker {background-color: #fff;border-radius: 15px;}
+        .mui-poppicker-header .mui-btn {border: 0;color: #282828}        /*取消按钮*/
+        .mui-btn-blue, .mui-btn-primary, input[type=submit] {color: #282828;background-color: #ffffff;}      /*确定按钮*/
+        .mui-pciker-list li.highlight {color: #282828;font-size: 18px;}     /*选中的样式*/
+        .mui-poppicker-header .text{display: inline-block;font-size: 12px;height: 27px;width: 44px;line-height: 27px;color: #282828;margin-left: 35%;}
+
+                         /*layer弹出层*/
+        .layui-m-layercont {padding: 25px 30px;text-align: left;}
+        .layui-m-layerbtn span[yes] {color: #0068f7;}
+        .layui-m-layerbtn {background-color: #fff;}
+        .layui-m-layer0 .layui-m-layerchild {width: 80%;}
+
+
+
+
+    </style>
+</head>
+<body id="pullrefresh">
+<header class="mui-bar mui-bar-nav other" style="height: 86px">
+    <a class="mui-action-back mui-pull-left"><img src="../images/hashbox/slf-47-white.svg"style="width: 15px;margin-top: 5px"></a>
+    <p>收益计算器</p>
+    <div id="sliderSegmentedControl"
+         class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+        <a class="mui-control-item mui-control-item-m mui-active" _types="1">
+            <span>BTC</span>
+            <div class="btc-left"></div>
+        </a>
+        <a class="mui-control-item mui-control-item-m" _types="5">
+            <span>ETH</span>
+            <div class="btc-right"></div>
+        </a>
+        <a class="mui-control-item mui-control-item-m" _types="6">
+            <span>FIL</span>
+            <div class="btc-right"></div>
+        </a>
+    </div>
+</header>
+<div class="mui-content my shouyi" id="profitcontent">
+    <div id="select" class="product-name box-border-bottom">
+        <p class="mui-pull-left">BTC算力产品-第9期</p>
+        <span class="mui-pull-right"><span class="mui-icon mui-icon-arrowright"></span></span>
+    </div>
+    <div class="box" id="sum">
+            <p>购买数量</p>
+        <input type="number" placeholder="请输入数量" value="1" maxlength="5" style="color: #de400e">
+        <span class="mui-pull-right">份</span>
+    </div>
+    <div class="box" id="price">
+        <p>币价</p>
+        <input type="number" readonly="readonly">
+        <span class="mui-pull-right">$</span>
+    </div>
+    <div class="box" id="discount">
+        <p>电费/折扣</p >
+        <input type="number" readonly="readonly" value="">
+        <span class="mui-pull-right" style="padding-left: 28px">折</span>
+        <span class="mui-pull-right discount">$/THS/天</span>
+    </div>
+    <div class="box" id="manage">
+        <p>管理费/折扣</p>
+        <input type="number" readonly="readonly">
+        <span class="mui-pull-right" style="padding-left: 28px">折</span>
+        <span class="mui-pull-right discount">%</span>
+    </div>
+    <div class="box" id="output">
+        <p>预计每日产出</p>
+        <input type="number" readonly="readonly">
+        <span class="mui-pull-right">BTC</span>
+    </div>
+    <p class="explain">币价参考huobi数值,通过设置以上参数可预估对应周期获取的收益，仅供参考！</p>
+    <div class="but">
+        <button id="submit">计算收益</button>
+    </div>
+</div>
+    <ul id="earnings">
+    </ul>
+</body>
+<script src="../js/mui.min.js"></script>
+<script src="../js/mui.picker.min.js"></script>
+<script src="../js/layer.js"></script>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    let productBtc = []
+    let productEth = []
+    let productFil = []
+    let value,sum;              //商品ID
+    let select=$("#select")[0];
+    let coinType = 1;
+    // $(".mui-poppicker-header >  .mui-poppicker-btn-cancel:last").after('<p class="text">请选择</p>');  //选择框添加
+    function load() {
+        Common.muipost("/app/user/v2/product/all", {
+            coinType: coinType
+        }, function (data) {
+            if (data.date && data.date.length > 0) {
+                for (item of data.date){
+                    switch (item.coinType) {
+                        case 1:
+                            productBtc.push({"text":item.name,"value":item.id,"coinPrice": item.coinPrice,"profit": item.profit,"electric": item.electric,"electricDiscount": item.electricDiscount,"manage": item.manage,"manageDiscount":item.manageDiscount })
+                            break;
+                        case 5:
+                            productEth.push({"text":item.name,"value":item.id,"coinPrice": item.coinPrice,"profit": item.profit,"electric": item.electric,"electricDiscount": item.electricDiscount,"manage": item.manage,"manageDiscount":item.manageDiscount })
+                            break;
+                        case 6:
+                            productFil.push({"text":item.name,"value":item.id,"coinPrice": item.coinPrice,"profit": item.profit,"manage": item.manage,"manageDicount":item.manageDicount,"encapsulationDay":item.encapsulationDay})
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                productEth.unshift({"text":"请选择","coinPrice":'',"electric":'',"electricDiscount":'',"manage":'',"manageDiscount":'',"profit":''})
+                productFil.unshift({"text":"请选择","coinPrice":'',"electric":'',"electricDiscount":'',"manage":'',"manageDiscount":'',"profit":''})
+                productBtc.unshift({"text":"请选择","coinPrice":'',"electric":'',"electricDiscount":'',"manage":'',"manageDiscount":'',"profit":''})
+            }
+            Picker()
+        })
+    }
+    load()
+    let picker = new mui.PopPicker();
+    function Picker() {
+        //PopPicker选择器
+        if (productBtc && coinType == 1){
+            $("#select>p").text(productBtc[0].text)
+            picker.setData(productBtc);
+        }else if (coinType == 5){
+            $("#select>p").text(productEth[0].text)
+            picker.setData(productEth);
+        }else {
+            $("#select>p").text(productFil[0].text)
+            picker.setData(productFil);
+        }
+    }
+
+        document.querySelector("#select").addEventListener("tap",function(){
+            picker.show(function(items){
+                $("#select>p").text(items[0].text)
+                value = items[0].value
+                console.log(items);
+                if (coinType != 6){
+                    if (coinType == 5){
+                        $("#discount>span:eq(1)").text('$/MHS/天')
+                    }
+                    $("#price>input").attr("value",items[0].coinPrice)                   //币价
+                    $("#discount>input").attr("value",items[0].electric)                //电费
+                    $("#discount>span:eq(0)").text(items[0].electricDiscount +' 折')          //折扣
+                    $("#manage>input").attr("value",items[0].manage)             //管理费
+                    $("#manage>span:eq(0)").text(items[0].manageDiscount +' 折')          //折扣
+                    $("#output>input").attr("value",items[0].profit)             //日产出
+                }else {
+                    $("#price>input").attr("value",items[0].coinPrice)          //币价
+                    $("#discount>input").attr("value",items[0].encapsulationDay)                //封装周期
+                    $("#manage>input").attr("value",items[0].manage)             //管理费
+                    $("#output>input").attr("value",items[0].profit)             //日产出
+                }
+
+            });
+        });
+    let list = `<li>
+            <div class="title"><span>日收益</span><img class="img" src="../images/hashbox/tanhao.svg"></div>
+            <div><p class="mui-pull-left mui-col-xs-6">预计产出收益</p> <p class="mui-pull-right mui-col-xs-6">≈ <span>0.0000000</span> <span class="type">BTC</span></p> <span style="padding-top: 0" class="mui-pull-right">≈ <span class="rmb">￥0.0000000</span></span></div>
+            <div><p class="mui-pull-left mui-col-xs-6">电费</p> <p class="mui-pull-right mui-col-xs-6">≈ <span>0.0000000</span> <span class=" type">BTC</span></p> <span style="padding-top: 0" class="mui-pull-right">≈ <span class="electricrmb">￥0.0000000</span></span></div>
+            <div><p class="mui-pull-left mui-col-xs-6">管理费</p> <p class="mui-pull-right mui-col-xs-6">≈ <span>0.0000000</span> <span class="type">BTC</span></p> <span style="padding-top: 0" class="mui-pull-right">≈ <span class="manamgermb">￥0.0000000</span></span></div>
+            <div><p class="mui-pull-left mui-col-xs-6">理论产出收益</p> <p class="mui-pull-right mui-col-xs-6">≈ <span>0.0000000</span> <span class="type">BTC</span></p> <span style="padding-top: 0" class="mui-pull-right">≈ <span class="theoryprofitRmb">￥0.0000000</span></span></div>
+        </li>`;
+    mui("body").on("tap", ".mui-control-item-m", function () {
+        value = null
+        $("#manage>input").attr("value","")
+        $("#manage>span").text('')
+        $("#price>input").attr("value","")
+        $("#discount>input").attr("value","")
+        $("#output>input").attr("value","")
+        $("#earnings > li").remove();
+        coinType = Number($(this).attr('_types'))
+        Picker()
+        if (coinType){
+            switch (coinType){
+                case 1:
+                    $('#sum>span').text('份')
+                    $('#output>span').text('BTC')
+                    $("#discount>span:eq(1)").text('$/THS/天')
+                    $("#discount>span:eq(0)").text('折')
+                    $("#manage>span:eq(0)").text('折')
+                    break;
+                case 5:
+                    $('#sum>span').text('份')
+                    $('#output>span').text('ETH')
+                    $("#discount>span:eq(1)").text('$/MHS/天')
+                    $("#discount>span:eq(0)").text('折')
+                    $("#manage>span:eq(0)").text('折')
+                    break;
+                case 6:
+                    $('#sum>span').text('份')
+                    $('#output>span').text('FIL')
+                    $("#discount>p").text('封装周期')
+                    $("#manage>p").text('管理费')
+                    $("#discount>span:eq(0)").text('天')
+                    $("#manage>span:eq(0)").text('%')
+                    break;
+                    default:
+                        break;
+            }
+        }
+
+        if (coinType == 6){
+            $("#discount>span:eq(1)").addClass('mui-hidden')
+            $("#manage>span:eq(1)").addClass('mui-hidden')
+            $("#discount>p").text('封装周期')
+            $("#manage>p").text('管理费')
+        }else {
+            $("#discount>span:eq(1)").removeClass('mui-hidden')
+            $("#manage>span:eq(1)").removeClass('mui-hidden')
+            $("#discount>p").text('电费/折扣')
+            $("#manage>p").text('管理费/折扣')
+        }
+
+    })
+    mui("body").on("tap", "#submit", function () {
+        if ($("#sum>input").val() && value){
+            sum = $("#sum>input").val()
+            Common.muipost("/app/user/v2/product/calculator", {         //获取详细收益接口
+                productId: value,          //商品id
+                number: sum,                          //算力份数
+            }, function(data) {
+                if (data.date) {
+                    $("#earnings").css('display','block')
+                    $("#earnings > li").remove();
+                    let type,dollarType;
+                    if (coinType == 1){
+                        type = 'BTC'
+                        dollarType = '$'
+                    }else if (coinType == 5){
+                        type = 'ETH'
+                        dollarType = '$'
+                    }else {
+                        type = 'FIL'
+                        dollarType = '$'
+                    }
+                    if (coinType != 6){                     //
+                        for (let i =0; i <= 2; i++){
+                            $('#earnings').prepend(list)
+                        }
+                        $('#earnings>li:eq(1)>.title>span').html('月收益')
+                        $('#earnings>li:eq(2)>.title>span').html('年收益')
+                        $('#earnings>li:eq(3)>.title>span').html('总收益')
+
+                        //日收益
+                        $('#earnings > li:eq(0) > div:eq(1) > p.mui-pull-right.mui-col-xs-6 > span').text(data.date.dayProfit.planProfit)       //预计日产出
+                        $('#earnings > li:eq(0) > div:eq(1) > p.mui-pull-right.mui-col-xs-6 > .type').text(type)       //单位
+                        $('.rmb:eq(0)').text('￥' + data.date.dayProfit.planProfitRmb)               //预计日产出人民币
+                        $('#earnings > li:eq(0) > div:eq(2) > p.mui-pull-right.mui-col-xs-6 > span').text(data.date.dayProfit.electric)     //单日电费
+                        $('#earnings > li:eq(0) > div:eq(2) > p.mui-pull-right.mui-col-xs-6 > .type').text(dollarType)     //单位
+                        $('.electricrmb:eq(0)').text('￥' + data.date.dayProfit.electricRmb)                 //单日电费人民币
+                        $('#earnings > li:eq(0) > div:eq(3) > p.mui-pull-right.mui-col-xs-6 > span').text(data.date.dayProfit.manage)     //单日管理费
+                        $('#earnings > li:eq(0) > div:eq(3) > p.mui-pull-right.mui-col-xs-6 > .type').text(dollarType)     //单位
+                        $('.manamgermb:eq(0)').text('￥' + data.date.dayProfit.manamgeRmb)                 //单日管理费人民币
+                        $('#earnings > li:eq(0) > div:eq(4) > p.mui-pull-right.mui-col-xs-6 > span').text(data.date.dayProfit.theoryProfit)     //单日理论支出收益
+                        $('#earnings > li:eq(0) > div:eq(4) > p.mui-pull-right.mui-col-xs-6 > .type').text(type)
+                        $('.theoryprofitRmb:eq(0)').text('￥' + data.date.dayProfit.theoryProfitRmb)                 //单日理论支出收益人民币
+                        //月收益
+                        $('#earnings > li:eq(1) > div:eq(1) > p.mui-pull-right.mui-col-xs-6 > span').text(data.date.monthProfit.planProfit)       //预计月产出
+                        $('#earnings > li:eq(1) > div:eq(1) > p.mui-pull-right.mui-col-xs-6 > .type').text(type)
+                        $('.rmb:eq(1)').text('￥' + data.date.monthProfit.planProfitRmb)               //预计月产出人民币
+                        $('#earnings > li:eq(1) > div:eq(2) > p.mui-pull-right.mui-col-xs-6 > span').text(data.date.monthProfit.electric)     //单月电费
+                        $('#earnings > li:eq(1) > div:eq(2) > p.mui-pull-right.mui-col-xs-6 > .type').text(dollarType)
+                        $('.electricrmb:eq(1)').text('￥' + data.date.monthProfit.electricRmb)                 //单月电费人民币
+                        $('#earnings > li:eq(1) > div:eq(3) > p.mui-pull-right.mui-col-xs-6 > span').text(data.date.monthProfit.manage)     //单月管理费
+                        $('#earnings > li:eq(1) > div:eq(3) > p.mui-pull-right.mui-col-xs-6 > .type').text(dollarType)
+                        $('.manamgermb:eq(1)').text('￥' + data.date.monthProfit.manamgeRmb)                 //单月管理费人民币
+                        $('#earnings > li:eq(1) > div:eq(4) > p.mui-pull-right.mui-col-xs-6 > span').text(data.date.monthProfit.theoryProfit)     //单月理论支出收益
+                        $('#earnings > li:eq(1) > div:eq(4) > p.mui-pull-right.mui-col-xs-6 > .type').text(type)
+                        $('.theoryprofitRmb:eq(1)').text('￥' + data.date.monthProfit.theoryProfitRmb)                 //单月理论支出收益人民币
+                        //年收益
+                        $('#earnings > li:eq(2) > div:eq(1) > p.mui-pull-right.mui-col-xs-6 > span').text(data.date.yearProfit.planProfit)       //预计年产出
+                        $('#earnings > li:eq(2) > div:eq(1) > p.mui-pull-right.mui-col-xs-6 > .type').text(type)
+                        $('.rmb:eq(2)').text('￥' + data.date.yearProfit.planProfitRmb)               //预计年产出人民币
+                        $('#earnings > li:eq(2) > div:eq(2) > p.mui-pull-right.mui-col-xs-6 > span').text(data.date.yearProfit.electric)     //单年电费
+                        $('#earnings > li:eq(2) > div:eq(2) > p.mui-pull-right.mui-col-xs-6 > .type').text(dollarType)
+                        $('.electricrmb:eq(2)').text('￥' + data.date.yearProfit.electricRmb)                 //单年电费人民币
+                        $('#earnings > li:eq(2) > div:eq(3) > p.mui-pull-right.mui-col-xs-6 > span').text(data.date.yearProfit.manage)     //单年管理费
+                        $('#earnings > li:eq(2) > div:eq(3) > p.mui-pull-right.mui-col-xs-6 > .type').text(dollarType)
+                        $('.manamgermb:eq(2)').text('￥' + data.date.yearProfit.manamgeRmb)                 //单年管理费人民币
+                        $('#earnings > li:eq(2) > div:eq(4) > p.mui-pull-right.mui-col-xs-6 > span').text(data.date.yearProfit.theoryProfit)     //单年理论支出收益
+                        $('#earnings > li:eq(2) > div:eq(4) > p.mui-pull-right.mui-col-xs-6 > .type').text(type)
+                        $('.theoryprofitRmb:eq(2)').text('￥' + data.date.yearProfit.theoryProfitRmb)                 //单年理论支出收益人民币
+                    }else {
+                            $('#earnings').prepend(list)
+                        $('#earnings>li>div:eq(2)').remove()
+                        $('#earnings>li>.title>span').html('总收益')
+                        //FIL总收益
+                        $('#earnings > li > div:eq(1) > p.mui-pull-right.mui-col-xs-6 > span').text(data.date.allProfit.planProfit)       //预计支出收益
+                        $('#earnings > li > div:eq(1) > p.mui-pull-right.mui-col-xs-6 > .type').text(type)
+                        $('.rmb').text('￥' + data.date.allProfit.planProfitRmb)               //预计支出收益人民币
+                        $('#earnings > li> div:eq(2) > p.mui-pull-right.mui-col-xs-6 > span').text(data.date.allProfit.manage)     //管理费
+                        $('#earnings > li> div:eq(2) > p.mui-pull-right.mui-col-xs-6 > .type').text(dollarType)
+                        $('.manamgermb').text('￥' + data.date.allProfit.manamgeRmb)                 //管理费人民币
+                        $('#earnings > li > div:eq(3) > p.mui-pull-right.mui-col-xs-6 > span').text(data.date.allProfit.theoryProfit)     //理论支出收益
+                        $('#earnings > li > div:eq(3) > p.mui-pull-right.mui-col-xs-6 > .type').text(type)
+                        $('.theoryprofitRmb').text('￥' + data.date.allProfit.theoryProfitRmb)           //理论支出收益人民币
+                    }
+                    if ($('.title:first').length >= 1){
+                        $('html,body').animate({scrollTop:660},1500);
+                    }
+                }
+            })
+
+        }else {
+            mui.alert('请选择算力产品和选择数量')
+            return false
+        }
+    })
+    mui("body").on("tap", ".img", function () {
+        console.log(123);
+        let info = document.getElementById("info");                  //专门用来存放弹出消息的一个div
+
+        // mui.alert('币价参考huobi数值,通过设置以上参数可预估对应周期获取的收益','温馨提示','我知道了');
+        layer.open({
+            title: [
+                '温馨提示',
+                'background-color:#fff; color:#000;border-bottom: 1px solid #e5e5e5'
+            ]
+            ,anim: 'up'
+            ,content: '币价参考huobi数值,通过设置以上参数可预估对应周期获取的收益，仅供参考！'
+            ,btn: ['我知道了']
+        });
+    })
+</script>
+</html>

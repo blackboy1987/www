@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>购电记录</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../css/style.css">
+		<link rel="stylesheet" href="../css/hashbox.css">
+	</head>
+	<style type="text/css">
+		html {
+			background-color: #F5F5F5;
+		}
+		
+		.mui-bar-nav~.mui-content {
+			padding-top: 15px;
+		}
+
+		.mui-navigate-right:after,
+		.mui-push-right:after {
+			content: '';
+		}
+
+		.myHashList .record-data .date {
+			float: left;
+			color: #969699;
+			font-size: 14px;
+		}
+
+		.change {
+			color: #FF7800;
+		}
+
+		.xian {
+			border-bottom: 1px solid #E5E5E5;
+			margin: 0 5px 0 2px;
+			width: 100%;
+		}
+
+		.status {
+			display: flex;
+			width: 100%;
+			margin-bottom: 10px;
+			justify-content: space-between;
+		}
+
+		.mui-table-view-chevron .mui-table-view-cell>a:not(.mui-btn) {
+			padding: 10px;
+		}
+
+		.record-data {
+			display: flex;
+			justify-content: space-between;
+		}
+
+
+		.buy-record {
+			margin-top: 20px;
+			margin-bottom: 10px;
+		}
+
+		.myHashList li img {
+			margin-top: 20px;
+		}
+		.pad10{			
+			padding: 0;
+			padding-top: 10px;
+		}
+        .m-clear{overflow: auto;}
+        .m-floatL{float:left;}
+        .m-floatR{float: right;}
+        .mycheck {
+            width:18px;
+            height:18px;
+            position:relative;
+        }
+        .mycheck input[type=checkbox] {
+            visibility:hidden;
+        }
+        .mycheck label {
+            cursor:pointer;
+            position:absolute;
+            width:18px;
+            height:18px;
+            top:0;
+            left:0;
+            background:#fff;
+            border:2px solid #ccc;
+            -moz-border-radius:50%;
+            -webkit-border-radius:50%;
+            border-radius:50%;
+        }
+        .mycheck label:after {
+            opacity:0;
+            content:'';
+            position:absolute;
+            width:8px;
+            height:5px;
+            background:transparent;
+            top:2px;
+            left:2px;
+            border:2px solid #fff;
+            border-top:none;
+            border-right:none;
+            -webkit-transform:rotate(-45deg);
+            -moz-transform:rotate(-45deg);
+            -o-transform:rotate(-45deg);
+            -ms-transform:rotate(-45deg);
+            transform:rotate(-45deg);
+        }
+        .mycheck input[type=checkbox]:checked + label {
+            background:#1F75DA;
+            border:2px solid #1F75DA;
+        }
+        .mycheck input[type=checkbox]:checked + label:after {
+            opacity:1;
+            background:#1F75DA;
+        }
+        .m-f{font-size: 14px;color:#2E2E31;}
+        .mr1{margin-right:5px;}
+        .m-li{font-size: 13px;color:#333;}
+        .m-time{color:#ADADAD;}
+        .m-bought{color:#FF7800;}
+        .m-inliB{display: inline-block;}
+		.proDe{font-size: 12px;}
+		.footer-buy button, .main-button{background: #1F75DA;}
+		.mui-bar-nav~.mui-content{padding-bottom: 50px;}
+        .m-in-right{width: 100%;}
+        .m-color{color:#333333;}
+		.m-pay999{color:#999;}
+		#itemmobile{background: #eee;}
+		#itemmobile li{background: #fff;border-radius: 3px;}
+	</style>
+	<body style="background: #fff">
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">购电记录</h1>
+		</header>
+		<div class="mui-content" id="index-html" style="background: #F5F5F5">
+			<div class="mui-control-content mui-active myHashbox">
+				<div class="mt20 pad10">
+					<div class="" id="itemmobileefresh">
+						<ul class="mx-sm-1 mt1 mui-table-view mui-table-view-chevron myHashList" id="itemmobile">
+                            
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+
+		<script>
+			mui.init({
+				swipeBack: true,
+				pullRefresh: {
+					container: '#itemmobileefresh', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+					up: {
+						height: 50, //可选.默认50.触发上拉加载拖动距离
+						auto: true, //可选,默认false.自动上拉加载一次
+						contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+						contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+						callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					},
+					down: {
+						style: 'circle',
+						callback: pulldownRefresh
+					}
+				},
+				beforeback: function() {
+					//获得父页面的webview
+					var list = plus.webview.currentWebview().opener();
+					//触发父页面的自定义事件(refresh),从而进行刷新
+					mui.fire(list, 'payRefresh');
+					//返回true,继续页面关闭逻辑
+					return true;
+				}
+			});
+
+			var excision = 0;
+			var page = 1;
+			var type;
+
+			function pullupRefresh() {
+				var _this = this;
+				Common.muipost("/electric/order/records", {
+					excision: excision,
+					page: page
+				}, function(data) {
+					if (data.date.list && data.date.list.length > 0) {
+						var content = "";
+						mui.each(data.date.list, function(index, item) {
+							var pText = ''
+							if (item.payState == 1) {
+								pText = '<span class="m-floatR m-bought m-pay999">支付完成</span>'
+							} else {
+								pText = '<span class="m-floatR m-bought">待支付</span>'
+							}
+							if (item.coinType == 1){
+								type = 'T'
+							}else {
+								type = 'M'
+							}
+							var nameM = item.nameArr.slice(0, item.nameArr.length-1).split(',')
+							var mText = ''
+							var mNum = 0
+							mui.each(nameM, function(m, el){
+								var elName = el.split(':')
+								mNum += Number(elName[1])
+							})
+							mText += '<span class="m-floatL m-f">订单编号:'+ item.orderNo +'</span><span class="m-floatR">x' + mNum + ''+type+'</span>'
+							content += '<li class="m-li py-sm-1 p2 mt1" _id="' + item.orderNo + '" _state="' + item.payState + '"><div class="m-inliB m-in-right"><div class="m-clear">' + mText + '</div><div class="py-sm-1 m-time m-clear"><span class="m-floatL">' + item.createDate + '</span><span class="m-floatR m-color">' + item.day + '天</span></div><div class="m-clear"><span class="m-floatL">合计：' + item.totalUsdt + 'USDT</span>' + pText + '</div></div></li>'
+						});
+						if ($(".m-li").length > 0) {
+							$("#itemmobile > li:last").after(content);
+							var widths = $(".m-li").innerWidth() - 30 + 'px'
+							$('.m-in-right').css('width', widths)
+						} else {
+							$("#itemmobile").prepend(content);
+							var widths = $(".m-li").innerWidth() - 30 + 'px'
+							$('.m-in-right').css('width', widths)
+						}
+						_this.endPullupToRefresh(data.date.totalPage <= data.date.page);
+
+						excision = data.date.excision;
+						page++;
+					} else {
+						_this.endPullupToRefresh(true);
+					}
+				}, function(da) {
+					mui.toast(da.content);
+					_this.endPullupToRefresh(true);
+					mui('#itemmobileefresh').pullRefresh().endPulldownToRefresh(true);
+					mui('#itemmobileefresh').pullRefresh().refresh(true);
+				});
+				_this.endPullupToRefresh(true);
+				mui('#itemmobileefresh').pullRefresh().endPulldownToRefresh(true);
+				mui('#itemmobileefresh').pullRefresh().refresh(true);
+			}
+
+			function pulldownRefresh() {
+				excision = 0;
+				page = 1;
+				var _this = this;
+				Common.muipost("/electric/order/records", {
+					excision: excision,
+					page: page
+				}, function(data) {
+					$("#itemmobile > li").remove();
+					if (data.date.list && data.date.list.length > 0) {
+						var content = "";
+						var type;
+						mui.each(data.date.list, function(index, item) {
+							var pText = ''
+							if (item.payState == 1) {
+								pText = '<span class="m-floatR m-bought m-pay999">支付完成</span>'
+							} else {
+								pText = '<span class="m-floatR m-bought">待支付</span>'
+							}
+							if (item.coinType == 1){
+								type = 'T'
+							}else {
+								type = 'M'
+							}
+							var nameM = item.nameArr.slice(0, item.nameArr.length-1).split(',')
+							var mNum = 0
+							var mText = ''
+							mui.each(nameM, function(m, el){
+								var elName = el.split(':')
+								mNum += Number(elName[1])
+							})
+							mText += '<span class="m-floatL m-f">订单编号:'+ item.orderNo +'</span><span class="m-floatR">x' + mNum + ''+type+'</span>'
+							content += '<li class="m-li py-sm-1 p2 mt1" _id="' + item.orderNo + '" _state="' + item.payState + '"><div class="m-inliB m-in-right"><div class="m-clear">' + mText + '</div><div class="py-sm-1 m-time m-clear"><span class="m-floatL">' + item.createDate + '</span><span class="m-floatR m-color">' + item.day + '天</span></div><div class="m-clear"><span class="m-floatL">合计：' + item.totalUsdt + 'USDT</span>' + pText + '</div></div></li>'
+						});
+						$("#itemmobile").html(content);
+						var widths = $(".m-li").innerWidth() - 30 + 'px'
+						$('.m-in-right').css('width', widths)
+						excision = data.date.excision;
+						page++;
+					}
+				}, function(da) {
+					mui('#itemmobileefresh').pullRefresh().endPulldownToRefresh(true);
+					mui('#itemmobileefresh').pullRefresh().refresh(true);
+				});
+				mui('#itemmobileefresh').pullRefresh().endPulldownToRefresh(true);
+				mui('#itemmobileefresh').pullRefresh().refresh(true);
+			}
+            mui("body").on("tap", "li.m-li", function() {
+				if ($(this).attr('_state') == 1) return
+				mui.openWindow({
+					url: './pay.html',
+					id: './pay.html',
+					extras: {
+						order: $(this).attr('_id')
+					}
+				});
+			})
+			window.addEventListener('payRefresh', function(e) {
+                pulldownRefresh()
+            })
+		</script>
+	</body>
+</html>

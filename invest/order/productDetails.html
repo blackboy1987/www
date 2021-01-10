@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>订单详情</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../../css/style.css">
+		<link rel="stylesheet" href="../../css/hashbox.css">
+		<style>
+
+			.myHashbox .mui-table-view:before,.myHashbox .mui-table-view-cell:after{ background-color: #f2f2f2!important;}
+			.mui-table-view-cell{ padding: 11px;}
+			.mui-table-view-cell:after{ left: 0;}
+			.payTitle{ border-bottom: 1px solid #ccc; padding: 5%}
+			.pay-word{ padding-top: 5%;color: #666}
+			.passwordInput{ margin: 5%; width: 80% !important; font-size: 30px; text-align: center; letter-spacing: 10px}
+			.payBtn button{ border-radius: 20px; width: 80%; color: #fff;border: none;}
+			.mui-bar-nav~.mui-content{padding-top:34px;}
+			#passDiv{
+				width: 0px;
+				height: 0px;
+				background: red;
+				position: fixed;
+				top: 65%!important;
+				left: 50%;
+			}
+			/*移除底部或顶部三角,需要在删除此代码*/
+			.mui-popover .mui-popover-arrow:after {
+				width: 0px;
+			}
+			.fc2c9s{color:#999;font-size: 13px;}
+			.mui-table-view-cell{width: 100%;}
+			.hashDetails img{margin: 0;}
+			#m-name{margin-left: 10px;font-size: 15px;color:#2E2E31;}
+			#m-num{font-size: 13px;color:#FF7800;}
+			.mui-table-view-cell>a:not(.mui-btn){color:#2E2E31;font-size: 15px;}
+			.e2e{color:#2E2E31;font-size: 15px;}
+			.mui-input-row label{line-height: unset;width: unset;}
+			.mr1{margin-right: 10px;float: left;border-radius: 50%;}
+			.mui-active .mui-table-view-cell{border-top: none;background: unset;}
+			.mui-table-view-radio .mui-table-view-cell.mui-selected .mui-navigate-right:after{border: 1px solid #1F75DA;border-radius: 50%;background: #1F75DA;color: #fff;font-size: 20px;}
+			.fc2c9{color:#1F75DA!important;}
+			.mui-table-view-cell a{line-height: 30px;}
+			.fff{background: #fff;}
+			.mui-push-right:after{font-size: 20px;color:#919194;}
+			.mui-push-right{margin-right: 15px;color:#333333;font-size: 13px;}
+			.mui-table-view-cell>a:not(.mui-btn).mui-active{background: #fff;}
+			.mui-btn,.footer-buy button,.mui-btn.mui-disabled{background: #1F75DA;opacity: 1;}
+            .meui-mask {
+				position: fixed;
+				z-index: 99;
+				top: 0;
+				right: 0;
+				left: 0;
+				bottom: 0;
+				background-color: rgba(0, 0, 0, .4);
+			}
+			.passwordInput{ margin: 5%; width: 80% !important; font-size: 30px; text-align: center; letter-spacing: 10px}
+		</style>
+	</head>
+	<body style="background: #f5f5f5" id="pullrefresh">
+		<div id="pay-before" class="">
+			<header class="mui-bar mui-bar-nav other">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">订单支付</h1>
+			</header>
+
+			<div class="mui-content" id="index-html" style="background: #f5f5f5">
+				<div class="mui-control-content mui-active myHashbox">
+					<div class="m10 mt20">
+						<div class="myHashList hashDetails fff p1 m-btn-ra">
+							<img src="" width="45px" height="45px" id="productIcon" onerror="this.src='../../images/hashbox/product.png'" />
+							<div class="buy-record">
+								<div class="record-name" id="productName">
+									<span id="m-name"></span><span style="float: right;" id="m-num"></span>
+								</div>
+								<div class="record-data fc9">
+									<span class="fc2c9s" id="price" style="margin-left: 10px;">--</span>
+								</div>
+								<!-- <div class="d-num mui-clearfix" id="quantity">--</span></div> -->
+							</div>
+							<ul class="mui-table-view mt10">
+								<li class="mui-table-view-cell">
+									<a>定金<span class="mui-pull-right e2e" id="quantity"></span></a>
+								</li>
+								<li class="mui-table-view-cell">
+									<a>订单编号<span class="mui-pull-right fc2c9" id="orderSn">--</span></a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="m10 mt10 pay-choose mui-input-row p1 m-btn-ra" style="background: #fff;">
+						<h2 class="od-h2">支付方式</h2>
+						<form class="mui-input-group mt10">
+							<ul class="mui-table-view mui-table-view-radio" id="m-pay">
+								<!-- <li class="mui-table-view-cell p0 mui-selected" id="m-yue">
+									<label class="m-set-size m-f-lable"><img class="mr1" src="../../images/hashbox/CNY.png" width="30px"><a value="10" class="mui-navigate-right pl0 m-set-size">余额支付</a></label>
+								</li> -->
+							</ul>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="footer-buy">
+				<div class="mui-pull-left proDe" id="order-info">--</div>
+				<button class="mui-btn main-button mui-disabled" id="pay-content">立即支付</button>
+			</div>
+		</div>
+		<!-- <div id="yzm" class="mui-popup-in meui-mask mui-hidden" style="z-index:99999;">
+			<div class="cons" style="height:118px">
+				<div class="mui-popup-inner">
+					<div class="mui-popup-text" style="margin:5px 0;text-align: center;border-bottom: 1px solid #E5E5E5;padding-bottom: 12px;">
+						短信验证
+					</div>
+					<div style="border: 1px solid rgba(0,0,0,.2);margin: 0 auto;width: 90%;height: 42px;">
+						<input id='yzmip' type="number" pattern="\d*" name="phonecode" class="mui-input-clear mui-input" style="float: left;width: 60%;margin-bottom: 0;border:none;" placeholder="短信验证码" maxlength="6">
+						<a type="button" class="fc2c9 fs15" style="line-height: 42px;" id="sendsms" onclick="sendSms()">获取验证码</a>
+					</div>
+					
+				</div>
+				<div class="mui-popup-buttons">
+					<span onclick="nos()" class="mui-popup-button" style="color: #333333;">取消</span>
+					<span id="confirm" style="color: #1F75DA;" class="mui-popup-button mui-popup-button-bold" onclick="sms()">确认验证码</span>
+				</div>
+			</div>
+		</div> -->
+        <div id="subs" class="mui-popup-in meui-mask mui-hidden">
+            <div class="cons" style="height:118px">
+            <div class="mui-popup-inner">
+                <div class="mui-popup-text" style="margin:5px 0;text-align: center;border-bottom: 1px solid #E5E5E5;padding-bottom: 12px;">
+                    请输入支付密码
+                </div>
+                <div style="margin-top: 15px;font-size:15px;" id="buy_amount"></div>
+                <input class="passwordInput" type="password" maxlength="6"/>
+            </div>
+            <div class="mui-popup-buttons">
+                <span onclick="nos()" class="mui-popup-button" style="color: #333333;">取消</span>
+                <span id="okey" style="color: #1F75DA;" class="mui-popup-button mui-popup-button-bold">确认支付</span>
+            </div>
+            </div>
+        </div>
+		<div id="pay-result" class="mui-hidden">
+			<header class="mui-bar mui-bar-nav other">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title" id="pay-info">支付成功</h1>
+			</header>
+			<div class="mui-content pay-content" style="background: #fff; padding-top: 39px;">
+				<div class="pays success">
+					<img src="../../images/hashbox/success.png" width="55px" style="margin-top: -5px;" />
+					<div class="ps-word">
+						<h1 style="color: #20d959;" id="pay-success">支付成功</h1>
+					</div>
+				</div>
+				<div class="pays fail mui-hidden">
+					<img src="../../images/hashbox/fail.png" width="55px" style="margin-top: -5px;" />
+					<div class="ps-word">
+						<h1 style="color: #d9d9d9;" id="pay-fail">支付失败</h1>
+					</div>
+				</div>
+				<div class="ps-ul m10">
+					<div class="box-sd ">
+						<ul class="mui-table-view ">
+							<li class="mui-table-view-cell">
+								<a>订单编号<span class="mui-pull-right fc2c9" id="pay-order-sn">--</span></a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a>订单金额<span class="mui-pull-right fc2c9" id="pay-order-amount">--</span></a>
+							</li>
+							<!-- <li class="mui-table-view-cell">
+								<a>订单算力<span class="mui-pull-right fc2c9" id="pay-order-invest">--</span></a>
+							</li> -->
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+		<link href="../../js/common/mui.loading.css" rel="stylesheet" />
+		<script type="text/javascript" src="../../js/common/mui.loading.js"></script>
+		<script src="../../js/yzm.js"></script>
+		<script>
+			var orderId = 0
+			//订单价格 默认 USDT
+			var amount = 0;
+			var exchangeRate = 0;
+			var hbtExchangeRate = 0;
+			var payType = 10;
+			var productType = 0;
+			var total = 0
+			var quantity = 0
+			var day = 0
+			var couponOrder = ''
+			var state = 0
+			var mDay = 0
+			var phone = ''
+			var isOkey = true
+			mui.plusReady(function() {
+				var current = plus.webview.currentWebview();
+				orderId = current.orderId;
+				load();
+				var loginUser = plus.storage.getItem("loginUser");
+				phone = JSON.parse(loginUser).username
+			});
+			var list = document.querySelector('.mui-table-view.mui-table-view-radio');
+			list.addEventListener('selected',function(e){
+				payType = $(e.detail.el).find('a').attr('value')
+				//USDT
+				$(".passwordInput").val("");
+				if (payType == 1) {
+					$("#allAmount").text(Common.moneyFormat(amount - state) + " USDT");
+					$("#buy_amount").text(Common.moneyFormat(amount - state) + " USDT");
+					//HBT	
+				} else if (payType == 2) {
+					$("#allAmount").text(Common.moneyFormat(Common.accMul(amount - state, hbtExchangeRate)) + " HBT");
+					$("#buy_amount").text(Common.moneyFormat(Common.accMul(amount - state, hbtExchangeRate)) + " HBT");
+					//支付宝、微信	
+				}  else if (payType == 10) {
+					$("#allAmount").text(Common.moneyFormat(Common.accMul(amount - state, exchangeRate)) + " 元");
+					$("#buy_amount").text(Common.moneyFormat(Common.accMul(amount - state, exchangeRate)) + " 元");
+					//支付宝、微信	
+				} else {
+					if (productType == 2 || productType == 4) {
+						$("#allAmount").text(Common.moneyFormat(amount - state) + " 元");
+						total = Common.moneyFormat(amount - state)
+					} else {
+						$("#allAmount").text(Common.moneyFormat(Common.accMul(amount - state, exchangeRate)) + " 元");
+						total = Common.moneyFormat(Common.accMul(amount - state, exchangeRate))
+					}
+				}
+			});
+			var pays = {}
+			var orderData = ''
+			function plusReady(){
+				plus.payment.getChannels(function(channels){
+					for(var i in channels){
+						var channel=channels[i]
+						pays[channel.id]=channel
+					}
+				}, function(e){
+					alert("获取支付通道失败："+e.message)
+				});
+
+			}
+			document.addEventListener('plusready',plusReady,false);
+			// 支付
+			function pay(id){
+				plus.payment.request(pays[id], orderData, function(result){
+					// back()
+					// 检查是否完成支付
+					$("#pay-before").addClass("mui-hidden");
+					mui.showLoading("支付确认中..", "div");
+					Common.muipost("/app/user/v2/order/inspectState", {
+						orderId: orderId
+					}, function(data) {
+						// mui.toast(data.content);
+						var priceDW = " USDT";
+						if (data.date.productType == 2 || data.date.productType == 4) {
+							// 人民币
+							priceDW = " 元";
+						}
+						$("#pay-order-sn").text(data.date.sn);
+						$("#pay-order-amount").text(Common.moneyFormat(data.date.earnest) + priceDW);
+						$("#pay-order-invest").text((data.date.invest * data.date.quantity) + "T");
+						// 支付成功
+						$("#pay-info").text(data.content);
+						$("#pay-success").text(data.content);
+						$(".fail").addClass("mui-hidden");
+						$(".success").removeClass("mui-hidden");
+						// 显示支付结果
+						$("#pay-result").removeClass("mui-hidden");
+					}, function(data) {
+						var priceDW = " USDT";
+						if (data.date.productType == 2 || data.date.productType == 4) {
+							// 人民币
+							priceDW = " 元";
+						}
+						$("#pay-order-sn").text(data.date.sn);
+						$("#pay-order-amount").text(Common.moneyFormat(data.date.earnest) + priceDW);
+						$("#pay-order-invest").text((data.date.invest * data.date.quantity) + "T");
+						// 支付中或者支付异常
+						$("#pay-info").text(data.content);
+						$("#pay-fail").text(data.content);
+						$(".success").addClass("mui-hidden");
+						$(".fail").removeClass("mui-hidden");
+						// 显示支付结果
+						$("#pay-result").removeClass("mui-hidden");
+					});
+				}, function(e){
+					mui.toast('支付失败：'+ e.code)
+				})
+			}
+			//立即购买
+			$("#pay-content").click(function() {
+				// 判断是否可以购买
+				if ($("#pay-content").hasClass("mui-disabled")) {
+					return false;
+				} else {
+					if (payType < 3 || payType == 10) {
+						var info = "/app/user/info/index";
+						mui.showLoading("支付中..", "div");
+						Common.muipost(info, null, function(data) {
+							//已设置资金密码
+							if (!data.date.addPass) {
+								$("#subs").removeClass("mui-hidden");
+								// $("#subs").show();
+							} else {
+								mui.toast("请先设置资金密码");
+							}
+						}, function(data) {
+							mui.toast(data.content);
+						});
+					} else if (payType == 6) {
+						payTy = 4;
+						mui.openWindow({
+							url: '../pay/c2c.html',
+							id: '../pay/c2c.html',
+							extras: {
+								orderId: orderId,
+								payType: payTy,
+								coupon: couponOrder
+							}
+						});
+					} else if (payType == 7) {
+						payTy = 2;
+						mui.openWindow({
+							url: '../pay/yinsheng_pay.html',
+							id: '../pay/yinsheng_pay.html',
+							extras: {
+								orderId: orderId,
+								payType: payTy,
+							}
+						});
+					} else if (payType == 8) {
+						payTy = 1;
+						mui.openWindow({
+							url: '../pay/shuzu_pay.html',
+							id: '../pay/shuzu_pay.html',
+							extras: {
+								orderId: orderId,
+								payType: payTy,
+							}
+						});
+					} else if (payType == 5) {
+						Common.muipost("/app/user/v2/order/payment", {
+							orderId: orderId,
+							payType: payType,
+							coupon: couponOrder
+						}, function(data) {
+							orderData = data.date
+							pay('alipay')
+						})
+					} else {
+						var payTy = 1;
+						if (payType == 3) {
+							// 微信支付
+							payTy = 2;
+						} else if (payType == 4) {
+							// 支付宝支付
+							payTy = 1;
+						} else if (payType == 5) {
+							// 银联支付
+							payTy = 3;
+						} else if (payType == 6) {
+							//bit支付
+							payTy = 4;
+						} else {
+							mui.toast("系统异常，支付类型错误");
+							return false;
+						}
+						mui.showLoading("支付中..", "div");
+						Common.muipost("/app/user/v2/order/payment", {
+							orderId: orderId,
+							payType: payTy,
+							coupon: couponOrder
+						}, function(data) {
+							if (payTy == 1) {
+								//支付宝	
+								mui.openWindow({
+									url: '../pay/alipay.html',
+									id: '../pay/alipay.html',
+									extras: {
+										orderPay: data.date
+									}
+								});
+							} else if (payTy == 2) {
+								//微信
+								mui.openWindow({
+									url: '../pay/wechat.html',
+									id: '../pay/wechat.html',
+									extras: {
+										orderPay: data.date
+									}
+								});
+							} else if (payTy == 3) {
+								// 银联
+								mui.openWindow({
+									url: '../pay/unionpay.html',
+									id: '../pay/unionpay.html',
+									extras: {
+										orderPay: data.date
+									}
+								});
+							} else if (payTy == 4) {
+								mui.openWindow({
+									url: data.date.memo,
+									id: data.date.memo,
+									extras: {
+										orderPay: data.date
+									}
+								});
+							}
+						}, function(data) {
+							mui.toast(data.content);
+						});
+					}
+				}
+			});
+			function nos () {
+				$("#yzmip").val("");
+				$(".passwordInput").val("");
+				$("#subs").addClass("mui-hidden")
+				$("#yzm").addClass("mui-hidden")
+			}
+            //立即支付
+			$("#okey").click(function() {
+				//支付货币类型
+				var coinType = 2;
+				//密码
+				var pass = $(".passwordInput").val();
+				if (payType == 2) {
+					coinType = 4;
+				} else if (payType == 10) {
+					coinType = 3;
+				}
+				if (!isOkey) {
+					return false;
+				}
+				isOkey = false;
+				mui.showLoading("支付中..", "#subs");
+				Common.muipost("/app/user/v2/order/pay", {
+					orderId: orderId,
+					coinType: coinType,
+					pass: pass
+				}, function(data) {
+					mui.hideLoading();
+					$(".passwordInput").val("");
+					$("#subs").addClass("mui-hidden")
+					mui.toast("支付成功");
+					isOkey = true
+					if (day != 7) {
+						setTimeout(function() {
+							mui.openWindow({
+								url: './zuli_status.html',
+								id: './zuli_status.html',
+								extras: {
+									orderId: orderId
+								}
+							});
+						}, 500)
+					} else {
+						isOkey = true
+						mDay = 7
+						setTimeout(function() {
+							mui.back()
+						}, 500)
+					}
+				}, function(data) {
+					mui.toast(data.content);
+					mui.hideLoading();
+					isOkey = true
+				});
+			});
+			// 页面初始化数据
+			function load() {
+				//字典
+				Common.muipost("/app/user/v2/order/rule", {}, function(data) {
+					exchangeRate = data.date.exchangeRate;
+					hbtExchangeRate = data.date.hbtExchangeRate
+					//订单详情
+					mui.showLoading("数据加载中..", "div");
+					Common.muipost("/app/user/order/detail", {
+						orderId: orderId
+					}, function(data) {
+						mui.hideLoading();
+						productType = data.date.productType;
+						Common.muipost("/common/payList", {
+							productType: productType
+						}, function(res) {
+							var mcontent = ''
+							mui.each(res.date, function(index, item) {
+								if (item.type == 10) {
+									mcontent += '<li class="mui-table-view-cell p0 mui-selected" id="m-yue"><label class="m-set-size m-f-lable"><img class="mr1" src="../../images/hashbox/'+ item.name +'.png" width="30px"><a value="10" class="mui-navigate-right pl0 m-set-size">' + item.remark +'支付</a></label></li>'
+								} else {
+									mcontent += '<li class="mui-table-view-cell p0"><label class="m-set-size m-f-lable"><img class="mr1" src="../../images/hashbox/'+ item.name +'.png" width="30px"><a value="'+ item.type +'" class="mui-navigate-right pl0 m-set-size">' + item.remark +'支付</a></label></li>'
+								}
+							})
+							$("#m-pay").html(mcontent);
+						}, function(e){
+							mui.toast(e.content);
+						})
+						var priceDW = " USDT/T";
+						var unit = "USDT"
+						quantity = data.date.earnest - data.date.electricMoney
+						if (productType == 2 || productType == 4) {
+							// 人民币
+							priceDW = " 元/T";
+							unit = " 元";
+							$(".pay-money").addClass("mui-hidden");
+						} else if (productType == 3 || productType == 5) {
+							// 电费包，丰水期, HBT支付隐藏
+							$(".pay-money-hbt").addClass("mui-hidden");
+						} else {
+							// USDT
+							$(".pay-money").removeClass("mui-hidden");
+						}
+						$("#m-name").text(data.date.productName)
+						$("#m-num").text('x' + data.date.quantity + 'THS')
+						// $("#productName").html(data.date.productName);
+						$("#productIcon").attr("src", basePath + data.date.productIcon);
+						$("#price").text('￥' + Common.moneyFormat(data.date.price) + '/THS');
+						$("#orderSn").text(data.date.sn);
+						var vaData = JSON.parse(data.date.productValidity)
+						day = Number(vaData[0]) * 365 +  Number(vaData[1]) * 30 + Number(vaData[2])
+						if (day == 7) {
+							amount = data.date.price;
+							$("#order-info").html('合计：<span style="color:#f20b0b;" id="allAmount">' + Common.moneyFormat(Common.accMul(data.date.price, data.date.quantity)) + ' 元</span>');
+							$("#buy_amount").text('￥' + Common.moneyFormat(Common.accMul(data.date.price, data.date.quantity)));
+							$("#quantity").text(Common.moneyFormat('￥' + Common.accMul(data.date.price, data.date.quantity)));
+						} else {
+							amount = data.date.earnest;
+							$("#order-info").html('合计：<span style="color:#f20b0b;" id="allAmount">' + Common.moneyFormat(data.date.earnest) + ' 元</span>');
+							$("#buy_amount").text('￥' + Common.moneyFormat(data.date.earnest));
+							$("#quantity").text(Common.moneyFormat('￥' + data.date.earnest));
+						}
+						if (data.date.state == 0 || data.date.state == 1) {
+							$(".radioItem").removeClass("mui-disabled");
+							$("#pay-content").removeClass("mui-disabled");
+							$("#pay-content").html("立即支付");
+						} else {
+							$(".radioItem").addClass("mui-disabled");
+							$("#pay-content").addClass("mui-disabled");
+							if (data.date.state == 2) {
+								$("#pay-content").html("预订成功");
+							} else if (data.date.state == 3) {
+								$("#pay-content").html("已完成");
+							} else if (data.date.state == 4) {
+								$("#pay-content").html("已取消");
+							} else if (data.date.state == 5) {
+								$("#pay-content").html("退款中");
+							} else if (data.date.state == 6) {
+								$("#pay-content").html("已退款");
+							} else if (data.date.state == 7) {
+								$("#pay-content").html("预订成功");
+							} else if (data.date.state == 8) {
+								$("#pay-content").html("已失效");
+							}
+						}
+						$("#m-yue").click();
+						//$(".pay-money").addClass("mui-hidden");
+					});
+				});
+				
+			}
+
+			window.addEventListener('zlrefresh', function(e) {
+				$(".footer-buy").addClass("mui-hidden")
+			})
+			window.addEventListener('refresh', function(e) {
+				// 在父页面中添加监听事件，刷新页面
+				// load();
+				// 检查是否完成支付
+				$("#pay-before").addClass("mui-hidden");
+				mui.showLoading("支付确认中..", "div");
+				Common.muipost("/app/user/v2/order/inspectState", {
+					orderId: orderId
+				}, function(data) {
+					// mui.toast(data.content);
+					var priceDW = " USDT";
+					if (data.date.productType == 2 || data.date.productType == 4) {
+						// 人民币
+						priceDW = " 元";
+					}
+					$("#pay-order-sn").text(data.date.sn);
+					$("#pay-order-amount").text(Common.moneyFormat(data.date.earnest) + priceDW);
+					$("#pay-order-invest").text((data.date.invest * data.date.quantity) + "T");
+					// 支付成功
+					$("#pay-info").text(data.content);
+					$("#pay-success").text(data.content);
+					$(".fail").addClass("mui-hidden");
+					$(".success").removeClass("mui-hidden");
+					// 显示支付结果
+					$("#pay-result").removeClass("mui-hidden");
+				}, function(data) {
+					var priceDW = " USDT";
+					if (data.date.productType == 2 || data.date.productType == 4) {
+						// 人民币
+						priceDW = " 元";
+					}
+					$("#pay-order-sn").text(data.date.sn);
+					$("#pay-order-amount").text(Common.moneyFormat(data.date.earnest) + priceDW);
+					$("#pay-order-invest").text((data.date.invest * data.date.quantity) + "T");
+					// 支付中或者支付异常
+					$("#pay-info").text(data.content);
+					$("#pay-fail").text(data.content);
+					$(".success").addClass("mui-hidden");
+					$(".fail").removeClass("mui-hidden");
+					// 显示支付结果
+					$("#pay-result").removeClass("mui-hidden");
+				});
+			});
+
+			window.addEventListener("changeCoupen", function(e) {
+				var prizeName = e.detail.prizeName ? e.detail.prizeName : '不使用优惠劵'
+				$("#m-type").html('<span>' + prizeName + '</span>')
+				couponOrder = e.detail.coupon
+				state = e.detail.state
+				if (state == 9.5){
+					if (payType == 1) {
+						$("#allAmount").text(Common.moneyFormat(amount * state / 10) + " USDT");
+						$("#buy_amount").text(Common.moneyFormat(amount * state / 10) + " USDT");
+						//HBT	
+					} else if (payType == 2) {
+						$("#allAmount").text(Common.moneyFormat(Common.accMul(amount * state / 10, hbtExchangeRate)) + " HBT");
+						$("#buy_amount").text(Common.moneyFormat(Common.accMul(amount * state / 10, hbtExchangeRate)) + " HBT");
+						//支付宝、微信	
+					} else {
+						if (productType == 2 || productType == 4) {
+							$("#allAmount").text(Common.moneyFormat(amount * state / 10) + " 元");
+							total = Common.moneyFormat(amount * state / 10)
+						} else {
+							$("#allAmount").text(Common.moneyFormat(Common.accMul(amount * state / 10, exchangeRate)) + " 元");
+							total = Common.moneyFormat(Common.accMul(amount * state / 10, exchangeRate))
+						}
+					}
+				} else {
+					if (payType == 1) {
+						$("#allAmount").text(Common.moneyFormat(amount - state) + " USDT");
+						$("#buy_amount").text(Common.moneyFormat(amount - state) + " USDT");
+						//HBT	
+					} else if (payType == 2) {
+						$("#allAmount").text(Common.moneyFormat(Common.accMul(amount - state, hbtExchangeRate)) + " HBT");
+						$("#buy_amount").text(Common.moneyFormat(Common.accMul(amount - state, hbtExchangeRate)) + " HBT");
+						//支付宝、微信	
+					} else {
+						if (productType == 2 || productType == 4) {
+							$("#allAmount").text(Common.moneyFormat(amount - state) + " 元");
+							total = Common.moneyFormat(amount - state)
+						} else {
+							$("#allAmount").text(Common.moneyFormat(Common.accMul(amount - state, exchangeRate)) + " 元");
+							total = Common.moneyFormat(Common.accMul(amount - state, exchangeRate))
+						}
+					}
+				}
+			});
+			mui.init({
+				swipeBack: true, //启用右滑关闭功能
+				beforeback: function() {
+					//获得父页面的webview
+					var list = plus.webview.currentWebview().opener();
+					//触发父页面的自定义事件(refresh),从而进行刷新
+					mui.fire(list, 'refresh', mDay);
+					//返回true,继续页面关闭逻辑
+					return true;
+				}
+			});
+
+			$("#close-alert").click(function() {
+				mui("#passPopover").popover('hide', document.getElementById("passDiv"));
+				$(".passwordInput").val("");
+			});
+		</script>
+
+	</body>
+</html>

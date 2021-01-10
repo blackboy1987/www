@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>收益明细</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../css/style.css">
+		<link rel="stylesheet" href="../css/hashbox.css">
+		<style>
+			.mui-content>.mui-table-view:first-child {
+				margin-top: 0
+			}
+
+			.mui-table-view-cell:after {
+				right: 15px;
+				background-color: #f2f2f2;
+			}
+
+			html,
+			body {
+				height: 100%;
+			}
+
+			.my .shouyi-mx.mui-table-view:after {
+				height: 0;
+			}
+
+			.box-sd {
+				position: relative;
+				top: -30px;
+			}
+
+			.shouyi .shouyi-name div {
+				padding-top: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">收益明细</h1>
+		</header>
+		<div class="mui-content my shouyi" id="pullrefresh">
+			<img src="../images/hashbox/banner_sy.png" width="100%" />
+			<div class=" box-sd m10" style="background-color: #fff!important;">
+				<div class="mui-row shouyi-name">
+					<div class="mui-col-xs-6">
+						<p>BTC收益</p>
+						<p id="btcprofit">--</p>
+					</div>
+					<div class="mui-col-xs-6">
+						<p>HBT收益</p>
+						<p id="hptprofit">--</p>
+					</div>
+				</div>
+
+			</div>
+			<!--<div class="shouyi-name">
+				<p></p>
+				<p><span id="allprofit"></span></p>
+			</div>-->
+
+
+			<div class="mui-scroll mt20">
+				<ul class="mui-table-view shouyi-mx" id="detailed">
+				</ul>
+			</div>
+		</div>
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script src="../js/jquery.min.js"></script>
+	<script src="../js/common/common.js"></script>
+	<script>
+		mui.init({
+			swipeBack: true,
+			pullRefresh: {
+				container: '#pullrefresh', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+				up: {
+					height: 50, //可选.默认50.触发上拉加载拖动距离
+					auto: true, //可选,默认false.自动上拉加载一次
+					contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+					contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+					callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+				},
+				down: {
+					style: 'circle',
+					callback: pulldownRefresh
+				}
+			}
+		});
+
+		mui.plusReady(function() {
+			var sData = plus.webview.currentWebview();
+			//$("#allprofit").text(Common.moneyFormat(sData.target.invest.allprofit) + " ETH");
+			console.log(sData.target.allBtc)
+			$("#btcprofit").text(sData.target.allBtc);
+			$("#hptprofit").text(sData.target.allHpt);
+		});
+
+		var excision = 0;
+		var page = 1;
+
+		function pullupRefresh() {
+			var _this = this;
+			var url = "/app/user/v2/invest/page";
+			Common.muipost(url, {
+				excision: excision,
+				page: page
+			}, function(data) {
+				if (data.date.list && data.date.list.length > 0) {
+					var content = "";
+					mui.each(data.date.list, function(index, item) {
+						//var crtTime = new Date(item.changeTime);
+						//html += '<li class="mui-table-view-cell">' + Common.moneyFormat(item.changeValue) + ' ' + item.assetTypeName + '<span class="mui-pull-right">' + item.changeTypeName + '</span><span class="mui-pull-right">' + Common.dateFtt("yyyy-MM-dd", crtTime) + '</span></li>';
+						var investBtc = Common.moneyFormatByDecimals(item.investBtc, 8);
+
+						var investHpt = Common.moneyFormat(item.investHpt);
+						// deal time fomat to MM/dd
+						var tmpTime = item.createDate.substring(0, 10).replace("-", "/").replace("-", "/");
+						var tmpText = '<div class="mui-row">' +
+							'<div class="mui-col-xs-4"><span class="finan-date">' + tmpTime + '</span></div>' +
+							'<div class="mui-col-xs-4">' +
+							'<p class="finan-title">BTC算力奖励</p>' +
+							'<p class="finan-title">HBT算力奖励</p>' +
+							'</div>' +
+							'<div class="mui-col-xs-4">' +
+							'<p class="finan-stats">' + investBtc + 'BTC</p>' +
+							'<p class="finan-stats">' + investHpt + 'HBT</p>' +
+							'</div>' +
+							'</div>'
+						content += '<li class="mui-table-view-cell invest-list" >' +
+							tmpText +
+							'</li>';
+					});
+
+					if ($("#detailed > li.invest-list").length > 0) {
+						$("#detailed > li.invest-list:last").after(content);
+					} else {
+						$("#detailed").prepend(content);
+					}
+
+					_this.endPullupToRefresh(data.date.totalPage <= data.date.page);
+
+					excision = data.date.excision;
+					page++;
+				} else {
+					_this.endPullupToRefresh(true);
+				}
+			}, function(data) {
+				console.log(JSON.stringify(data));
+				_this.endPullupToRefresh(true);
+			});
+		}
+
+		function pulldownRefresh() {
+			excision = 0;
+			page = 1;
+			var url = "/app/user/v2/invest/page";
+			Common.muipost(url, {
+				excision: excision,
+				page: page
+			}, function(data) {
+				$("#detailed > li").remove();
+				if (data.date.list && data.date.list.length > 0) {
+					var content = "";
+					mui.each(data.date.list, function(index, item) {
+						var changeValue = "";
+						var investBtc = Common.moneyFormatByDecimals(item.investBtc, 8);
+
+						var investHpt = Common.moneyFormat(item.investHpt);
+						// deal time fomat to MM/dd
+						var tmpTime = item.createDate.substring(0, 10).replace("-", "/").replace("-", "/");
+						var tmpText = '<div class="mui-row">' +
+							'<div class="mui-col-xs-4"><span class="finan-date">' + tmpTime + '</span></div>' +
+							'<div class="mui-col-xs-4">' +
+							'<p class="finan-title">BTC算力奖励</p>' +
+							'<p class="finan-title">HBT算力奖励</p>' +
+							'</div>' +
+							'<div class="mui-col-xs-4">' +
+							'<p class="finan-stats">' + investBtc + 'BTC</p>' +
+							'<p class="finan-stats">' + investHpt + 'HBT</p>' +
+							'</div>' +
+							'</div>'
+						content += '<li class="mui-table-view-cell invest-list" >' +
+							tmpText +
+							'</li>';
+
+
+
+
+					});
+
+					$("#detailed").prepend(content);
+
+					excision = data.date.excision;
+					page++;
+				} else {
+
+				}
+			}, function(data) {
+
+			});
+
+			mui('#myDetial').pullRefresh().endPulldownToRefresh(true);
+			mui('#myDetial').pullRefresh().refresh(true);
+		}
+	</script>
+</html>

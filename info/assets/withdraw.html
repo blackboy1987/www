@@ -1,0 +1,99 @@
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>我的算力</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../../css/style.css">
+		<link rel="stylesheet" href="../../css/hashbox.css">
+		<style>
+			.myHashbox .mui-table-view:before,.myHashbox .mui-table-view-cell:after{ background-color: #f2f2f2!important;}
+			.mui-table-view-cell{ padding: 11px;}
+			.mui-table-view-cell:after{ left: 0;}
+			.mui-table-view-cell a{color:#969699;}
+			.m-wrap{color:#2E2E31;}
+			#recevAddr {word-break: break-word; white-space: normal; text-align: right;}
+			</style>
+	</head>
+	<body style="background: #fff" id="pullrefresh">
+		<header class="mui-bar mui-bar-nav other">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="title"></h1>
+		</header>
+
+		<div class="mui-content" id="index-html" style="background: #fff">
+			<div class="mui-control-content mui-active myHashbox">
+				<div class="box-sd m10 mt20 ">
+					<div class="myHashList hashDetails">
+						<div class="withdrawal">
+
+						</div>
+						<ul class="mui-table-view pad10" style="padding-top: 0;">
+							<li class="mui-table-view-cell">
+								<a>提现金额<span class="mui-pull-right m-wrap" id="money"></span></a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a>提现时间<span class="mui-pull-right m-wrap" id="createTime"></span></a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a>订单号<span class="mui-pull-right m-wrap" id="sn"></span></a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a style="display: flex;justify-content: space-between;"><span>提币地址：</span><p id="recevAddr" class="m-wrap"></p></a>
+							</li>
+
+						</ul>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<script src="../../js/jquery.min.js"></script>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+			var id = "";
+			mui.plusReady(function() {
+				var current = plus.webview.currentWebview();
+				id = current.outId;
+				Common.muipost("/app/user/v2/come/detail", {
+					id: id
+				}, function(data) {
+					$("#title").html(data.date.name + "提币");
+					var state = "";
+					if (data.date.state == 0) {
+						state = '<a>' + data.date.name +
+							'提现<span class="mui-pull-right" id="state"><span style="padding:3px;font-size:12px;border-radius:5px;background:#67CC78;color:#fff;" class="processing">审核中</span></span></a>';
+					} else if (data.date.state == 1) {
+						state = '<a>' + data.date.name +
+							'提现<span class="mui-pull-right" id="state"><span style="padding:3px;font-size:12px;border-radius:5px;background:#67CC78;color:#fff;" class="success">提币成功</span></span></a>';
+					} else {
+						state = '<a>' + data.date.name +
+							'提现<span class="mui-pull-right" id="state"><span style="padding:3px;font-size:12px;border-radius:5px;background:#FB5C5C;color:#fff;" class="fail">提币失败</span></span></a>';
+					}
+					$(".withdrawal").html(state);
+
+					if (data.date.name == "BTC" || data.date.name == "ETH") {
+						changeValue = Common.moneyFormatByDecimals(data.date.money, 8);
+					} else {
+						changeValue = Common.moneyFormat(data.date.money);
+					}
+					$("#money").text(changeValue + data.date.name);
+					$("#createTime").text(data.date.createDate);
+					$("#sn").text(data.date.id);
+					$("#recevAddr").text(data.date.recevAddr);
+				})
+			});
+		</script>
+	</body>
+</html>

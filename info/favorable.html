@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>我的优惠券</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<!-- <link rel="stylesheet" href="../css/mui.min.css"> -->
+		<link rel="stylesheet" href="../css/mui-l.css"/>
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../css/style.css">
+		<link rel="stylesheet" href="../css/hashbox.css">
+    </head>
+    <style>
+        .m-expiredUrl{background: url('../images/expired.png');}
+        .m-favorable{background: url('../images/favorable.png');}
+        .toDetails{background-size: 100% 100%;background-repeat: no-repeat;display: flex;position: relative;}
+        .m-inline{display: inline-block;}
+        .m-flex:first-child{flex: 2;}
+        .m-flex:last-child{flex: 3;}
+        .m-site{text-align: center;}
+        .m-rebate{font-size: 32px;color: #333333;}
+        .m-rebate span{font-size: 18px;}
+        .m-size{font-size: 18px;color:#2E2E31;}
+        .m-reel{font-size: 15px;}
+        .m-effective{color: #F96C02;}
+        .m-expired{color: #999;}
+		
+		.m-tip{color: white;background-color: #F96C02; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; position: absolute; top: 0rem; right: 0.5625rem; font-size: 0.75rem; height: 1.125rem; width: 2.8rem; text-align: center; line-height: 1.125rem;}
+		
+        .m-sm-b3{margin-bottom: 15px;}
+        .m-sm-t3{margin-top: 15px;}
+        .m-deadline{font-size: 13px;color: #999;}
+        .m-ysy{background: url('../images/ysy.png');}
+        .m-ygq{background: url('../images/ygq.png');}
+        .m-img{background-size: 30%;background-repeat: no-repeat;background-position: 110px 25px;}
+		.m-left{background-color: #ff8010; flex: 2;}
+		.m-right{background-color: white; flex: 3;}
+		/* size: 30px 30px; */
+		.m-circle{background-color: #F7F7F7; position: absolute;width: 30px; height: 30px; left: calc(40% - 23.5px); top: -20px;  border-radius: 15px;display: inline-block;}
+		.m-bottom-circle{background-color: #F7F7F7; position: absolute;width: 30px; height: 30px; left: calc(40% - 23.5px); bottom: -20px;  border-radius: 15px;display: inline-block;}
+		.m-sm-circle{background-color: #F7F7F7; position: absolute;width: 30px; height: 30px; left: -15px; top: calc(50% - 15px);  border-radius: 15px;display: inline-block;}
+		.m-center-line{left: calc(40% - 8px);position: absolute;border-right:1px dashed #ff8010; top: 15px; height:calc(100% - 30px);width:1px}
+        .mui-table-view:before, .mui-table-view:after{height: 0;}
+    </style>
+	<body style="background: #fff" id="pullrefresh">
+        <header class="mui-bar mui-bar-nav other">
+            <div class="c2c-address mui-pull-left mui-action-back"><span class="mui-icon mui-icon-back"></span></div>
+            <h1 class="mui-title" style="font-size: 18px;text-align: left;">优惠券</h1>
+        </header>
+        <div style="padding-top: 54px; background-color: #F7F7F7;">
+            <div class="" id="itemmobileefresh" >
+                <ul class="mui-table-view mui-table-view-chevron myHashList p1 pt0" id="itemmobile" style="background-color: #F7F7F7;"></ul>
+            </div>
+        </div>
+    </body>
+    <script src="../js/mui.min.js"></script>
+    <script src="../js/jquery.min.js"></script>
+	<script type='text/javascript' src='../js/common/common.js'></script>
+	<link rel="stylesheet" href="../js/common/mui.loading.css"/>
+    <script type="text/javascript" src="../js/common/mui.loading.js"></script>
+    <script>
+        var userId
+        mui.plusReady(function() {
+            userId = JSON.parse(plus.storage.getItem("loginUser")).id
+        })
+        mui.init({
+            swipeBack: true,
+            pullRefresh: {
+                container: '#itemmobileefresh', //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+                up: {
+                    height: 50, //可选.默认50.触发上拉加载拖动距离
+                    auto: true, //可选,默认false.自动上拉加载一次
+                    contentrefresh: "正在加载...", //可选，正在加载状态时，上拉加载控件上显示的标题内容
+                    contentnomore: '没有更多数据了', //可选，请求完毕若没有更多数据时显示的提醒内容；
+                    callback: pullupRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+                },
+                down: {
+                    style: 'circle',
+                    callback: pulldownRefresh
+                },
+            }
+        });
+
+        var excision = 0;
+        var page = 1;
+
+        function pullupRefresh() {
+            var _this = this;
+            Common.muipost("/app/prize/coupon", {
+                excision: excision,
+                page: page,
+                userId: userId,
+                type: 4
+            }, function(data) {
+                if (data.date.list && data.date.list.length > 0) {
+                    var content = "";
+                    mui.each(data.date.list, function(index, item) {
+                        var addClass = ''
+                        var liClass = 'm-favorable'
+                        var couponClass = 'm-effective'
+                        if (item.state) {
+                            addClass = 'm-ysy'
+                            liClass = 'm-expiredUrl'
+                            couponClass = 'm-expired'
+                        } else {
+                            var thetime = item.expireDate;
+                            if (thetime) {
+                                var d = new Date(Date.parse(thetime.replace(/-/g,"/")));
+                                var curDate = new Date();
+                                if (d < curDate) {
+                                    addClass = 'm-ygq'
+                                    liClass = 'm-expiredUrl'
+                                    couponClass = 'm-expired'
+                                }
+                            }
+                        }
+                        var text = ''
+                        var value = ''
+                        var unit = ''
+                        var val = ''
+                        if (item.prizeType == 5) {
+                            text = '折扣券'
+                            value = '首单购买可使用'
+                            unit = '折'
+                            val = '9.5'
+                        } else {
+                            text = '满减券'
+                            value = item.prizeName.split("减")[0] + '可使用'
+                            var v = item.prizeName.split("减")[1]
+                            unit = 'USDT'
+                            val = v.split("USDT")[0]
+                        }
+                        var expire = item.expireDate ? /\d{4}-\d{1,2}-\d{1,2}/g.exec(item.expireDate) : ''
+                        // content += '<li class="mt10 toDetails p1 ' + liClass + '"><div class="m-flex m-sm-t3"><div class="m-rebate mb1 m-site"><div>' + val + '<span>' + unit + '</span></div></div><div class="m-reel m-sm-b3 m-site ' + couponClass + '">' + text + '</div></div><div class="m-flex m-img ' + addClass + '"><div class="m-size m-sm-t3 mb1">' + value + '</div><div class="m-deadline">有效期至' + expire + '</div></div></li>'
+						content += '<li class="mt10 toDetails "> <div class="m-tip">'+ text +'</div> <div class="m-flex m-left "> <div class="m-rebate mb1 m-site m-sm-t3"><div style="padding-top:10px;color: white"> ' + val + ' </div></div><div style="color:white" class="m-reel m-sm-b3 m-site  ' + couponClass + '">' + unit + '</div></div><div style="padding-left: 20px;" class="m-flex m-img m-right' + addClass + '"><div class="m-size m-sm-t3 mb1" style="padding-top:10px;color:#ff8010;" >' + value + '</div><div class="m-deadline">有效期至' + expire + '</div></div> <div class="m-circle"></div> <div class="m-bottom-circle"></div> <div class="m-sm-circle"/> <div class="m-center-line"/> </li>'
+					});
+                    if ($(".toDetails").length > 0) {
+                        $("#itemmobile > li:last").after(content);
+                    } else {
+                        $("#itemmobile").prepend(content);
+                    }
+                    _this.endPullupToRefresh(data.date.totalPage <= data.date.page);
+
+                    excision = data.date.excision;
+                    page++;
+                    mui('#itemmobileefresh').pullRefresh().endPulldownToRefresh(true);
+                    mui('#itemmobileefresh').pullRefresh().refresh(true);
+                } else {
+                    _this.endPullupToRefresh(true);
+                    mui('#itemmobileefresh').pullRefresh().endPulldownToRefresh(true);
+                    mui('#itemmobileefresh').pullRefresh().refresh(true);
+                }
+            }, function(da) {
+                mui.toast(da.content);
+                _this.endPullupToRefresh(true);
+            });
+            _this.endPullupToRefresh(true);
+        }
+
+        function pulldownRefresh() {
+            excision = 0;
+            page = 1;
+            var _this = this;
+            Common.muipost("/app/prize/coupon", {
+                excision: excision,
+                page: page,
+                userId: userId,
+                type: 4
+            }, function(data) {
+                $("#itemmobile > li").remove();
+                if (data.date.list && data.date.list.length > 0) {
+                    var content = "";
+                    mui.each(data.date.list, function(index, item) {
+                        var addClass = ''
+                        var liClass = 'm-favorable'
+                        var couponClass = 'm-effective'
+                        if (item.state) {
+                            addClass = 'm-ysy'
+                            liClass = 'm-expiredUrl'
+                            couponClass = 'm-expired'
+                        } else {
+                            var thetime = item.expireDate;
+                            if (thetime) {
+                                var d = new Date(Date.parse(thetime.replace(/-/g,"/")));
+                                var curDate = new Date();
+                                if (d < curDate) {
+                                    addClass = 'm-ygq'
+                                    liClass = 'm-expiredUrl'
+                                    couponClass = 'm-expired'
+                                }
+                            }
+                        }
+                        var text = ''
+                        var value = ''
+                        var unit = ''
+                        var val = ''
+                        if (item.prizeType == 5) {
+                            // text = '首单折扣券'
+							text = '折扣券'
+                            value = '首单购买可使用'
+                            unit = '折'
+                            val = '9.5'
+                        } else {
+                            text = '满减券'
+                            // value = item.prizeName.split("减")[0] + '可使用'
+							value = item.prizeName.split("减")[0] + '可使用'
+                            var v = item.prizeName.split("减")[1]
+                            unit = 'USDT'
+                            val = v.split("USDT")[0]
+
+                        }
+                        var expire = item.expireDate ? /\d{4}-\d{1,2}-\d{1,2}/g.exec(item.expireDate) : ''
+                        content += '<li class="mt10 toDetails "> <div class="m-tip">'+ text +'</div> <div class="m-flex m-left "> <div class="m-rebate mb1 m-site m-sm-t3"><div style="padding-top:10px;color: white"> ' + val + ' </div></div><div style="color:white" class="m-reel m-sm-b3 m-site  ' + couponClass + '">' + unit + '</div></div><div style="padding-left: 20px;" class="m-flex m-img m-right' + addClass + '"><div class="m-size m-sm-t3 mb1" style="padding-top:10px;color:#ff8010;" >' + value + '</div><div class="m-deadline">有效期至' + expire + '</div></div> <div class="m-circle"></div> <div class="m-bottom-circle"></div> <div class="m-sm-circle"/> <div class="m-center-line"/> </li>'
+                    //  <!-- ' + liClass + ' -->
+					// <!-- + '<span>' + unit + '</span> -->
+					// <!-- <div class="m-flex m-sm-t3">  -->
+					//  <!-- <div class="m-rebate mb1 m-site"><div> -->
+					});
+                    $("#itemmobile").html(content);
+                    excision = data.date.excision;
+                    page++;
+                }
+            }, function(da) {
+                mui('#itemmobileefresh').pullRefresh().endPulldownToRefresh(true);
+                mui('#itemmobileefresh').pullRefresh().refresh(true);
+            });
+            mui('#itemmobileefresh').pullRefresh().endPulldownToRefresh(true);
+            mui('#itemmobileefresh').pullRefresh().refresh(true);
+        }
+    </script>
+</html>

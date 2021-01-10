@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>账户资产</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" href="../../css/style.css">
+		<link rel="stylesheet" href="../../css/hashbox.css">
+		<style>
+			::-webkit-input-placeholder { color:#b3b3b3; }
+			::-moz-placeholder { color:#b3b3b3; } /* firefox 19+ */
+			:-ms-input-placeholder { color:#b3b3b3; } /* ie */
+			input:-moz-placeholder { color:#b3b3b3; }
+			.pay-tb-all .tb-pay-addr{ width: 80%; margin: 0 auto;}
+			.copyBtn{ position: relative;top: -20px;}
+			.tb-addr-img {
+				width: 40px;
+				height: 40px;
+				margin-top: -10px;
+			}
+			.tb-addr-img img {
+				float: right;
+				margin-top: 10px;
+			}
+			.tb-addr-a {
+				width: 80px;
+				height: 40px;
+				margin-top: -10px;
+			}
+			.tb-addr-a a {
+				float: right;
+				margin-top: 10px;
+			}
+			.tb-form .tb-how{ color: #999}
+			.money-fh{ position: absolute; top: 10px;left: 10px;font-size: 27px; color: #333;}
+			#drawNum{ padding-left: 40px;}
+			.dz-bank{ position: absolute; width: 70%; left: 30%; top: -20px;}
+			.dz-bank p{ margin-bottom: 0;}
+			.dz-bank p:nth-of-type(1){ color: #333;}
+			.dz-bank p:nth-of-type(2){ color: #999; font-size: 12px;}
+		</style>
+
+	</head>
+	<body id="pullrefresh">
+		<header class="mui-bar mui-bar-nav">
+			<a class="c2c-address mui-pull-left mui-action-back"><span class="mui-icon mui-icon-back"></span></a>
+			<h1 class="mui-title" id="detialTitle">账户资产</h1>
+			<a href="javascript:void(0);" id="detailedLink" data-href="/info/assets/detailed.html" class="mui-pull-right mui-btn-link">明细</a>
+		</header>
+		<div class="mui-content a-assets" style="background: #fff">
+			<div class="assets-all" style="background-color: #2c95e8;">
+				<div class="all-ass" id="detialCountTitle" style="color: white;">总资产</div>
+				<p id="detialTotalMoney">--</p>
+			</div>
+			<!--<div class="mui-row assets-al">
+				<div class="mui-col-xs-6">
+					<div class="all-ass">可用资产</div>
+					<p id="detialMoney">--</p>
+				</div>
+				<div class="mui-col-xs-6">
+					<div class="all-ass">冻结资产</div>
+					<p id="detialFrozenMoney">--</p>
+				</div>
+			</div>-->
+			<div id="slider" class="mui-slider pay-tb mui-hidden">
+				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+					<a class="mui-control-item mui-active" href="#item1mobile">
+						充值
+					</a>
+					<a class="mui-control-item " href="#item2mobile">
+						提现1
+					</a>
+				</div>
+			</div>
+
+			<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-4"></div>
+			<div class="mui-slider-group pay-tb-all box-sd pad10">
+				<div id="item1mobile" class="mui-slider-item mui-control-content">
+					
+				</div>
+				<div id="item2mobile" class="mui-slider-item mui-control-content mui-active">
+					<form class="tb-form  mui-input-group" id="drawForm">
+						<p class="tb-title">到账账户</p>
+						<div class="mui-input-row" style="overflow: unset;">
+							<a href="javascript:void(0);" class="mui-navigate-right dz-bank" id="chooseBankCard">
+								<p id="bankInfo"><span style="color: red;">还未绑定银行卡</span></p>
+								<p>3个工作日内到账</p>
+							</a>
+						</div>
+						<p class="tb-title">提现金额</p>
+						<div class="mui-input-row">
+							<span class="money-fh">¥ </span>
+							<input id='drawNum' type="number" class="mui-input-clear mui-input" placeholder="请输入提现金额" name="amount" oninput="drawNumChange(this)">
+							<div class="tb-addr-img tb-addr-a" onclick="drawAll()"><a href="javascript:void(0);">全部提现</a></div>
+						</div>
+						<div class="tb-how">可提现金额：<span id="maxDrawNum">¥ 0.00 </span></div>
+						
+					</form>
+					<div class="tf-btn">
+						<button class="mui-btn main-button mui-disabled" id="drawBtn">提币暂未开放</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/jquery.min.js"></script>
+	<script src="../../js/common/common.js" type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="../../js/common/mui.loading.css" />
+	<script type="text/javascript" src="../../js/common/mui.loading.js"></script>
+	<script>
+		var assetName = "";
+		var assetType = "";
+		
+		var withdrawLimit = 0;
+		var withdrawMax = 0;
+		var withdrawRate = 0;
+		mui.plusReady(function() {
+			var current = plus.webview.currentWebview();
+			assetType = current.assetType;
+			assetName = current.name;
+		
+			$("#detialTitle").html(assetName);
+		
+			loadDetail();
+		});
+		
+		function loadDetail() {
+			Common.muipost("/app/user/money/details", {
+				asset: assetType
+			}, function(data) {
+				if (data.type == 200 && data.date.money) {
+					var bank = data.date.bank;
+					if (bank == null) {
+						$("#bankInfo").css("color", "red").html("请选择银行卡");
+					}
+					
+					withdrawMax = Common.moneyFormat(data.date.withdraw);
+					var money = data.date.money.money;
+					var frozenMoney = data.date.money.frozenMoney;
+					var totalMoney = parseFloat(money) + parseFloat(frozenMoney);
+					$("#detialTotalMoney").html(Common.moneyFormat(totalMoney));
+					var rule = data.date.rule;
+					withdrawLimit = rule.withdrawLimit;
+					withdrawRate = rule.withdrawRate * 100;
+					$("#drawNum").attr("placeholder", "最低转出金额为 " + rule.withdrawLimit);
+					$("#maxDrawNum").html("¥ " + Common.moneyFormat(withdrawMax));
+					
+					var drawDescText = assetName + "提现费为" + withdrawRate + "% " + assetName + ",且最高不超过0.001 " + assetName + "，最低转出金额为" + rule.withdrawLimit + " " + assetName + "。";
+					$("#drawDesc").html(drawDescText);
+					
+					if (!rule.canWithdraw) {
+						$("#drawBtn").prop("disabled", "disabled").html("提币暂未开放");
+					}
+				}
+			}, function(data) {});
+		}
+		
+		function drawAll() {
+
+		}
+		
+		function drawNumChange(thizz) {
+			thizz.value = thizz.value.replace(/^(.*\..{2}).*$/, "$1");
+		}
+		
+		mui("body").on("tap", "#detailedLink", function() {
+			var _href = $(this).attr("data-href");
+			var webview = mui.openWindow({
+				url: _href,
+				id: _href,
+				extras: {
+					assetType: assetType,
+					assetName: assetName,
+					accountType: ''
+				}
+			});
+		});
+		
+		mui("body").on("tap", "#chooseBankCard", function() {
+			mui.alert(' ','当前还未开放提币哦','确定',function (e) {
+			}, 'body');
+			/* mui.openWindow({
+				url: 'bankCard.html',
+				id: 'bankCard.html'
+			}); */
+		});
+	</script>
+	
+</html>
